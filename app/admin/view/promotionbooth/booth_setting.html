@@ -1,0 +1,63 @@
+{include file="public/header" /}
+
+
+<div class="page">
+    <form id="add_form" method="post">
+        <table class="ds-default-table">
+            <tbody>
+            <tr class="noborder">
+                <td class="required w150"><label class="validation" for="promotion_booth_price">{$Think.lang.promotion_booth_price}{$Think.lang.ds_colon}</label></td>
+                <td class="vatop rowform">
+                    <input type="text" id="promotion_booth_price" name="promotion_booth_price" value="{$setting.promotion_booth_price}" class="txt">
+                </td>
+                <td class="vatop tips">{$Think.lang.promotion_booth_price_tips}</td>
+            </tr>
+            <tr class="noborder">
+                <td class="required"><label class="validation" for="promotion_booth_goods_sum">{$Think.lang.promotion_booth_goods_sum}{$Think.lang.ds_colon}</label></td>
+                <td class="vatop rowform">
+                    <input type="text" id="promotion_booth_goods_sum" name="promotion_booth_goods_sum" value="{$setting.promotion_booth_goods_sum}" class="txt">
+                </td>
+                <td class="vatop tips">{$Think.lang.promotion_booth_goods_sum_tips}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="15"><input class="btn" type="submit" value="{$Think.lang.ds_submit}"/></td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //页面输入内容验证
+        $("#add_form").validate({
+            errorPlacement: function(error, element){
+                error.appendTo(element.parent().parent().find('td:last'));
+            },
+            rules : {
+                promotion_booth_price: {
+                    required : true,
+                    digits : true
+                },
+                promotion_booth_goods_sum: {
+                    required : true,
+                    digits : true,
+                    min : 1
+                }
+            },
+            messages : {
+                promotion_booth_price: {
+                    required : '{$Think.lang.ds_required_error}',
+                    digits : '{$Think.lang.ds_digits_error}'
+                },
+                promotion_booth_goods_sum: {
+                    required : '{$Think.lang.ds_required_error}',
+                    digits : '{$Think.lang.ds_digits_error}',
+                    min : '{$Think.lang.ds_min_error}1'
+                }
+            }
+        });
+    });
+</script> 

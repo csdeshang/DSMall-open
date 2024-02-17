@@ -1,0 +1,27 @@
+<div class="goods-gallery add-step2">
+    <a class="sample_demo" id="select_s" href="{:url('Sellervideo/video_list',['item'=>'des'])}" style="display:none;">{$Think.lang.ds_submit}</a>
+  <div class="nav"><span class="l">{$Think.lang.seller_goodsvideo}
+    </span></div>
+  {notempty name="video_list"}
+  <ul class="list">    
+    {foreach name="video_list" item="v" }
+    <li onclick="insert_video('{$v.goodsvideo_name}', '{$v.goodsvideo_url}');" style="height: 240px;width:240px;">
+        <a href="JavaScript:void(0);"><video height="240" width="240" src="{$v.goodsvideo_url}"/></a>
+    </li>
+    {/foreach}
+  </ul>
+  {else /}
+  <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.store_picture_no_video}</span></div>
+  {/notempty}
+  <div class="pagination">{$show_page|raw}</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('.goods-gallery .pagination>li>a').ajaxContent({
+		event:'click', //mouseover
+		loaderType:'img',
+		loadingMsg:'{$Think.HOME_SITE_ROOT}/images/loading.gif',
+		target:'#goods_video_list'
+	});
+});
+</script>

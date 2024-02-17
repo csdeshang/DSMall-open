@@ -1,0 +1,129 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <table class="ds-default-table order">
+        <tbody>
+            <tr class="space">
+                <th colspan="2">{$Think.lang.order_detail}</th>
+            </tr>
+            <tr>
+                <th>{$Think.lang.order_info}</th>
+            </tr>
+            <tr>
+                <td colspan="2"><ul>
+                        <li><strong>{$Think.lang.ds_order_sn}:</strong>{$order_info.order_sn}</li>
+                        {if $order_info.trade_no}
+                        <li><strong>{$Think.lang.ds_trade_no}:</strong>{$order_info.trade_no}</li>
+                        {/if}
+                        <li><strong>{$Think.lang.order_state}:</strong>{$order_info.state_desc|raw}</li>
+                        <li><strong>{$Think.lang.order_total_price}:</strong><span class="red_common">{$Think.lang.currency}{$order_info.order_amount}</span></li>
+                        <li><strong>{$Think.lang.vrorder_pd_amount}:</strong>{$Think.lang.currency}{$order_info.pd_amount}</li>
+                        <li><strong>{$Think.lang.vrorder_rcb_amount}:</strong>{$Think.lang.currency}{$order_info.rcb_amount}</li>
+                        
+                        <li><strong>{$Think.lang.refund_state}:</strong>{:get_order_refund_state($order_info['refund_state'])}</li>
+                        <li>
+                            <strong>{$Think.lang.ob_no}:</strong>
+                            {if condition="$order_info.ob_no>0"}
+                            {$Think.lang.ob_no_state_1}
+                            {else /}
+                            {$Think.lang.ob_no_state_0}
+                            {/if}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><ul>
+                        <li><strong>{$Think.lang.ds_buyer_name}{$Think.lang.ds_colon}</strong>{$order_info.buyer_name}</li>
+                        <li><strong>{$Think.lang.mob_phone}{$Think.lang.ds_colon}</strong>{$order_info.buyer_phone}</li>
+                        <li><strong>{$Think.lang.ds_payment_code}{$Think.lang.ds_colon}</strong>{:get_order_payment_name($order_info.payment_code)}</li>
+                        <li><strong>{$Think.lang.order_time}{$Think.lang.ds_colon}</strong>{:date('Y-m-d H:i:s',$order_info.add_time)}</li>
+                        {if $order_info.payment_time}
+                        <li><strong>{$Think.lang.payment_time}{$Think.lang.ds_colon}</strong>{:date('Y-m-d H:i:s',$order_info.payment_time)}</li>
+                        {/if}
+                        {present name="order_info.shipping_time"}
+                        <li><strong>{$Think.lang.ship_time}{$Think.lang.ds_colon}</strong>{:date('Y-m-d H:i:s',$order_info.shipping_time)}</li>
+                        {/present}
+                        {if $order_info.finnshed_time}
+                        <li><strong>{$Think.lang.complate_time}{$Think.lang.ds_colon}</strong>{:date('Y-m-d H:i:s',$order_info.finnshed_time)}</li>
+                        {/if}
+                        {present name="order_info.extend_order_common.order_message"}
+                        <li><strong>{$Think.lang.buyer_message}{$Think.lang.ds_colon}</strong>{$order_info.extend_order_common.order_message}</li>
+                        {/present}
+                        <li><strong>{$Think.lang.ds_store_name}{$Think.lang.ds_colon}</strong>{$order_info.store_name}</li>
+                        <li><strong>{$Think.lang.buyer_message}{$Think.lang.ds_colon}</strong>{$order_info.buyer_msg}</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>{$Think.lang.product_info}</th>
+            </tr>
+            <tr>
+                <td><table class="ds-default-table goods ">
+                        <tbody>
+                            <tr>
+                                <th class="w60"></th>
+                                <th>{$Think.lang.product_info}</th>
+                                <th class="w72 align-center">{$Think.lang.product_price}</th>
+                                <th class="w72 align-center">{$Think.lang.product_num}</th>
+                                <th class="w72 align-center">{$Think.lang.vrorder_commis_rate}</th>
+                                <th class="w72 align-center">{$Think.lang.vrorder_commis_price}</th>
+                            </tr>
+                            <tr>
+                                <td><a href="{:url('home/goods/index',['goods_id'=>$order_info.goods_id])}" target="_blank"><img alt="{$Think.lang.product_pic}" src="{:goods_thumb($order_info)}" style="width: 60px"/></a></td>
+                                <td><p><a href="{:url('home/goods/index',['goods_id'=>$order_info.goods_id])}" target="_blank">{$order_info.goods_name}</a></p><p>{if $order_info.order_promotion_type == 1}{$Think.lang.vrorder_groupbuy}{/if} {$Think.lang.vrorder_groupbuy_validity} {:date('Y-m-d',$order_info.vr_indate)}
+                                        {if $order_info.vr_invalid_refund == '0'}
+                                        {$Think.lang.vrorder_expired_no_refund}
+                                        {/if}</p></td>
+                                <td><span class="red_common">{$Think.lang.currency}{$order_info.goods_price}</span></td>
+                                <td>{$order_info.goods_num}</td>
+                                <td>{$order_info.commis_rate == 200 ? '' : $order_info.commis_rate.'%'}</td>
+                                <td>{$order_info.commis_rate == 200 ? '' : ds_price_format($order_info.goods_price *$order_info.commis_rate/100)}</td>
+                            </tr>
+                        </tbody>
+                    </table></td>
+            </tr>
+
+            <tr>
+                <th>{$Think.lang.product_info}</th>
+            </tr>
+            <tr>
+                <td>
+                    {if $order_info.virtual_type==0}
+                    <table class="ds-default-table goods">
+                        <tbody>
+                            <tr>
+                                <th class="w10"></th>
+                                <th>{$Think.lang.vr_code}</th>
+                                <th>{$Think.lang.product_price} ({$Think.lang.ds_yuan})</th>
+                                <th>{$Think.lang.product_num}</th>
+                                <th>{$Think.lang.vr_code}{$Think.lang.ds_status}</th>
+                            </tr>
+                            {notempty name="order_info.extend_vr_order_code"}
+                            {foreach name="order_info.extend_vr_order_code" item="code_info"}
+                            <tr>
+                                <td></td>
+                                <td class="w50">{$code_info.vr_code}</td>
+                                <td class="bdl">{$order_info.goods_price}</td>
+                                <td class="bdl">1</td>
+                                </td>
+                                <td class="bdl">{$code_info.vr_code_desc}</td>
+                            </tr>
+                            {/foreach}
+                            {else /}
+                            <tr><td colspan="20" class="align-center">{$Think.lang.vr_code_not_exist}</td></tr>
+                            {/notempty}
+                        </tbody>
+                    </table>
+                    {elseif $order_info.virtual_type==3}
+                    <a href='{:goods_resource($order_info["virtual_content"])}' target="_blank">下载商品</a>
+                    {else}
+                    {$order_info.virtual_content}
+                    {/if}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

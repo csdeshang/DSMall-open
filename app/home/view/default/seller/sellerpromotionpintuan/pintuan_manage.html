@@ -1,0 +1,69 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_main"}
+<form method="get">
+    <table class="search-form">
+        <tr>
+            <td>&nbsp;</td>
+            <th>{$Think.lang.ds_state}</th>
+            <td class="w100">
+                <select name="pintuangroup_state">
+                    {notempty name="pintuangroup_state_array"}
+                    <option value="">{$Think.lang.ds_please_choose}...</option>
+                    {foreach name="pintuangroup_state_array" item="val"}
+                    <option value="{$key}" {if condition="$Request.get.pintuangroup_state != '' && $Request.get.pintuangroup_state eq $key"}selected{/if}>{$val}</option>
+                    {/foreach}
+                    {/notempty}
+                </select>
+            </td>
+            <td class="w70 tc">
+                <input type="submit" class="submit" value="{$Think.lang.ds_search}"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th class="w180">{$Think.lang.pintuangroup_starttime}</th>
+            <th class="w180">{$Think.lang.pintuangroup_state}</th>
+            <th class="w180">{$Think.lang.pintuangroup_joined}/{$Think.lang.pintuangroup_limit_number}</th>
+            <th class="w80">{$Think.lang.pintuangroup_headid}</th>
+            <th class="w150">{$Think.lang.pintuanorder}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {notempty name="pintuangroup_list"}
+        {foreach name="pintuangroup_list" item="val"}
+        <tr class="bd-line">
+            <td>{$val.pintuangroup_starttime|date="Y-m-d H:i"}</td>
+            <td>{$val.pintuangroup_state_text}({$val.pintuangroup_limit_hour}{$Think.lang.hour}/{$val.pintuangroup_limit_number}{$Think.lang.people})</td>
+            <td>{$val.pintuangroup_joined}/{$val.pintuangroup_limit_number}</td>
+            <td>{$val.member_name}</td>
+            <td>
+                {foreach name="val.order_list" item="order"}
+                <a href="{if $val.pintuangroup_is_virtual}{:url('Sellervrorder/show_order',['order_id'=>$order.order_id])}{else}{:url('Sellerorder/show_order',['order_id'=>$order.order_id])}{/if}" target="_blank">{$order.order_sn}</a><br/>
+                {/foreach}
+            </td>
+        </tr>
+        {/foreach}
+        {else /}
+        <tr>
+            <td class="norecord" colspan="20">
+                <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span>
+                </div>
+            </td>
+        </tr>
+        {/notempty}
+    </tbody>
+    <tfoot>
+        {notempty name="pintuangroup_list"}
+        <tr>
+            <td colspan="20">
+                <div class="pagination">{$show_page|raw}</div>
+            </td>
+        </tr>
+        {/notempty}
+    </tfoot>
+</table>
+
+{/block}

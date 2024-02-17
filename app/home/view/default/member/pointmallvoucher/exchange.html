@@ -1,0 +1,35 @@
+<div class="dsp-voucher-exchange">
+    {if $result===TRUE}
+    <form method="post" action="{:url('Pointmallvoucher/mallvoucherexchange_save')}" id="exform">
+        <input type="hidden" name="vid" value="{$template_info.mallvouchertemplate_id}"/>
+        <dl>
+            <dt>{$Think.lang.home_bein_use}<span class="ml5 mr5">{$template_info.mallvouchertemplate_points}</span>{$Think.lang.points_unit}&nbsp;{$Think.lang.home_exchange_one|raw}<br/>
+            {$template_info.mallvouchertemplate_price}{$Think.lang.ds_yuan}{$Think.lang.mall_voucher}（<em>{$Think.lang.home_voucher_desc_1}{$template_info.mallvouchertemplate_limit}{$Think.lang.home_voucher_desc_2}{$template_info.mallvouchertemplate_price}</em>）</dt>
+            <dd>{$Think.lang.mall_voucher_valid_until}{:date('Y-m-d',$template_info.mallvouchertemplate_enddate)}</dd>
+            <dd>
+                {if $template_info.mallvouchertemplate_eachlimit >0}
+                {$Think.lang.each_id_collection}{$template_info.mallvouchertemplate_eachlimit}{$Think.lang.ds_zhang}
+                {else/}
+                {$Think.lang.each_id_collection_unlimited}
+                {/if}
+            </dd>
+        </dl>
+        <div class="button">
+            <input type="submit" class="submit" value="{$Think.lang.exchange}"/>
+            <a href="javascript:DialogManager.close('vexchange');" class="dsp-btn">{$Think.lang.ds_cancel}</a>
+        </div>
+    </form>
+    {else/}
+    <div class="errormsg" style="height:50px; text-align:center;">{$message}</div>
+    <div style="text-align:center;"><a href="javascript:DialogManager.close('vexchange');" class="dsp-btn">{$Think.lang.ds_cancel}</a></div>
+    {/if}
+</div>
+<script>
+$(document).ready(function(){
+    $('#exform').validate({
+    	submitHandler:function(form){
+            ds_ajaxpost('exform');
+    	}
+    });
+});
+</script>

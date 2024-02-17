@@ -1,0 +1,95 @@
+{include file="public/header" /}
+
+
+
+
+
+<div class="page">
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.ownshop_add_help1}</li>
+            <li>{$Think.lang.ownshop_add_help2}</li>
+            <li>{$Think.lang.ownshop_add_help3}</li>
+        </ul>
+    </div>
+
+    <form id="store_form" method="post">
+        <table class="ds-default-table">
+            <tbody>
+                <tr class="noborder">
+                    <td class="required w120"><label class="validation" for="store_name">{$Think.lang.ds_store_name}:</label></td>
+                    <td class="vatop rowform"><input type="text" value="" id="store_name" name="store_name" class="txt" /></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="required"><label class="validation" for="member_name">{$Think.lang.ds_member_name}:</label></td>
+                    <td class="vatop rowform"><input type="text" value="" id="member_name" name="member_name" class="txt" /></td>
+                    <td class="vatop tips">{$Think.lang.member_name_tips}</td>
+                </tr>
+                <tr class="noborder">
+                    <td class="required"><label class="validation" for="member_password">{$Think.lang.ds_member_password}:</label></td>
+                    <td class="vatop rowform"><input type="password" value="" id="member_password" name="member_password" class="txt" /></td>
+                    <td class="vatop tips"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="tfoot">
+                    <td colspan="15"><input class="btn" type="submit" value="{$Think.lang.ds_submit}"/></td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#store_form').validate({
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parentsUntil('tr').parent().find('td:last'));
+            },
+            rules: {
+                store_name: {
+                    required: true,
+                    remote : "{:url('Ownshop/ckeck_store_name')}"
+                },
+                member_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 15,
+                    remote: {
+                        url: "{:url('Ownshop/check_member_name')}",
+                        type: 'get',
+                        data: {
+                            member_name: function () {
+                                return $('#member_name').val();
+                            }
+                        }
+                    }
+                },
+                member_password: {
+                    required: true,
+                    minlength: 6
+                }
+            },
+            messages: {
+                store_name: {
+                    required: '{$Think.lang.store_name_required}',
+                    remote: '{$Think.lang.store_name_remote}'
+                },
+                member_name: {
+                    required: '{$Think.lang.member_name_required}',
+                    minlength: '{$Think.lang.member_name_minlength}',
+                    maxlength: '{$Think.lang.member_name_maxlength}',
+                    remote: '{$Think.lang.member_name_remote}'
+                },
+                member_password: {
+                    required: '{$Think.lang.member_password_required}',
+                    minlength: '{$Think.lang.member_password_minlength}'
+                }
+            }
+        });
+    });
+</script>

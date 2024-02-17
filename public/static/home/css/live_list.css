@@ -1,0 +1,886 @@
+/* channel-pclive/1.2.0 common.css Date:2017-07-20 16:53:20 */
+#pclive-top {
+    height: 207px;
+    text-align: center;
+    background: #f6f6f6
+}
+
+#pclive-top .mb {
+    display: none
+}
+
+.pclive-content {
+    display: inline-block;
+    display: block;
+    overflow: visible;
+    padding: 20px 0 30px
+}
+
+.pclive-content:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden
+}
+
+* html .pclive-content {
+    height: 1%
+}
+
+*+html .pclive-content {
+    min-height: 1%
+}
+
+.pclive-content .content-layout {
+    min-height: 600px;
+}
+
+.pclive-content .channel-comfloor {
+    display: none
+}
+
+.pclive-content .curr-layout {
+    display: block
+}
+
+.pclive-content .mc {
+    background: #f6f6f6
+}
+
+.pclive-content .title-tab {
+    display: inline-block;
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    height: 45px;
+    background: #fff;
+    box-shadow: 0 0 7px rgba(0,0,0,.15);
+    -webkit-transition: all .35s ease-out;
+    transition: all .35s ease-out
+}
+
+.pclive-content .title-tab:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden
+}
+
+* html .pclive-content .title-tab {
+    height: 1%
+}
+
+*+html .pclive-content .title-tab {
+    min-height: 1%
+}
+
+.pclive-content .title-tab li {
+    float: left;
+    width: 364px;
+    margin-right: 29px;
+    line-height: 45px;
+    background: #fff;
+    border-radius: 45px;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer
+}
+
+.pclive-content .title-tab li:hover a {
+    color: #ef2a2a
+}
+
+.pclive-content .title-tab li a {
+    color: #999
+}
+
+.pclive-content .title-tab li i {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    background: url(../images/live/live-bg201707.png) no-repeat
+}
+
+.pclive-content .title-tab li.fore0 i {
+    background-position: -74px 0
+}
+
+.pclive-content .title-tab li.fore0:hover i {
+    background-position: -109px 0
+}
+
+.pclive-content .title-tab li.fore1 i {
+    background-position: -179px 0
+}
+
+.pclive-content .title-tab li.fore1:hover i {
+    background-position: -214px 0
+}
+
+.pclive-content .title-tab li.fore2 {
+    margin-right: 0
+}
+
+.pclive-content .title-tab li.fore2 i {
+    background-position: -284px 0
+}
+
+.pclive-content .title-tab li.fore2:hover i {
+    background-position: -319px 0
+}
+
+.pclive-content .title-tab li.curr-layout {
+    background: #ef2a2a
+}
+
+.pclive-content .title-tab li.curr-layout.fore0 i {
+    background-position: -144px 0
+}
+
+.pclive-content .title-tab li.curr-layout.fore1 i {
+    background-position: -249px 0
+}
+
+.pclive-content .title-tab li.curr-layout.fore2 i {
+    background-position: -354px 0
+}
+
+.pclive-content .title-tab li.curr-layout a {
+    color: #fff
+}
+
+.player-box .player-img {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    width: 100%;
+    height:100%;
+    background-size:cover;
+    background-position: center;
+}
+
+
+.close-btn {
+    background-image: url(../images/live/live-bg201707.png);
+    background-repeat: no-repeat;
+    display: none;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    width: 27px;
+    height: 27px;
+    text-indent: -9999px;
+    background-position: -187px -47px
+}
+
+.tips-state .close-btn {
+    display: block
+}
+
+.end-state .close-btn {
+    display: none
+}
+
+#playback .end-state .close-btn {
+    display: block
+}
+
+.hotlive-20170124 .state {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    text-align: center;
+    z-index: 3;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled="true", startColorstr="#66000000", endColorstr="#66000000");
+    background-color: rgba(0,0,0,.4)
+}
+
+.anchor-list .anchor,.c-live .anchor {
+    height: 50px;
+    font-size: 16px;
+    line-height: 50px
+}
+
+.anchor-list .anchor a,.c-live .anchor a {
+    color: #000
+}
+
+.anchor-list .anchor img,.c-live .anchor img {
+    margin: 0 5px 5px 0;
+    border-radius: 18px
+}
+
+#floor-tools {
+    position: relative;
+    z-index: 8
+}
+
+.player-box .player-img {
+    cursor: pointer;
+    top: 0;
+    -webkit-transition: all .35s linear;
+    transition: all .35s linear
+}
+
+.player-box:hover .player-img {
+    -webkit-transform: scale(1.02);
+    transform: scale(1.02)
+}
+
+.imgerror {
+}
+
+@-webkit-keyframes loadingAnimate0 {
+    0% {
+        opacity: 0
+    }
+
+    100%,33% {
+        opacity: 1
+    }
+}
+
+@keyframes loadingAnimate0 {
+    0% {
+        opacity: 0
+    }
+
+    100%,33% {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes loadingAnimate1 {
+    33% {
+        opacity: 0
+    }
+
+    100%,66% {
+        opacity: 1
+    }
+}
+
+@keyframes loadingAnimate1 {
+    33% {
+        opacity: 0
+    }
+
+    100%,66% {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes loadingAnimate2 {
+    66% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@keyframes loadingAnimate2 {
+    66% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes liveAnimate {
+    0% {
+        opacity: 1
+    }
+
+    50% {
+        opacity: .5
+    }
+
+    100% {
+        opacity: 0
+    }
+}
+
+@keyframes liveAnimate {
+    0% {
+        opacity: 1
+    }
+
+    50% {
+        opacity: .5
+    }
+
+    100% {
+        opacity: 0
+    }
+}
+
+
+
+.pclive-content {
+    background: #f6f6f6
+}/* channel-pclive/1.2.0 hotlive.css Date:2017-07-20 17:05:37 */
+#pc-hotlive #video_id_html5_api {
+    height: 100%;
+    width: 100%
+}
+
+#pc-hotlive #video_id_Flash_api+div,#pc-hotlive #video_id_html5_api+div {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 276px;
+    z-index: 2
+}
+
+#pc-hotlive .m {
+    overflow: visible
+}
+
+.hotlive-20170124 {
+    color: #000;
+    background-color: #f6f6f6
+}
+
+.hotlive-20170124 .mt h3 i,.hotlive-20170124 .noshare-tips,.hotlive-20170124 .noshare-tips i {
+    background-image: url(../images/live/live-bg201707.png);
+    background-repeat: no-repeat
+}
+
+.hotlive-20170124 .mt {
+    height: 35px;
+    padding-top: 20px;
+    margin: 0 auto 32px;
+    border-bottom: solid 2px #000;
+    text-align: center;
+    width: 300px;
+    overflow: visible
+}
+
+.hotlive-20170124 .mt h3 {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    position: relative;
+    bottom: -10px;
+    padding: 0 15px;
+    background: #f6f6f6;
+    font-size: 28px;
+    line-height: 35px
+}
+
+.hotlive-20170124 .mt h3 i {
+    position: relative;
+    top: 4px;
+    margin-right: 5px;
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    background-position: -73px -42px
+}
+
+.hotlive-20170124 .mc {
+    display: inline-block;
+    display: block;
+    margin-right: -10px;
+    overflow: visible
+}
+
+.hotlive-20170124 .mc:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden
+}
+
+* html .hotlive-20170124 .mc {
+    height: 1%
+}
+
+*+html .hotlive-20170124 .mc {
+    min-height: 1%
+}
+
+.hotlive-20170124 button.vjs-playing {
+    display: none
+}
+
+.hotlive-20170124 .c-live {
+    float: left;
+    margin: 0 10px 10px 0;
+    padding: 0 10px 15px;
+    width: 570px;
+    height: 602px;
+    background: #fff;
+    box-shadow: 0 2px 7px rgba(0,0,0,.1);
+    overflow: hidden
+}
+
+.hotlive-20170124 .c-live .player {
+    height: 311px
+}
+
+.hotlive-20170124 .player-box {
+    position: relative;
+    height: 311px;
+    width: 570px;
+    color: #fff;
+    overflow: hidden
+}
+
+.hotlive-20170124 .player-box .player {
+}
+
+.hotlive-20170124 .player-box .player-info {
+    position: relative;
+    z-index: 1;
+    width: 570px;
+    height: 0;
+    left: 0;
+    top: -311px
+}
+
+.hotlive-20170124 .player-box .player-title {
+    position: relative;
+    z-index: 4;
+    width: 570px;
+    height: 0;
+    left: 0;
+    top: -323px
+}
+
+.hotlive-20170124 .player-box .p-static {
+    margin: 15px 0 0 20px;
+    width: 85px;
+    height: 31px;
+    border-radius: 15px;
+    background: #ef2a2a;
+    font-size: 18px;
+    line-height: 31px;
+    text-indent: 10px
+}
+
+.hotlive-20170124 .player-box .p-static i {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    height: 7px;
+    width: 7px;
+    border-radius: 7px;
+    background: #fff;
+    vertical-align: middle;
+    margin: -3px 5px 0 0
+}
+
+.hotlive-20170124 .player-box .p-tips1 {
+    margin: 248px 0 0 20px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 20px
+}
+
+.hotlive-20170124 .player-box .p-tips2 {
+    margin-left: 20px;
+    height: 34px;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 34px
+}
+
+.hotlive-20170124 .player-box .p-tips1,.hotlive-20170124 .player-box .p-tips2 {
+    position: relative;
+    z-index: 2;
+    color: #fefefe
+}
+
+.hotlive-20170124 .player-box .zan-btn {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    bottom: -256px;
+    width: 66px;
+    height: 118px;
+    text-indent: -9999px
+}
+
+.hotlive-20170124 .player-box .zan-btn i {
+    display: block;
+    width: 66px;
+    height: 98px;
+    background-image: url(../images/live/zan.png);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    -webkit-animation: movedown 2s infinite steps(14,start);
+    animation: movedown 2s infinite steps(14,start)
+}
+
+.hotlive-20170124 .player-box .zan-btn span {
+    position: absolute;
+    right: 23px;
+    bottom: -2px;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    width: 21px;
+    height: 19px;
+    background: url(../images/live/live-bg201707.png) -377px -58px no-repeat;
+    cursor: pointer
+}
+
+.hotlive-20170124 .player-box .living .zan-btn {
+    display: block
+}
+
+.hotlive-20170124 .player-box .player-btn,.hotlive-20170124 .player-box .video-js .vjs-big-play-button {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 7px;
+    width: 100%;
+    height: 311px;
+    cursor: pointer;
+    background: url(../images/live/player-btn01.png) left bottom no-repeat;
+    text-indent: -9999px;
+    -webkit-transition: all .1s ease;
+    transition: all .1s ease
+}
+
+.hotlive-20170124 .player-box .player-btn:hover,.hotlive-20170124 .player-box .video-js .vjs-big-play-button:hover {
+    filter: alpha(opacity=80);
+    -moz-opacity: .8;
+    opacity: .8
+}
+
+.hotlive-20170124 .player-box .player-btn {
+    top: -15px
+}
+
+.hotlive-20170124 .p-static i {
+    -webkit-animation: liveAnimate 1s 1s infinite;
+    animation: liveAnimate 1s 1s infinite
+}
+
+.hotlive-20170124 .anchor-products {
+    *zoom: 1;
+    overflow: hidden
+}
+
+.hotlive-20170124 .anchor-products .noshare-tips {
+    position: relative;
+    padding-top: 91px;
+    height: 160px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #666;
+    text-indent: 231px;
+    background-position: 0 -390px
+}
+
+.hotlive-20170124 .anchor-products .noshare-tips i {
+    position: absolute;
+    left: 152px;
+    top: 81px;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    height: 65px;
+    width: 62px;
+    background-position: 0 -14px
+}
+
+
+.hotlive-20170124 .live-products dt {
+    margin-top: 15px;
+    height: 34px;
+    font-size: 16px;
+    line-height: 34px;
+    color: #333
+}
+
+.hotlive-20170124 .live-products dd {
+    height: 192px;
+    position: relative;
+    overflow: hidden
+}
+
+.hotlive-20170124 .live-products ul {
+    position: absolute;
+    *zoom: 1;
+    margin-right: -78px;
+    overflow: hidden;
+    transition: left .8s;
+}
+
+.hotlive-20170124 .live-products ul li {
+    float: left;
+    width: 152px;
+    position: relative;
+    margin-right: 10px;
+    overflow: hidden
+}
+
+.hotlive-20170124 .live-products ul li .p-property {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42px;
+    padding-left: 5px;
+    height: 18px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #fefefe;
+    border-radius: 0 9px 9px 0;
+    background: #ef2a2a
+}
+
+.hotlive-20170124 .live-products ul li .p-name {
+    height: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+}
+
+.hotlive-20170124 .live-products ul li .p-price {
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px
+}
+
+.hotlive-20170124 .live-products ul li .p-price span {
+    color: #f02b2b;
+    font-weight: 700;
+    margin-right: 8px
+}
+
+.hotlive-20170124 .live-products ul li .p-price del {
+    color: #999
+}
+
+.hotlive-20170124 .live-products ul li .mask {
+    -moz-opacity: 0;
+    opacity: 0;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    text-align: center;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled="true", startColorstr="#7F000000", endColorstr="#7F000000");
+    background-color: rgba(0,0,0,.5);
+    cursor: pointer;
+    -webkit-transition: all .35s linear;
+    transition: all .35s linear
+}
+
+.hotlive-20170124 .live-products ul li .mask img {
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    opacity: 0;
+    margin-top: 18px;
+    -webkit-transition: all .35s linear;
+    transition: all .35s linear
+}
+
+.hotlive-20170124 .live-products ul li .mask span {
+    display: block;
+    height: 38px;
+    font-size: 14px;
+    line-height: 38px;
+    color: #fefefe
+}
+
+.hotlive-20170124 .live-products ul li.hover .mask {
+    filter: alpha(opacity=100);
+    -moz-opacity: 1;
+    opacity: 1;
+    width: 152px;
+    height: 152px;
+    left: 0
+}
+
+.hotlive-20170124 .live-products ul li.hover .mask img {
+    filter: alpha(opacity=100);
+    -moz-opacity: 1;
+    opacity: 1
+}
+
+.hotlive-20170124 .live-products .page-box {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    bottom: 0;
+    width: 100%
+}
+
+.hotlive-20170124 .live-products .page-box .page-btn {
+    position: absolute;
+    top: -135px;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    height: 40px;
+    width: 25px;
+    text-align: center;
+    font: 700 18px/40px simsun;
+    color: #c6bdb8;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled="true", startColorstr="#4C000000", endColorstr="#4C000000");
+    background-color: rgba(0,0,0,.3)
+}
+
+.hotlive-20170124 .live-products .page-box .page-btn:hover {
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled="true", startColorstr="#B2000000", endColorstr="#B2000000");
+    background-color: rgba(0,0,0,.7)
+}
+
+.hotlive-20170124 .live-products .page-box .page-prev {
+    left: 0
+}
+
+.hotlive-20170124 .live-products .page-box .page-next {
+    right: 0
+}
+
+.hotlive-20170124 .end-state .p-tips1,.hotlive-20170124 .end-state .p-tips2,.hotlive-20170124 .end-state .player-btn,.hotlive-20170124 .loading-state .p-tips1,.hotlive-20170124 .loading-state .p-tips2,.hotlive-20170124 .loading-state .player-btn,.hotlive-20170124 .state,.hotlive-20170124 .tips-state .p-tips1,.hotlive-20170124 .tips-state .p-tips2,.hotlive-20170124 .tips-state .player-btn,.hotlive-20170124 .video-js .p-tips1,.hotlive-20170124 .video-js .p-tips2,.hotlive-20170124 .video-js .player-btn {
+    display: none
+}
+
+.hotlive-20170124 .end-state .player,.hotlive-20170124 .loading-state .player,.hotlive-20170124 .tips-state .player,.hotlive-20170124 .video-js .player {
+    position: relative;
+    z-index: 3
+}
+
+.hotlive-20170124 .end-state .player-img,.hotlive-20170124 .loading-state .player-img,.hotlive-20170124 .tips-state .player-img,.hotlive-20170124 .video-js .player-img {
+    display: none
+}
+
+.hotlive-20170124 .end-state .state p,.hotlive-20170124 .loading-state .state p,.hotlive-20170124 .tips-state .state p,.hotlive-20170124 .video-js .state p {
+    height: 50px;
+    line-height: 50px;
+    margin: 0 auto;
+    padding-top: 60px;
+    font-size: 14px;
+    color: #fff
+}
+
+.hotlive-20170124 .end-state .player-info,.hotlive-20170124 .loading-state .player-info,.hotlive-20170124 .tips-state .player-info,.hotlive-20170124 .video-js .player-info {
+    z-index: 3
+}
+
+.hotlive-20170124 .end-state .state,.hotlive-20170124 .tips-state .close-btn,.hotlive-20170124 .tips-state .player-img,.hotlive-20170124 .tips-state .state {
+    display: block
+}
+
+.hotlive-20170124 .living-state .player-img {
+    display: none
+}
+
+.hotlive-20170124 .living-state .p-static,.hotlive-20170124 .living-state .zan-btn {
+    display: block
+}
+
+.hotlive-20170124 .living-state .player-btn,.hotlive-20170124 .living-state .player-title,.hotlive-20170124 .living-state .video-js.vjs-ended .vjs-big-play-button,.hotlive-20170124 .living-state .video-js.vjs-paused .vjs-big-play-button,.hotlive-20170124 .living-state .vjs-big-play-button,.hotlive-20170124 .living-state .vjs-fullscreen-control,.hotlive-20170124 .living-state .vjs-paused.vjs-has-started.video-js .vjs-big-play-button {
+    display: none
+}
+
+.hotlive-20170124 .store-box {
+    float: left;
+    margin-right: 10px;
+    width: 152px;
+    background: #fff
+}
+
+.hotlive-20170124 .store-box dt {
+    margin-top: 15px;
+    height: 34px;
+    font-size: 16px;
+    line-height: 34px;
+    color: #333
+}
+
+.hotlive-20170124 .store-box dd {
+    position: relative;
+    padding: 32px 9px 0;
+    border: solid 4px #999;
+    width: 126px;
+    height: 152px;
+    text-align: center
+}
+
+.hotlive-20170124 .store-box .p-img img {
+    margin-bottom: 13px
+}
+
+.hotlive-20170124 .store-box .mask {
+    -moz-opacity: 0;
+    opacity: 0;
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 152px;
+    height: 192px;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled="true", startColorstr="#7F000000", endColorstr="#7F000000");
+    background-color: rgba(0,0,0,.5);
+    -webkit-transition: all .35s linear;
+    transition: all .35s linear
+}
+
+.hotlive-20170124 .store-box .mask img {
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    opacity: 0;
+    -webkit-transition: all .35s linear;
+    transition: all .35s linear;
+    padding-top: 40px
+}
+
+.hotlive-20170124 .store-box .mask p {
+    height: 34px;
+    line-height: 34px;
+    font-size: 14px;
+    color: #fff
+}
+
+
+@-webkit-keyframes movedown {
+    0% {
+        background-position: 0 0
+    }
+
+    50% {
+        background-position: 0 -1372px
+    }
+
+    100% {
+        background-position: 0 -2744px
+    }
+}
+
+@keyframes movedown {
+    0% {
+        background-position: 0 0
+    }
+
+    50% {
+        background-position: 0 -1372px
+    }
+
+    100% {
+        background-position: 0 -2744px
+    }
+}

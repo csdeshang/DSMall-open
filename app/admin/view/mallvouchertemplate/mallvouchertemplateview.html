@@ -1,0 +1,92 @@
+{include file="public/header" /}
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_voucher_price_manage}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="ncap-form-default">
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_title}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_title}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_goodsclass}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_gcname}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_price}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_price}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_startdate}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_startdate|date='Y-m-d H:i'}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_enddate}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_enddate|date='Y-m-d H:i'}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_limit}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_limit}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_points}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_points}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_quantity}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_quantity}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_eachlimit}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_eachlimit}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_giveout}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_giveout}
+            </dd>
+        </dl>
+        <dl>
+            <dt><label>{$Think.lang.admin_mallvouchertemplate_used}{$Think.lang.ds_colon}</label></dt>
+            <dd>
+                {$info.mallvouchertemplate_used}
+            </dd>
+        </dl>
+    </div>
+
+</div>
+
+<script>
+    //按钮先执行验证再提交表单
+    $(function(){
+        $('#mallvouchertemplate_startdate').datetimepicker({dateFormat: 'yy-mm-dd'});
+        $('#mallvouchertemplate_enddate').datetimepicker({dateFormat: 'yy-mm-dd'});
+    
+    });
+</script>

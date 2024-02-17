@@ -1,0 +1,64 @@
+{include file="public/header" /}
+
+
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_message}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.message_help1}</li>
+            <li>{$Think.lang.message_help2}</li>
+            <li>{$Think.lang.message_help3}</li>
+        </ul>
+    </div>
+
+
+    <table class="ds-default-table">
+        <thead>
+            <tr class="space">
+                <th colspan="15" class="nobg">{$Think.lang.ds_list}</th>
+            </tr>
+            <tr class="thead">
+                <th>&nbsp;</th>
+                <th>{$Think.lang.mailtemplates_index_desc}</th>
+                <th class="align-center">{$Think.lang.mt_message_switch}</th>
+                <th class="align-center">{$Think.lang.mt_short_switch}</th>
+                <th class="align-center">{$Think.lang.mt_mail_switch}</th>
+                <th class="align-center">{$Think.lang.mt_weixin_switch}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty name="mstpl_list"}
+            {foreach name="mstpl_list" item="val"}
+            <tr class="hover">
+                <td class="w24">&nbsp;</td>
+                <td class="w25pre">{$val.storemt_name}</td>
+                <td class="align-center">{if $val.storemt_message_switch}{$Think.lang.ds_open}{else/}{$Think.lang.ds_close}{/if}</td>
+                <td class="align-center">{if $val.storemt_short_switch}{$Think.lang.ds_open}{else/}{$Think.lang.ds_close}{/if}</td>
+                <td class="align-center">{if $val.storemt_mail_switch}{$Think.lang.ds_open}{else/}{$Think.lang.ds_close}{/if}</td>
+                <td class="align-center">{if $val.storemt_weixin_switch}{$Think.lang.ds_open}{else/}{$Think.lang.ds_close}{/if}</td>
+                <td class="w60 align-center"><a href="{:url('Message/seller_tpl_edit',['code'=>$val.storemt_code])}" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.ds_edit}</a></td>
+            </tr>
+            {/foreach}
+            {/notempty}
+        </tbody>
+
+    </table>
+
+</div>

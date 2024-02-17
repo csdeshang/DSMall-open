@@ -1,0 +1,95 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}<a href="{:url('seller_chain/add')}" class="dssc-btn dssc-btn-green"  title="{$Think.lang.ds_new}">{$Think.lang.ds_new}</a>{/block}
+{block name="seller_main"}
+
+<form method="get" action="">
+    <table class="search-form">
+        <tr>
+            <td>&nbsp;</td>
+            <th> <select name="search_field_name" >
+                    <option {if $search_field_name == 'chain_name'}selected='selected'{/if} value="chain_name">{$Think.lang.chain_name}</option>
+                    <option {if $search_field_name == 'chain_truename'}selected='selected'{/if} value="chain_truename">{$Think.lang.chain_truename}</option>
+                    <option {if $search_field_name == 'chain_mobile'}selected='selected'{/if} value="chain_mobile">{$Think.lang.chain_mobile}</option>
+                    <option {if $search_field_name == 'chain_addressname'}selected='selected'{/if} value="chain_addressname">{$Think.lang.chain_addressname}</option>
+                </select>
+            </th>
+            <td class="w160"><input type="text" value="{$search_field_value}" name="search_field_value" class="text w150"></td>
+            <td class="w160">
+                <select name="search_state" >
+                    <option {if condition='$Request.param.search_state eq ""'}selected='selected'{/if} value="">{$Think.lang.chain_state}</option>
+                    <option {if condition='$Request.param.search_state eq "0"'}selected='selected'{/if} value="0">{$Think.lang.ds_disable}</option>
+                    <option {if condition='$Request.param.search_state eq "1"'}selected='selected'{/if} value="1">{$Think.lang.ds_enable}</option>
+                </select>
+            </td>
+            <td class="tc w70">
+                <input type="submit" class="submit" value="{$Think.lang.ds_search}" />
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th>{$Think.lang.chain_name}</th>
+          <th class="align-center">{$Think.lang.chain_truename}</th>
+          <th class="align-center">{$Think.lang.chain_mobile}</th>
+          <th class="align-center">{$Think.lang.chain_addressname}</th>
+          <th class="align-center">{$Think.lang.chain_area_info}</th>
+          <th class="align-center">{$Think.lang.chain_state}</th>
+          <th class="align-center">{$Think.lang.chain_if_pickup}</th>
+          <th class="align-center">{$Think.lang.chain_if_collect}</th>
+          <th class="align-center">{$Think.lang.chain_addtime}</th>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {notempty name="chain_list"}
+        {foreach name="chain_list" item="v" key="k" }
+        <tr class="bd-line">
+          <td><p class="name"><strong>{$v.chain_name}</strong></p></td>
+          <td class="align-center">{$v.chain_truename}</td>
+          <td class="align-center">{$v.chain_mobile}</td>
+          <td class="align-center">{$v.chain_addressname}</td>
+          <td class="align-center">{$v.chain_area_info}</td>
+          <td class="align-center yes-onoff">
+              {if $v.chain_state == '0'}
+              {$Think.lang.ds_disable}
+              {else /}
+              {$Think.lang.ds_enable}
+              {/if}
+          </td>
+          <td class="align-center yes-onoff">
+              {if $v.chain_if_pickup == '0'}
+              {$Think.lang.ds_no}
+              {else /}
+              {$Think.lang.ds_yes}
+              {/if}
+          </td>
+          <td class="align-center yes-onoff">
+              {if $v.chain_if_collect == '0'}
+              {$Think.lang.ds_no}
+              {else /}
+              {$Think.lang.ds_yes}
+              {/if}
+          </td>
+          <td class="align-center">{:date('Y-m-d H:i:s',$v.chain_addtime)}</td>
+            <td class="nscs-table-handle">
+                <span><a href="{:url('seller_chain/edit',['id'=>$v.chain_id])}" class="btn-blue"><i class="iconfont">&#xe731;</i><p>{$Think.lang.ds_edit}</p></a></span>
+                <span><a href="javascript:ds_ajaxget_confirm('{:url('seller_chain/del',['id'=>$v.chain_id])}','{$Think.lang.ds_ensure_del}');" class="btn-red"><i class="iconfont">&#xe725;</i><p>{$Think.lang.ds_del}</p></a></span>
+            </td>
+        </tr>
+        {/foreach}
+        <tr>
+            <td colspan="12"><div class="pagination"> {$show_page|raw}</div></td>
+        </tr>
+       {else /}
+        <tr>
+            <td colspan="12" class="norecord"><div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span></div></td>
+        </tr>
+       {/notempty}
+    </tbody>
+</table>
+       
+
+
+{/block}

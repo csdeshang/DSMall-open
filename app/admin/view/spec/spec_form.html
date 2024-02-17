@@ -1,0 +1,101 @@
+{include file="public/header" /}
+
+
+
+
+
+<div class="page">
+    <form class="" id="user_form" method="post">
+        <div class="ds-default-table">
+            <table>
+                <tbody>
+                    <tr class="noborder">
+                        <td class="required w120">{$Think.lang.gc_select}</td>
+                        <td class="vatop rowform">
+                            <div id="gcategory" class="default_select">
+                                <input type="hidden" name="gc_id" value="{$spec.gc_id}" class="mls_id" />
+                                <input type="hidden" name="gc_name" value="{$spec.gc_name|default=''}" class="mls_name" />
+                                {if $spec.gc_id}
+                                <span>{$spec.gc_name|default=''}</span>
+                                <input type="button" value="{$Think.lang.ds_edit}" class="edit_gcategory" />
+                                {/if}
+                                <select {if $spec.gc_id}style="display:none"{/if}>
+                                    <option value="">{$Think.lang.gc_id_required}</option>
+                                    <option value="0">{$Think.lang.gc_all}</option>
+                                    {foreach name="gc_list" item="gc"}
+                                    <option value="{$gc.gc_id}">{$gc.gc_name}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </td>
+                        <td>{$Think.lang.gc_name_tips}</td>
+                    </tr>
+                    <tr class="noborder">
+                        <td class="required w120">{$Think.lang.sp_name}</td>
+                        <td class="vatop rowform">
+                            <input type="text" name="sp_name" id="sp_name" value="{$spec.sp_name|default=''}" class="w200"/>
+                        </td>
+                    </tr>
+                    <tr class="noborder">
+                        <td class="required w120">{$Think.lang.sp_sort}</td>
+                        <td class="vatop rowform">
+                            <input type="text" name="sp_sort" id="sp_sort" value="{$spec.sp_sort|default='255'}" class="w200"/>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                <tr class="tfoot">
+                    <td></td>
+                    <td>
+                        <input class="btn" type="submit" value="{$Think.lang.ds_submit}"/>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </form>
+</div>
+<!--载入-->
+<script src="{$Think.PLUGINS_SITE_ROOT}/mlselection.js"></script>
+
+<script>
+    $(function() {
+        gcategoryInit("gcategory");
+    });
+</script>
+<script type="text/javascript">
+    $(function(){
+        $('#user_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().find('td:last'));
+            },
+            rules: {
+                sp_name :{
+                    required: true,
+                },
+                sp_sort :{
+                    required: true,
+                    digits:true,
+                    max: 255,
+                    min:0,
+                }
+                
+                 
+            },
+            messages: {
+                sp_name :{
+                   required: '{$Think.lang.gc_id_required}',
+                },
+                sp_sort :{
+                    required: '{$Think.lang.sp_sort_required}',
+                    digits: '{$Think.lang.sp_sort_digits}',
+                    max: '{$Think.lang.sp_sort_max}'
+                }
+            }
+        });
+        
+    });
+    
+    
+</script>

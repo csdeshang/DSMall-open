@@ -1,0 +1,28 @@
+{include file="public/header" /}
+<div class="data-search">
+    <input value="{$Request.param.keyword}" />
+    <span class="iconfont" onclick="goSearch()">&#xe654;</span>
+</div>
+<div class="data-list">
+    {notempty name="editable_page_list"}
+        {foreach name="editable_page_list" item="v"}
+        <div class="data-item" onclick="setLink('{if $Request.param.store_id}/home/storespecial/Index?special_id={$v.editable_page_id}&id={$Request.param.store_id}{else}/home/special?special_id={$v.editable_page_id}{/if}')">{$v.editable_page_name}</div>
+        {/foreach}
+        {else /}
+        <div class="no-data">{$Think.lang.ds_no_record}</div>
+    {/notempty}
+</div>
+{$show_page|raw}
+<script>
+    $(function(){
+        $('.pagination a').each(function(){
+            $(this).data('url',$(this).attr('href')).attr('href','javascript:void(0)')
+            $(this).click(function(){
+               $('#load_html').load($(this).data('url'));
+            })
+        })
+    })
+    function goSearch(){
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_special?store_id={$Request.param.store_id}&keyword='+$('.data-search input').val());
+    }
+</script>

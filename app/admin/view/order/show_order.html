@@ -1,0 +1,189 @@
+{include file="public/header" /}
+
+
+
+
+
+<div class="page">
+    <table class="ds-default-table order">
+        <tbody>
+            <tr class="space">
+                <th colspan="2">{$Think.lang.order_detail}</th>
+            </tr>
+            <tr>
+                <th>{$Think.lang.order_info}</th>
+            </tr>
+            <tr>
+                <td colspan="2"><ul>
+                        <li>
+                            <strong>{$Think.lang.ds_order_sn}:</strong>{$order_info.order_sn}
+                            ( {$Think.lang.ds_pay_sn} {$Think.lang.ds_colon} {$order_info.pay_sn} )
+                        </li>
+                        <li><strong>{$Think.lang.order_state}:</strong>{:get_order_state($order_info)}</li>
+                        <li><strong>{$Think.lang.order_total_price}:</strong><span class="red_common">{$Think.lang.currency}{$order_info.order_amount} </span>
+                            {if $order_info.refund_amount > 0}
+                            ({$Think.lang.order_refund}:{$Think.lang.currency}{$order_info.refund_amount})
+                            {/if}
+                        </li>
+                        <li><strong>{$Think.lang.vrorder_pd_amount}:</strong>{$Think.lang.currency}{$order_info.pd_amount}</li>
+                        <li><strong>{$Think.lang.vrorder_rcb_amount}:</strong>{$Think.lang.currency}{$order_info.rcb_amount}</li>
+                        <li><strong>{$Think.lang.order_total_transport}:</strong>{$Think.lang.currency}{$order_info.shipping_fee}</li>
+                        
+                        <li><strong>{$Think.lang.refund_state}:</strong>{:get_order_refund_state($order_info['refund_state'])}</li>
+                        <li>
+                            <strong>{$Think.lang.ob_no}:</strong>
+                            {if condition="$order_info.ob_no>0"}
+                            {$Think.lang.ob_no_state_1}
+                            {else /}
+                            {$Think.lang.ob_no_state_0}
+                            {/if}
+                        </li>
+                    </ul></td>
+            </tr>
+            <tr>
+                <td><ul>
+                        <li><strong>{$Think.lang.ds_buyer_name}{$Think.lang.ds_colon}</strong>{$order_info.buyer_name}</li>
+                        <li><strong>{$Think.lang.ds_store_name}{$Think.lang.ds_colon}</strong>{$order_info.store_name}</li>
+                        <li><strong>{$Think.lang.ds_payment_code}{$Think.lang.ds_colon}</strong>{:get_order_payment_name($order_info['payment_code'])}</li>
+                        <li><strong>{$Think.lang.order_time}{$Think.lang.ds_colon}</strong>{$order_info.add_time|date='Y-m-d H:i:s'}</li>
+                        {if isset($order_info.payment_time) && $order_info.payment_time!=''}
+                        <li><strong>{$Think.lang.payment_time}{$Think.lang.ds_colon}</strong>{$order_info.payment_time|date='Y-m-d H:i:s'}</li>
+                        {/if}
+                        {if isset($order_info.shipping_time) && $order_info.shipping_time!=''}
+                        <li><strong>{$Think.lang.ship_time}{$Think.lang.ds_colon}</strong>{$order_info.shipping_time|date='Y-m-d H:i:s'}</li>
+                        {/if}
+                        {if isset($order_info.finnshed_time) && $order_info.finnshed_time!=''}
+                        <li><strong>{$Think.lang.complate_time}{$Think.lang.ds_colon}</strong>{$order_info.finnshed_time|date='Y-m-d H:i:s'}</li>
+                        {/if}
+                        {if $order_info.extend_order_common.order_message != ''}
+                        <li><strong>{$Think.lang.buyer_message}{$Think.lang.ds_colon}</strong>{$order_info.extend_order_common.order_message}</li>
+                        {/if}
+                    </ul></td>
+            </tr>
+            <tr>
+                <th>{$Think.lang.consignee_info}</th>
+            </tr>
+            <tr>
+                <td><ul>
+                        <li><strong>{$Think.lang.consignee_name}{$Think.lang.ds_colon}</strong>{$order_info.extend_order_common.reciver_name}</li>
+                        <li><strong>{$Think.lang.tel_phone}{$Think.lang.ds_colon}</strong>{$order_info.extend_order_common.reciver_info.phone|default=''}</li>
+                        <li><strong>{$Think.lang.address}{$Think.lang.ds_colon}</strong>{$order_info.extend_order_common.reciver_info.address|default=''}</li>
+                        {if $order_info.shipping_code != ''}
+                        <li><strong>{$Think.lang.ship_code}{$Think.lang.ds_colon}</strong>{$order_info.shipping_code}</li>
+                        {/if}
+                    </ul></td>
+            </tr>
+            {notempty name="daddress_info"}
+            <tr>
+                <th>{$Think.lang.daddress_info}</th>
+            </tr>
+            <tr>
+                <td><ul>
+                        <li><strong>{$Think.lang.daddress_seller_name}{$Think.lang.ds_colon}</strong>{$daddress_info.seller_name}</li>
+                        <li><strong>{$Think.lang.tel_phone}:</strong>{$daddress_info.daddress_telphone}</li>
+                        <li><strong>{$Think.lang.daddress_address_name}{$Think.lang.ds_colon}</strong>{$daddress_info.area_info}&nbsp;{$daddress_info.daddress_detail}&nbsp;{$daddress_info.daddress_company}</li>
+                    </ul></td>
+            </tr>
+            {/notempty}
+            <?php if (!empty($order_info['extend_order_common']['invoice_info'])) {?>
+            <tr>
+                <th>{$Think.lang.invoice_info}</th>
+            </tr>
+            <tr>
+                <td><ul>
+                        <?php foreach ((array)$order_info['extend_order_common']['invoice_info'] as $key => $value){?>
+                        <li><strong>{$key}{$Think.lang.ds_colon}</strong>{$value}</li>
+                       <?php } ?>
+                    </ul></td>
+            </tr>
+            <?php } ?>
+            <tr>
+                <th>{$Think.lang.product_info}</th>
+            </tr>
+            <tr>
+                <td><table class="ds-default-table goods">
+                        <tbody>
+                            <tr>
+                                <th class="w60"></th>
+                                <th>{$Think.lang.product_info}</th>
+                                <th class="w72 align-center">{$Think.lang.product_price}</th>
+                                <th class="w72 align-center">{$Think.lang.goods_pay_price}</th>
+                                <th class="w72 align-center">{$Think.lang.product_num}</th>
+                                <th class="w72 align-center">{$Think.lang.vrorder_commis_rate}</th>
+                                <th class="w72 align-center">{$Think.lang.vrorder_commis_price}</th>
+                            </tr>
+                            {foreach name="$order_info.extend_order_goods" item="goods"}
+                            <tr>
+                                <td><a href="{:url('/home/Goods/index',['goods_id'=>$goods.goods_id])}" target="_blank"><img  src="{:goods_cthumb($goods.goods_image)}" width="60" height="60"/> </a></td>
+                                <td><p><a href="{:url('/home/Goods/index',['goods_id'=>$goods.goods_id])}" target="_blank">{$goods.goods_name}</a></p><p><?php echo get_order_goodstype($goods['goods_type']);?></p></td>
+                                <td><span class="red_common">{$Think.lang.currency}{$goods.goods_price}</span></td>
+                                <td><span class="red_common">{$Think.lang.currency}{$goods.goods_pay_price}</span></td>
+                                <td>{$goods.goods_num}</td>
+                                <td><?php echo $goods['commis_rate'] == 200 ? '' : $goods['commis_rate'].'%';?></td>
+                                <td><?php echo $goods['commis_rate'] == 200 ? '' : ds_price_format($goods['goods_pay_price']*$goods['commis_rate']/100);?></td>
+                            </tr>
+                           {/foreach}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- S 促销信息 -->
+            <tr>
+                <th>{$Think.lang.other_info}</th>
+            </tr>
+            {if !empty($order_info['extend_order_common']['promotion_info'])}
+            <tr>
+                <td>
+                    {$order_info['extend_order_common']['promotion_info']|raw}
+                </td>
+            </tr>
+            {/if}
+            {if !empty($order_info['extend_order_common']['voucher_code'])}
+            <tr>
+                <td>
+                     {:sprintf(lang('voucher_use_info'),$order_info['extend_order_common']['voucher_price'],$order_info['extend_order_common']['voucher_code'])}
+                </td>
+            </tr>
+            {/if}
+            {if !empty($order_info['extend_order_common']['mallvoucher_code'])}
+            <tr>
+                <td>使用了面额为：{$order_info['extend_order_common']['mallvoucher_price']}{$Think.lang.ds_yuan}的平台代金券，编码为：{$order_info['extend_order_common']['mallvoucher_code']}</td>
+            </tr>
+            {/if}
+            <!-- E 促销信息 -->
+
+            {notempty name="refund_list"}
+            <tr>
+                <th>{$Think.lang.refund_info}</th>
+            </tr>
+            {foreach name="refund_list" item="val"}
+            <tr>
+                <td>{:sprintf(lang('refund_detail_info'),date('Y-m-d H:i:s',$val['admin_time']),$val['refund_sn'],lang('currency').$val['refund_amount'],$val['goods_name'])}</td>
+            </tr>
+            {/foreach}
+            {/notempty}
+            {notempty name="return_list"}
+            <tr>
+                <th>{$Think.lang.return_info}</th>
+            </tr>
+            {foreach name="return_list" item="val"}
+            <tr>
+                <td>{:sprintf(lang('return_detail_info'),date('Y-m-d H:i:s',$val['admin_time']),$val['refund_sn'],lang('currency').$val['refund_amount'],$val['goods_name'])}</td>
+            </tr>
+            {/foreach}
+            {/notempty}
+            {notempty name="order_log"}
+            <tr>
+                <th>{$Think.lang.order_handle_history}</th>
+            </tr>
+            {foreach name="order_log" item="val"}
+            <tr>
+                <td>
+                    {$val.log_role} {$val.log_user}&emsp;{$Think.lang.order_show_at}&emsp;{$val.log_time|date="Y-m-d H:i:s"}&emsp;{$val.log_msg}
+                </td>
+            </tr>
+           {/foreach}
+           {/notempty}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,88 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_chain}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch">
+        <div class="ds-search-form">
+            <dl>
+                <dt>{$Think.lang.chain_truename}</dt>
+                <dd><input type="text" value="{$Request.get.search_name}" name="search_name" id="search_name" class="txt"></dd>
+            </dl>
+            <div class="btn_group">
+                <a href="javascript:document.formSearch.submit();" class="btn " title="{$Think.lang.ds_query}">{$Think.lang.ds_query}</a>
+                {notempty name="search_name"}
+                <a href="{:url('Chain/index')}" class="btn btn-small " title="{$Think.lang.ds_cancel_search}"><span>{$Think.lang.ds_cancel_search}</span></a>
+                {/notempty}
+            </div>
+        </div>
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.chain_index_help1}</li>
+        </ul>
+    </div>
+    
+    <form method="post" id="form_article">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th>{$Think.lang.chain_index_username}</th>
+                <th>{$Think.lang.chain_truename}</th>
+                <th>{$Think.lang.chain_index_address}</th>
+                <th class="align-center">{$Think.lang.ds_status}</th>
+                <th class="align-center">{$Think.lang.chain_add_time}</th>
+                <th class="w96 align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="dp_list"}
+            {foreach name="dp_list" item="v"}
+            <tr class="hover">
+                <td>{$v.chain_name}</td>
+                <td>{$v.chain_truename}</td>
+                <td>
+                    <p>{$v.chain_addressname}</p>
+                    <p>{$v.chain_area_info}&nbsp;&nbsp;{$v.chain_address}</p>
+                </td>
+                <td class="align-center">{$chain_state[$v.chain_state]}</td>
+                <td class="nowrap align-center">{$v.chain_addtime|date="Y-m-d H:i:s"}</td>
+                <td class="align-center">
+                    <a href="{:url('Chain/edit_chain',['d_id'=>$v.chain_id])}" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.ds_edit}</a>
+                </td>
+            </tr>
+           {/foreach}
+            {else }
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+           {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="dp_list"}
+            <tr class="tfoot">
+                <td colspan="16">
+                    {$show_page|raw}
+                </td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>

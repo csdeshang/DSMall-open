@@ -1,0 +1,55 @@
+{notempty name="chain_list"}
+<ul>
+    {foreach name="chain_list" item="v"}
+    <li>
+        <label>
+            <input type="radio" {if $Request.get.chain_id == $v.chain_id}checked{/if} dstype="chain_radio" data-lng="{$v.chain_longitude}" data-lat="{$v.chain_latitude}" value="{$v.chain_id}" name="chain_id">
+                   {$v.chain_addressname|default='，'}{$v.chain_address}，{$Think.lang.phone}：{if $v.chain_telephony}{$v.chain_telephony}{else/}{$v.chain_mobile}{/if}
+        </label>
+    </li>
+    {/foreach}
+</ul>
+<div class="pagination">{$show_page|raw}</div>
+{else /}
+<div class="no-chain">{$Think.lang.region_no_self_extraction}！</div>
+{/notempty}
+<script src="{$Think.PLUGINS_SITE_ROOT}/jquery.ajaxContent.pack.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input[dstype="chain_radio"]').on('click', function () {
+            $('#zt_address > ul').children().removeClass('select');
+            $(this).parent().parent().addClass('select');
+            setMarker($(this).attr('data-lng'), $(this).attr('data-lat'))
+        });
+        if ($('input[type="radio"]:checked').val()) {
+            $('input[type="radio"]:checked').parent().parent().addClass('select');
+            setMarker($('input[type="radio"]:checked').attr('data-lng'), $('input[type="radio"]:checked').attr('data-lat'))
+        }
+        $('#zt_address').find('.demo').ajaxContent({
+            event: 'click', //mouseover
+            loaderType: "img",
+            loadingMsg: "{$Think.HOME_SITE_ROOT}/images/treetable/transparent.gif",
+            target: '#zt_address'
+        });
+        function setMarker(lng, lat) {
+			if({$Think.config.ds_config.mapak_type} == '1'){
+				map.clearMap();
+				marker = new AMap.Marker({
+				    position: new AMap.LngLat(lng, lat),
+				    icon: '//api.map.baidu.com/images/marker_red_sprite.png',
+					zoom: 15
+				});
+				
+				map.add(marker);
+				map.panTo([lng, lat]);
+			}else{
+				map.clearOverlays();
+				var point = new BMap.Point(lng, lat);
+				var marker = new BMap.Marker(point); // 创建点
+				map.centerAndZoom(point, 15);
+				map.addOverlay(marker);
+			}
+            
+        }
+    });
+</script>

@@ -1,0 +1,80 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}
+ <a class="dssc-btn dssc-btn-green" title="{$Think.lang.ds_new}" ds_type="dialog" dialog_width="650" dialog_id="page_form" dialog_title="{$Think.lang.ds_new}" uri="{:url('SellerEditablePage/page_add',['type'=>$type])}"><i class="iconfont">&#xe73f;</i>{$Think.lang.ds_new}</a>
+{/block}
+{block name="seller_main"}
+ 
+<table class="dssc-default-table">
+  <thead>
+    <tr>
+      <th class="w30">ID</th>
+      <th class="w120">{$Think.lang.editable_page_name}</th>
+      <th class="w60">{$Think.lang.editable_page_client}</th>
+      <th class="w60">{$Think.lang.editable_page_path}</th>
+      <th class="w120 align-center">{$Think.lang.editable_page_edit_time}</th>
+      <th class="w200">{$Think.lang.ds_handle}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {notempty name="editable_page_list"}
+    {foreach name="editable_page_list" item="v"}
+    <tr class="bd-line">
+      <td class="name">{$v.editable_page_id}</td>
+      <td class="name">{$v.editable_page_name}</td>
+      <td class="name">{$v.editable_page_client}</td>
+      <td class="name">{$Think.lang.editable_page_path_list[$v['editable_page_path']]}</td>
+      <td class="nowrap align-center">{$v.editable_page_edit_time|date="Y-m-d H:i"}</td>
+      <td class="dscs-table-handle">
+          <span>
+              <a target="_blank" href="{$v.view_url}" class="btn-blue"><i class="iconfont">&#xe70b;</i>
+                  <p>{$Think.lang.preview}</p>
+              </a>
+          </span>
+          <span>
+              <a {if $v.editable_page_client!='h5'}target="_blank"{/if} href="{$v.edit_url}" class="btn-blue"><i class="iconfont">&#xe734;</i>
+                  <p>{$Think.lang.decorate}</p>
+              </a>
+          </span>
+          <span>
+              <a title="{$Think.lang.ds_edit}" ds_type="dialog" dialog_width="650" dialog_id="page_form" dialog_title="{$Think.lang.ds_edit}" uri="{:url('SellerEditablePage/page_edit',['editable_page_id'=>$v.editable_page_id])}" class="btn-blue"><i class="iconfont">&#xe731;</i>
+                  <p>{$Think.lang.ds_edit}</p>
+              </a>
+          </span>
+          <span>
+              <a dstype="btn_del_group" data-group-id="{$v.editable_page_id}" href="javascript:;" class="btn-red"><i class="iconfont">&#xe725;</i>
+                  <p>{$Think.lang.ds_del}</p>
+              </a>
+          </span>
+      </td>
+    </tr>
+    {/foreach}
+    {else /}
+    <tr>
+      <td colspan="20" class="norecord"><div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span></div></td>
+    </tr>
+    {/notempty}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="20"><div class="pagination"></div></td>
+    </tr>
+  </tfoot>
+</table>
+<form id="del_form" method="post" action="{:url('SellerEditablePage/page_del')}">
+  <input id="del_group_id" name="editable_page_id" type="hidden" />
+</form>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('[dstype="btn_del_group"]').on('click', function() {
+            var group_id = $(this).attr('data-group-id');
+            layer.confirm('{$Think.lang.ds_ensure_del}', {
+                btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                title: false,
+            }, function () {
+                $('#del_group_id').val(group_id);
+                ds_ajaxpost('del_form');
+            });
+        });
+    });
+</script>
+{/block}

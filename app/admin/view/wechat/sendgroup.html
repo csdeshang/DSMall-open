@@ -1,0 +1,125 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.sendgroup}</h3>
+            </div>
+        </div>
+    </div>
+     <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.wechat_sendgroup_help1}</li>
+            <li>{$Think.lang.wechat_sendgroup_help2}</li>
+        </ul>
+    </div>
+
+<div class="ncap-form-default">
+        <form method="post" id="m_form">
+            <dl>
+                <dt>{$Think.lang.message_type}</dt>
+                <dd>
+                     <input type="radio" name="type" value="text" onclick="showDiv(1)" checked>{$Think.lang.message_type_text}
+                   <!-- <input type="radio" name="type" value="news" onclick="showDiv(2)">{$Think.lang.message_type_news}-->
+                </dd>
+            </dl>
+            <div id="radioDIV1">
+            <dl>
+                <dt><span class="error">*</span> {$Think.lang.sendgroup_text}</dt>
+                <dd><textarea name="text" id="text"  placeholder="{$Think.lang.sendgroup_text}"></textarea></dd>
+            </dl>
+            </div>
+             <div id="radioDIV2" style="display: none">
+            <dl>
+                <dt></dt>
+                <dd><a href="javascript:;" onclick="addArticle()" class="btn btn-sm btn-success"><i class="iconfont bigger-120">&#xe72e;</i>{$Think.lang.message_type_news_add}</a>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wechat_title}</dt>
+                <dd>
+                    <input type="text" name="title" id="title" style="width: 300px">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wechat_digest}</dt>
+                <dd>
+                    <input type="text" name="digest" id="digest" style="width: 300px">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wechat_author}</dt>
+                <dd>
+                    <input type="text" name="author" id="author" style="width: 300px">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wechat_content_source_url}</dt>
+                <dd>
+                    <input type="text" name="content_source_url" id="content_source_url" style="width: 300px">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wechat_file}</dt>
+                <dd>
+                    <input type="file" name="file" >
+                    <input type="hidden" name="mediaId"/>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt>{$Think.lang.wechat_article_content}</dt>
+                <dd>
+                <textarea name="article_content" id="article_content"> </textarea>
+                </dd>
+            </dl>
+            </div>
+
+            <dl>
+                <dt></dt>
+                <dd><input class="btn" type="submit" value="{$Think.lang.ds_submit}"/></dd>
+            </dl>
+
+        </form>
+
+    </div>
+</div>
+<script>
+    function showDiv(objID) {
+        if(objID == 1)
+        {
+            document.getElementById('radioDIV1').style.display = "block";
+            document.getElementById('radioDIV2').style.display = "none";
+        }
+        else
+        {
+            document.getElementById('radioDIV1').style.display = "none";
+            document.getElementById('radioDIV2').style.display = "block";
+        }
+    }
+
+    $(document).ready(function(){
+        $('#m_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().find('dd:last'));
+            },
+            rules : {
+                text  : {
+                    required : true,
+                }
+            },
+            messages:{
+                text :{
+                   required:'{$Think.lang.sendgroup_text_required}'
+                  }
+            }
+        });
+    });
+</script>

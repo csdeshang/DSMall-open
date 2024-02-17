@@ -1,0 +1,125 @@
+{include file="public/header" /}
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.live_apply}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+  <div class="fixed-empty"></div>
+
+  <form method="get" name="formSearch" id="formSearch">
+      <div class="ds-search-form">
+
+          <dl>
+              
+              <dt>{$Think.lang.live_apply_state}</dt>
+              <dd>
+                  <select name="live_apply_state">
+                      <option value="">{$Think.lang.ds_please_choose}...</option>
+                      {foreach name="Think.lang.live_apply_state_text" item="val" key="key" }
+                      <option value="{$key}" {if isset($search['live_apply_state']) &&  $search['live_apply_state'] == $key }selected{/if}>{$val}</option>
+                      {/foreach}
+                  </select>
+              </dd>
+          </dl>
+          
+            <div class="btn_group">
+                 <a href="javascript:$('#formSearch').submit();" id="dssubmit" class="btn " title="{$Think.lang.ds_query}">{$Think.lang.ds_query}</a>     
+                 <a href="{:url('live_apply/index')}" class="btn btn-default" title="{$Think.lang.ds_cancel}">{$Think.lang.ds_cancel}</a>
+            </div>
+        </div>
+  </form>
+  
+      
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th class="w24">{$Think.lang.live_apply_id}</th>
+          <th class="w200 align-center" >{$Think.lang.live_apply_cover}</th>
+          <th>{$Think.lang.live_apply_name}</th>
+          <th class="w200 align-center" >{$Think.lang.live_apply_play_time}</th>
+          <th class="w200 align-center">{$Think.lang.ds_store}</th>
+          <th class="w72 align-center">{$Think.lang.live_apply_state}</th>
+          <th class="w72 align-center">{$Think.lang.live_apply_push_state}</th>
+          <th class="w200 align-center" >{$Think.lang.live_apply_add_time}</th>
+          <th class="w200 align-center" >{$Think.lang.ds_handle}</th>
+        </tr>
+      </thead>
+      <tbody>
+         {if $Think.config.ds_config.live_type==1}
+         {notempty name="minipro_live_list"}
+        {foreach name="minipro_live_list" item="v"}
+        <tr class="hover edit" id="ds_row_{$v.minipro_live_id}">
+            <td>{$v.minipro_live_id}</td>
+            <td>
+                <img width="100" height="100" src="{$v.minipro_live_image_url}" />
+            </td>
+          <td>{$v.minipro_live_name}</td>
+          
+          <td>{$v.minipro_live_start_time|date='Y-m-d H:i'}</td>
+          <td>{$v.store_name}</td>
+          <td>{$Think.lang.live_apply_state_text[1]}</td>
+          <td>{if $v.minipro_live_end_time>TIMESTAMP}{if $v.minipro_live_start_time>TIMESTAMP}{$Think.lang.live_apply_push_state_text[0]}{else}{$Think.lang.live_apply_push_state_text[1]}{/if}{else}{$Think.lang.live_end}{/if}</td>
+          <td>{$v.minipro_live_add_time|date='Y-m-d H:i'}</td>
+          <td class="align-center">
+              <a href="javascript:dsLayerOpen('{:url('live_apply/view',['minipro_live_id'=>$v.minipro_live_id])}')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_view}</a>
+          </td>
+
+        </tr>
+        <tr style="display:none;">
+          <td colspan="20"><div class="dssc-goods-sku ps-container"></div></td>
+        </tr>
+        {/foreach}
+        {else /}
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        {/notempty}
+         {else}
+        {notempty name="live_apply_list"}
+        {foreach name="live_apply_list" item="v"}
+        <tr class="hover edit" id="ds_row_{$v.live_apply_id}">
+            <td>{$v.live_apply_id}</td>
+            <td>
+                {if $v.live_apply_cover_video}
+                <video width="100" height="100" src="{$v.live_apply_cover_video_url}" />
+                {else}
+                <img width="100" height="100" src="{$v.live_apply_cover_image_url}" />
+                {/if}
+            </td>
+          <td>{$v.live_apply_name}</td>
+          
+          <td>{$v.live_apply_play_time|date='Y-m-d H:i'}</td>
+          <td>{$v.live_apply_user_name}</td>
+          <td>{$Think.lang.live_apply_state_text[$v['live_apply_state']]}</td>
+          <td>{if $v.live_apply_state==1}{if $v.live_apply_end_time>TIMESTAMP}{$Think.lang.live_apply_push_state_text[$v['live_apply_push_state']]}{else}{$Think.lang.live_end}{/if}{/if}</td>
+          <td>{$v.live_apply_add_time|date='Y-m-d H:i'}</td>
+          <td class="align-center">
+              <a href="javascript:dsLayerOpen('{:url('live_apply/view',['live_apply_id'=>$v.live_apply_id])}')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_view}</a>
+              {if $v.live_apply_state==2}
+              <a href="javascript:dsLayerConfirm('{:url('live_apply/del',['live_apply_id'=>$v.live_apply_id])}','{$Think.lang.ds_ensure_del}',{$v.live_apply_id})" class="dsui-btn-del"><i class="iconfont"></i>{$Think.lang.ds_del}</a>
+              {/if}
+          </td>
+
+        </tr>
+        <tr style="display:none;">
+          <td colspan="20"><div class="dssc-goods-sku ps-container"></div></td>
+        </tr>
+        {/foreach}
+        {else /}
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        {/notempty}
+        {/if}
+      </tbody>
+      
+    </table>
+    {$show_page|raw}
+</div>
+
+{include file="public/footer" /}

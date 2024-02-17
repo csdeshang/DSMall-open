@@ -1,0 +1,71 @@
+{include file="public/header" /}
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_voucher_price_manage}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <table class="ds-default-table">
+        <thead>
+            <tr class="thead">
+                <th>{$Think.lang.admin_mallvouchertemplate_title}</th>
+                <th>{$Think.lang.admin_mallvouchertemplate_price}({$Think.lang.ds_yuan})</th>
+                <th>{$Think.lang.admin_mallvouchertemplate_startdate}</th>
+                <th>{$Think.lang.admin_mallvouchertemplate_enddate}</th>
+                <th>{$Think.lang.admin_mallvouchertemplate_limit}({$Think.lang.ds_yuan})</th>
+                <th class="w96">{$Think.lang.admin_mallvouchertemplate_points}</th>
+                <th class="w96">{$Think.lang.admin_mallvouchertemplate_quantity}</th>
+                <th class="w96">{$Think.lang.admin_mallvouchertemplate_giveout}</th>
+                <th class="w96">{$Think.lang.admin_mallvouchertemplate_used}</th>
+                <th class="w96">{$Think.lang.admin_mallvouchertemplate_eachlimit}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty name="mallvouchertemplate_list"}
+            {foreach name="mallvouchertemplate_list" item="v"}
+            <tr class="hover" id="ds_row_{$v.mallvouchertemplate_id}">
+                <td><span>{$v.mallvouchertemplate_title}</span></td>
+                <td><span>{$v.mallvouchertemplate_price}</span></td>
+                <td><span>{$v.mallvouchertemplate_startdate|date='Y-m-d H:i'}</span></td>
+                <td><span>{$v.mallvouchertemplate_enddate|date='Y-m-d H:i'}</span></td>
+                <td><span>{$v.mallvouchertemplate_limit}</span></td>
+                <td><span>{$v.mallvouchertemplate_points}</span></td>
+                <td><span>{$v.mallvouchertemplate_quantity}</span></td>
+                <td><span>{$v.mallvouchertemplate_giveout}</span></td>
+                <td><span>{$v.mallvouchertemplate_used}</span></td>
+                <td><span>{$v.mallvouchertemplate_eachlimit}</span></td>
+                <td class="w120 align-center">
+                    {if !$v.mallvouchertemplate_giveout}
+                       <a class="dsui-btn-edit" href="{:url('Mallvouchertemplate/mallvouchertemplateedit',['mallvouchertemplate_id'=>$v.mallvouchertemplate_id])}">
+                           <i class="iconfont"></i>{$Think.lang.ds_edit}
+                       </a>
+                     {else}
+                       <a class="dsui-btn-view" href="{:url('Mallvouchertemplate/mallvouchertemplateview',['mallvouchertemplate_id'=>$v.mallvouchertemplate_id])}">
+                       <i class="iconfont"></i>{$Think.lang.ds_detail}
+                       </a>
+                        <a href="javascript:dsLayerOpen('{:url('Mallvouchertemplate/mallvoucheruser_list',['mallvouchertemplate_id'=>$v.mallvouchertemplate_id])}','{$Think.lang.ds_view}-{$v.mallvouchertemplate_title}')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_view}{$Think.lang.admin_mallvouchertemplate_giveout}</a>
+                     {/if}
+                     
+                    
+                    {if !$v.mallvouchertemplate_giveout}
+                    <a href="javascript:dsLayerConfirm('{:url('Mallvouchertemplate/drop',['mallvouchertemplate_id'=>$v.mallvouchertemplate_id])}','{$Think.lang.ds_ensure_del}',{$v.mallvouchertemplate_id})" class="dsui-btn-del"><i class="iconfont"></i>{$Think.lang.ds_del}</a>
+                    {/if}
+                </td>
+                {/foreach}
+                {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+     {$show_page|raw}
+</div>

@@ -1,0 +1,47 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_main"}
+<div class="dssc-form-default">
+    <form method="post"  action="{:url('Sellerdeliverset/eorder_set')}" id="my_store_form">
+        <dl>
+            <dt>启用{$Think.lang.ds_colon}</dt>
+            <dd>
+                    <label class="radio-label">
+                        <i  class="radio-common {if $store_info['expresscf_kdn_if_open']}selected{/if}">
+                            <input type="radio" value="1" name="expresscf_kdn_if_open" {if $store_info['expresscf_kdn_if_open']}checked="checked"{/if}>
+                        </i>
+                        <span>{$Think.lang.ds_yes}</span>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <i  class="radio-common {if !$store_info['expresscf_kdn_if_open']}selected{/if}">
+                            <input type="radio" value="0" name="expresscf_kdn_if_open" {if !$store_info['expresscf_kdn_if_open']}checked="checked"{/if}>
+                        </i>
+                        <span>{$Think.lang.ds_no}</span>
+                    </label>
+            </dd>
+            <dt>用户ID{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input class="text w200" name="expresscf_kdn_id" type="text"  id="expresscf_kdn_id" value="{$store_info.expresscf_kdn_id}" />
+                <a class="dssc-btn" href="http://www.kdniao.com/reg?from=SD-YDKQD" target="_blank" style="vertical-align: inherit;">立即申请</a>
+                <p class="hint"></p>
+            </dd>
+            <dt>API key{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input class="text w200" name="expresscf_kdn_key" type="text"  id="expresscf_kdn_key" value="{$store_info.expresscf_kdn_key}" />
+                <p class="hint"></p>
+            </dd>
+            <dt>本地打印机名称{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input class="text w200" name="expresscf_kdn_printer" type="text"  id="expresscf_kdn_printer" value="{$store_info.expresscf_kdn_printer}" />
+                <p class="hint"></p>
+            </dd>
+        </dl>
+        <div class="bottom">
+            <input type="button" class="submit" value="{$Think.lang.ds_common_button_save}" onclick="ds_ajaxpost('my_store_form')" />
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+</script> 
+{/block}
+

@@ -1,0 +1,125 @@
+<div class="eject_con">
+    <div id="warning" class="alert alert-error"></div>
+    <form method="post" action="{$Request.url}" id="address_form" target="_parent">
+        <dl>
+            <dt><i class="required">*</i>快递公司{$Think.lang.ds_colon}</dt>
+            <dd>
+                <p>
+                    <select name="express_code" {if isset($expresscf_kdn_config_info)}disabled{/if}>
+                        <option value="">{$Think.lang.ds_please_choose}</option>
+                        {notempty name="my_express_list"}
+                       {foreach name="my_express_list" key="k" item="v"}
+                        <option value="{$v.express_code}" {if isset($expresscf_kdn_config_info['express_code']) && $expresscf_kdn_config_info['express_code']==$v['express_code']}selected{/if}>{$v.express_name}</option>
+                       {/foreach}
+                       {/notempty}
+                    </select>
+                </p>
+            </dd>    
+        </dl>
+        <dl>
+            <dt>客户名称{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input type="text" class="text" name="expresscf_kdn_config_customer_name" value="{$expresscf_kdn_config_info.expresscf_kdn_config_customer_name|default=''}"/>
+            </dd>
+        </dl>
+        <dl>
+            <dt>客户密钥{$Think.lang.ds_colon}</dt>
+            <dd>
+                <div>
+                    <input type="password" class="text w300" name="expresscf_kdn_config_customer_pwd" value="{$expresscf_kdn_config_info.expresscf_kdn_config_customer_pwd|default=''}"/>
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>所属网点{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input class="text w300" type="text" name="expresscf_kdn_config_send_site" value="{$expresscf_kdn_config_info.expresscf_kdn_config_send_site|default=''}"/>
+                <p class="hint"></p>
+            </dd>
+        </dl>
+        <dl>
+            <dt>收件员{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input type="text" class="text" name="expresscf_kdn_config_send_staff" value="{$expresscf_kdn_config_info.expresscf_kdn_config_send_staff|default=''}"/>
+            </dd>
+        </dl>
+        <dl>
+            <dt>月结号{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input type="text" class="text" name="expresscf_kdn_config_month_code" value="{$expresscf_kdn_config_info.expresscf_kdn_config_month_code|default=''}"/>
+            </dd>
+        </dl>
+        <dl>
+            <dt><i class="required">*</i>支付方式{$Think.lang.ds_colon}</dt>
+            <dd>
+                    <label class="radio-label">
+                        <i  class="radio-common {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==1}selected{/if}">
+                            <input type="radio" value="1" name="expresscf_kdn_config_pay_type" {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==1}checked="checked"{/if}>
+                        </i>
+                        <span>现付</span>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <i  class="radio-common {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==2}selected{/if}">
+                            <input type="radio" value="2" name="expresscf_kdn_config_pay_type" {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==2}checked="checked"{/if}>
+                        </i>
+                        <span>到付</span>
+                    </label>
+                
+                    <label class="radio-label">
+                        <i  class="radio-common {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==3}selected{/if}">
+                            <input type="radio" value="3" name="expresscf_kdn_config_pay_type" {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==3}checked="checked"{/if}>
+                        </i>
+                        <span>月结</span>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <i  class="radio-common {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==4}selected{/if}">
+                            <input type="radio" value="4" name="expresscf_kdn_config_pay_type" {if isset($expresscf_kdn_config_info['expresscf_kdn_config_pay_type']) && $expresscf_kdn_config_info['expresscf_kdn_config_pay_type']==4}checked="checked"{/if}>
+                        </i>
+                        <span>第三方付</span>
+                    </label>
+            </dd>
+        </dl>
+        <div class="bottom">
+            <input type="submit" class="submit" value="{$Think.lang.ds_common_button_save}" />
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#region").ds_region();
+        $('#address_form').validate({
+            errorLabelContainer: $('#warning'),
+            invalidHandler: function (form, validator) {
+                var errors = validator.numberOfInvalids();
+                if (errors)
+                {
+                    $('#warning').show();
+                } else
+                {
+                    $('#warning').hide();
+                }
+            },
+            submitHandler: function (form) {
+                ds_ajaxpost('address_form');
+            },
+            rules: {
+                express_code: {
+                    required: true
+                },
+                expresscf_kdn_config_pay_type: {
+                    required: true
+                },
+            },
+            messages: {
+                express_code: {
+                    required: '<i class="iconfont">&#xe64c;</i>快递公司编码必填'
+                },
+                expresscf_kdn_config_pay_type: {
+                    required: '<i class="iconfont">&#xe64c;</i>运费支付方式必填'
+                },
+            }
+        });
+    });
+</script> 

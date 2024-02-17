@@ -1,0 +1,51 @@
+{include file="public/header" /}
+
+
+<div class="page">
+
+    <form id="add_form" method="post">
+        <table class="ds-default-table">
+            <tbody>
+            <tr class="noborder">
+                <td colspan="2" class="required"><label class="validation">{$Think.lang.bargain_price}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform">
+                    <input type="text" id="promotion_bargain_price" name="promotion_bargain_price" value="{$setting.promotion_bargain_price}" class="txt">
+                </td>
+                <td class="vatop tips">{$Think.lang.bargain_price_explain}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="15"><input class="btn" type="submit" value="{$Think.lang.ds_submit}"/></td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<script>
+    $(document).ready(function(){
+        //页面输入内容验证
+        $("#add_form").validate({
+            errorPlacement: function(error, element){
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+
+            rules : {
+                promotion_bargain_price: {
+                    required : true,
+                    digits : true,
+                    min : 0
+                }
+            },
+            messages : {
+                promotion_bargain_price: {
+                    required : '{$Think.lang.bargain_price_error}',
+                    digits : '{$Think.lang.bargain_price_error}',
+                    min : '{$Think.lang.bargain_price_error}'
+                }
+            }
+        });
+    });
+</script> 

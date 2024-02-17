@@ -1,0 +1,236 @@
+{extend name="default/base/base_home" /}
+{block name="mall_main"}
+
+<link rel="stylesheet" href="{$Think.HOME_SITE_ROOT}/css/live_list.css">
+<div id="pclive-top"> 
+    <div class="w1200"> 
+        <img width="1190" height="207" src="{$Think.HOME_SITE_ROOT}/images/live/58b9654aN2be569d9.jpg" alt="" /> 
+    </div> 
+</div> 
+<div class="pclive-content"> 
+    <div class="w1200"> 
+        <div class="ui-ceilinglamp-8" style="height:75px;">
+            <ul id="ceilinglamp" class="title-tab"> 
+                <li class="fore0 curr-layout" onclick="changeTab(0)"><a href="javascript:void(0)"><i></i>{$Think.lang.hot_live}</a></li> 
+                <li class="fore1" onclick="changeTab(1)"><a href="javascript:void(0)"><i></i>{$Think.lang.live_preview}</a></li> 
+                <li class="fore2" onclick="changeTab(2)"><a href="javascript:void(0)"><i></i>{$Think.lang.live_replay}</a></li> 
+            </ul>
+        </div> 
+    </div> 
+    <ul class="w1200 content-layout"> 
+        <!--热门直播 start--> 
+        <li id="pc-hotlive" class="w1200 channel-comfloor hotlive-20170124 curr-layout"> 
+            <div class="m"> 
+                <div class="mc"> 
+                    <ul class="list"> 
+                        <li class='no-record'><p style="height:30px;line-height:30px;text-align:center;">{$Think.lang.ds_common_result_null}</p></li>
+                    </ul> 
+                </div> 
+                <div class="mb"> 
+
+                </div> 
+            </div> </li> 
+        <!--热门直播 end--> 
+        <!--直播预告 start--> 
+        <li id="foreshow" class="w1200 channel-comfloor hotlive-20170124"> 
+            <div class="m"> 
+                <div class="mc"> 
+                    <ul class="list">
+                        <li class='no-record'><p style="height:30px;line-height:30px;text-align:center;">{$Think.lang.ds_common_result_null}</p></li>
+                    </ul> 
+                </div> 
+                <div class="mb"> 
+
+                </div> 
+            </div> </li> 
+        <!--精彩回放 end--> 
+        <li id="playback" class="w1200 channel-comfloor hotlive-20170124"> 
+            <div class="m"> 
+                <div class="mc"> 
+                    <div class="anchor-list"> 
+                        <ul class="list">
+                            <li class='no-record'><p style="height:30px;line-height:30px;text-align:center;">{$Think.lang.ds_common_result_null}</p></li>
+                        </ul> 
+                    </div> 
+                </div> 
+            </div> 
+            <div class="mb"> 
+
+            </div> </li> 
+        <!--精彩回放 end--> 
+    </ul> 
+</div>
+<script id="goods_template" type="text/html">
+    <li class="c-live J-tips1"> 
+        <div class="anchor"> 
+            <%=store_name%> 
+        </div> 
+        <div class="player-box"> 
+            <div class="player"></div> 
+            <div class="player-img" style="<%if(!live_apply_cover_video){%>background-image:url(<%=live_apply_cover_image_url%>)<%}else{%>background-color:#000<%}%>"> 
+                <%if(live_apply_cover_video){%>
+                <video style='width:100%;height:100%' src="<%=live_apply_cover_video_url%>" muted="muted" autoplay="autoplay" loop="loop" />
+                <%}%>
+            </div> 
+            <div class="player-info"> 
+                <div class="p-static"> 
+                    <i></i>
+                    <%if(state==1){%>
+                    {$Think.lang.live_on}
+                    <%}%>
+                    <%if(state==2){%>
+                    {$Think.lang.live_wait}
+                    <%}%>
+                    <%if(state==3){%>
+                    {$Think.lang.live_end}
+                    <%}%>
+                </div> 
+                <a class="player-btn" href="{:url('MemberLive/index')}?live_apply_id=<%=live_apply_id%>"> <span></span> </a> 
+                <div class="zan-btn"> 
+                    <i></i> 
+                    <span></span> 
+                </div> 
+            </div> 
+            <div class="player-title"> 
+                <div class="p-tips1">
+                    <%if(state==2){%>
+                    <%=live_apply_play_time_text%>{$Think.lang.go_to_play}
+                    <%}%>
+                </div> 
+                <div class="p-tips2">
+                    <%=live_apply_name%>
+                </div> 
+            </div> 
+
+        </div> 
+        <div class="anchor-products"> 
+            <%if(!goods_list.length){%>
+            <div class="noshare-tips"> 
+                <i></i> 
+                <p>{$Think.lang.no_goods_share}</p> 
+                <p>{$Think.lang.play_with_video_user}</p> 
+            </div>
+            <%}else{%>
+            <dl class="live-products"> 
+                <dt>
+                </dt> 
+                <dd style="position: relative;"> 
+                    <ul style="left:0;width:<%=goods_list.length*162%>px"> 
+                        <%for(var i in goods_list){%>
+                        <li class="fore0 J-list"> 
+                            <div class="p-img"> 
+                                <a href="{:url('MemberLive/index')}?live_apply_id=<%=live_apply_id%>"> <img width="152" height="152" src="<%=goods_list[i].goods_image%>" /> </a> 
+
+                            </div> 
+                            <div class="p-name">
+                                <%=goods_list[i].goods_name%>
+                            </div> 
+                            <div class="p-price"> 
+                                <span class="J-p-63213282503"><strong>&yen;</strong><%=goods_list[i].goods_price%></span> 
+                                <del class="J-m-63213282503">
+                                    &yen;<%=goods_list[i].goods_marketprice%>
+                                </del> 
+                            </div>  </li> 
+                        <%}%>
+                    </ul> 
+                    <div class="page-box"> 
+                        <a onclick="goSlide($(this).parent().prev(), 0)" class="page-prev page-btn" href="javascript:void(0);">&lt;</a> 
+                        <a onclick="goSlide($(this).parent().prev(), 1)" class="page-next page-btn" href="javascript:void(0);">&gt;</a> 
+                    </div> 
+                </dd> 
+            </dl> 
+            <%}%>
+        </div> </li> 
+</script>    
+<script src="{$Think.PLUGINS_SITE_ROOT}/template.min.js"></script>
+<script>
+$(function(){
+    loadMore()
+})    
+function changeTab(index) {
+    $('#ceilinglamp li').removeClass('curr-layout')
+    $('.content-layout li').removeClass('curr-layout')
+    switch (index) {
+        case 0:
+            $('.fore0').addClass('curr-layout')
+            $('#pc-hotlive').addClass('curr-layout')
+            break;
+        case 1:
+            $('.fore1').addClass('curr-layout')
+            $('#foreshow').addClass('curr-layout')
+            break;
+        case 2:
+            $('.fore2').addClass('curr-layout')
+            $('#playback').addClass('curr-layout')
+            break;
+    }
+    loadMore()
+}
+function goSlide(obj, dir) {
+    var left = obj.position().left;
+    if (dir) {
+        //向右
+        if (-left >= (Math.ceil(obj.find('li').length / 3) - 1) * 162) {
+            return
+        }
+        obj.css('left', (left - (162 * 3)) + 'px')
+    } else {
+        if (left >= 0) {
+            return
+        }
+        obj.css('left', (left + (162 * 3)) + 'px')
+    }
+}
+$(window).on("scroll", function () {
+
+    var windowHeight = $(window).height();//当前窗口的高度             
+    var scrollTop = $(window).scrollTop();//当前滚动条从上往下滚动的距离            
+    var docHeight = $(document).height(); //当前文档的高度 
+    //当 滚动条距底部的距离 + 滚动条滚动的距离 >= 文档的高度 - 窗口的高度  
+    //换句话说：（滚动条滚动的距离 + 窗口的高度 = 文档的高度）  这个是基本的公式  
+    if (scrollTop + windowHeight + 500 >= docHeight) {
+        loadMore()
+    }
+});
+var page = new Array(0, 0, 0);
+var no_more = new Array(false, false, false);
+
+function loadMore() {
+    var index
+    var state
+    var obj
+    
+    index = 0
+    state = 1
+    obj='pc-hotlive'
+    if ($('.fore0').hasClass('curr-layout')) {
+        
+    } else if ($('.fore1').hasClass('curr-layout')) {
+        index = 1
+        state = 2
+        obj='foreshow'
+    } else if ($('.fore2').hasClass('curr-layout')) {
+        index = 2
+        state = 3
+        obj='playback'
+    }
+    if (no_more[index]) {
+        return
+    }
+    page[index]++
+    $.getJSON(HOMESITEURL + '/Live/get_live_list', {state: state, page: page[index]}, function (res) {
+        if (!res.result.hasmore) {
+            no_more[index] = true
+        }
+        if(res.result.live_apply_list.length){
+            $('#'+obj+' .no-record').hide()
+        }
+        for(var i in res.result.live_apply_list){
+            var item = template.render('goods_template', res.result.live_apply_list[i]);
+            $('#'+obj+' .list').append(item);
+        }
+        
+    })
+}
+</script>
+{/block}

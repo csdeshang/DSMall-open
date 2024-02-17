@@ -1,0 +1,63 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}
+<a href="javascript:void(0)" class="dssc-btn dssc-btn-green" ds_type="dialog" dialog_title="{$Think.lang.ds_new}" dialog_id="eorder_add"  uri=" {:url('Sellerdeliverset/eorder_add')}" dialog_width="550" title="{$Think.lang.ds_new}">{$Think.lang.ds_new}</a>
+{/block}
+
+{block name="seller_main"}
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th class="w100">快递公司</th>
+            <th class="w150">账号</th>
+            <th class="tl">所属网点</th>
+            <th class="w150">收件员</th>
+            <th class="w150">月结号</th>
+            <th class="w150">支付方式</th>
+            <th class="w250">{$Think.lang.ds_handle}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {if $expresscf_kdn_config_list}
+        {foreach name="expresscf_kdn_config_list" item="expresscf_kdn_config"}
+        <tr class="bd-line">
+            <td>{$expresscf_kdn_config.express_name}</td>
+            <td>{$expresscf_kdn_config.expresscf_kdn_config_customer_name}</td>
+            <td class="tl">{$expresscf_kdn_config.expresscf_kdn_config_send_site}</td>
+            <td>{$expresscf_kdn_config.expresscf_kdn_config_send_staff}</td>
+            <td>{$expresscf_kdn_config.expresscf_kdn_config_month_code}</td>
+            <td>{$expresscf_kdn_config.expresscf_kdn_config_pay_type_text}</td>
+            <td class="dscs-table-handle">
+                <span>
+                    <a href="javascript:void(0);" dialog_id="eorder_edit" dialog_width="640" dialog_title="{$Think.lang.ds_edit}" ds_type="dialog" uri="{:url('Sellerdeliverset/eorder_edit',['expresscf_kdn_config_id'=>$expresscf_kdn_config.expresscf_kdn_config_id])}" class="btn-blue"><i class="iconfont">&#xe731;</i>
+                        <p>{$Think.lang.ds_edit}</p>
+                    </a>
+                </span>
+                <span>
+                    <a href="javascript:void(0)" onclick="ds_ajaxget_confirm('{:url('Sellerdeliverset/eorder_del',['expresscf_kdn_config_id'=>$expresscf_kdn_config.expresscf_kdn_config_id])}','{$Think.lang.ds_common_op_confirm}');" class="btn-red"><i class="iconfont">&#xe725;</i>
+                        <p>{$Think.lang.ds_del}</p>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {/foreach}
+        {else}
+        <tr>
+            <td colspan="20" class="norecord">
+                <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span>
+                </div>
+            </td>
+        </tr>
+        {/if}
+    </tbody>
+    <tfoot>
+        {if $expresscf_kdn_config_list}
+        <tr>
+            <td colspan="20">
+                <div class="pagination">{$show_page|raw}</div>
+            </td>
+        </tr>
+        {/if}
+    </tfoot>
+</table>
+{/block}
+

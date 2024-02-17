@@ -1,0 +1,106 @@
+<div class="eject_con">
+    <div id="warning" class="alert alert-error"></div>
+    <form method="post" action="{:url('Sellerdeliver/batch_send')}" id="plate_form" class='batch_send_form'>
+        <input type="hidden" name="order_id" value="{$Request.param.order_id}" />
+        {if $order_list}
+        <dl>
+            <dd style="width:100%">
+                    <label>发货方式</label>
+                    {if $expresscf_kdn_if_open}
+                    <label class="radio-label">
+                        <i  class="radio-common">
+                            <input type="radio" value="1" name="shipping_type">
+                        </i>
+                        <span>{$Think.lang.eorder}</span>
+                    </label>
+                    {/if}
+                    <label class="radio-label">
+                        <i  class="radio-common selected">
+                            <input type="radio" value="2" name="shipping_type" checked="checked">
+                        </i>
+                        <span>{$Think.lang.store_deliver_express_zx}</span>
+                    </label>
+                
+                    <label class="radio-label">
+                        <i  class="radio-common">
+                            <input type="radio" value="3" name="shipping_type">
+                        </i>
+                        <span>{$Think.lang.store_deliver_express_wx}</span>
+                    </label>
+     
+            </dd>
+        </dl>
+        <dl>
+            <dd style="width:100%">
+                <p>
+                    <label>{$Think.lang.member_show_deliver_info}</label>
+                    <select name="daddress_id">
+                        <option>{$Think.lang.ds_please_choose}</option>
+                        {notempty name="daddress_list"}
+                       {foreach name="daddress_list" key="k" item="daddress_info"}
+                        <option value="{$daddress_info.daddress_id}" {if $k==0}selected{/if}>{$daddress_info.seller_name}&nbsp;{$daddress_info.daddress_telphone}&nbsp;{$daddress_info.area_info}&nbsp;{$daddress_info.daddress_detail}</option>
+                       {/foreach}
+                       {/notempty}
+                    </select>
+                </p>
+            </dd>     
+        </dl>
+        <dl class="express_id">
+            <dd>
+                <p>
+                    <label>{$Think.lang.store_deliver_express_title}</label>
+                    <select name="express_id">
+                        <option>{$Think.lang.ds_please_choose}</option>
+                        {notempty name="my_express_list"}
+                       {foreach name="my_express_list" key="k" item="v"}
+                        <option value="{$v.express_id}" {if $k==0}selected{/if}>{$v.express_name}</option>
+                       {/foreach}
+                       {/notempty}
+                    </select>
+                </p>
+            </dd>    
+        </dl>        
+        {foreach name='order_list' item="val"}
+        <dl>
+            <dd>
+                <p>{$Think.lang.store_order_order_sn}{$Think.lang.ds_colon}{$val.order_sn}</p>
+                <p class="shipping_code">{$Think.lang.store_order_shipping_no}<input name="send[{$val.order_id}][shipping_code]" type="text" class="text w200 tip-r" /></p>
+            </dd>
+        </dl>
+        {/foreach}
+        <div class="bottom">
+            <input type="submit" class="submit" value="{$Think.lang.ds_submit}"/>
+        </div>
+        {else}
+        <p>{$Think.lang.order_send_message}</p>
+        {/if}
+    </form>
+</div>
+<style>
+    .batch_send_form{padding-left:20px;max-height: 500px;overflow: hidden;overflow-y: auto !important}
+    .batch_send_form p input{vertical-align: middle;}
+</style>
+<script>
+    $(function(){
+        $('#plate_form').submit(function(){
+            ds_ajaxpost('plate_form');
+            return false;
+        });
+        $('.radio-label').click(function(){
+                switch($(this).find('input[name=shipping_type]').val()){
+                    case '1':
+                        $('.express_id').show()
+                        $('.shipping_code').hide()
+                        break
+                    case '2':
+                        $('.express_id').show()
+                        $('.shipping_code').show()
+                        break
+                    case '3':
+                        $('.express_id').hide()
+                        $('.shipping_code').hide()
+                        break
+                }
+        })
+    });
+</script>

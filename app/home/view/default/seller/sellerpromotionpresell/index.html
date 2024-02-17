@@ -1,0 +1,142 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}
+{if isset($isPlatformStore) || config('ds_config.promotion_presell_price')==0}
+<a class="dssc-btn dssc-btn-green" href="{:url('Sellerpromotionpresell/presell_add')}"><i class="iconfont">&#xe6db;</i>{$Think.lang.presell_add}</a>
+{else /}
+{notempty name="current_presell_quota"}
+<a class="dssc-btn dssc-btn-green" style="right:100px" href="{:url('Sellerpromotionpresell/presell_add')}"><i class="iconfont">&#xe6db;</i>{$Think.lang.presell_add}</a>
+<a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionpresell/presell_quota_add')}" title=""><i class="iconfont">&#xe6a1;</i>{$Think.lang.package_renewal}</a>
+{else }
+<a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionpresell/presell_quota_add')}" title=""><i class="iconfont">&#xe6a1;</i>{$Think.lang.purchase_package}</a>
+{/notempty}
+{/if}
+
+
+{/block}
+{block name="seller_main"}
+{if isset($isPlatformStore) || config('ds_config.promotion_presell_price')==0}
+<div class="alert alert-block mt10">
+    <ul>
+        <li>{$Think.lang.click_add_activity_button}</li>
+        <li>{$Think.lang.click_delete_button}</li>
+    </ul>
+</div>
+{else }
+<div class="alert alert-block mt10">
+    {notempty name="current_presell_quota"}
+    <strong>{$Think.lang.overdue_package}{$Think.lang.ds_colon}</strong><strong style="color:#F00;">{$current_presell_quota.presellquota_endtime|date="Y-m-d H:i:s"}</strong>
+    {else /}
+    <strong>{$Think.lang.please_package_first}</strong>
+    {/notempty}
+    <ul>
+        <li>{$Think.lang.presell_explain1}</li>
+        <li>{$Think.lang.presell_explain2}</li>
+        <li>{$Think.lang.presell_explain3}</li>
+        <li>4、<strong style="color: red">{$Think.lang.period_settlement_deduct}</strong>。</li>
+    </ul>
+</div>
+{/if}
+
+<form method="get">
+    <table class="search-form">
+        <tr>
+            <td>&nbsp;</td>
+            <th>{$Think.lang.ds_state}</th>
+            <td class="w100"><select name="state">
+                    <option value="">{$Think.lang.ds_please_choose}</option>
+                    {notempty name="presell_state_array"}
+                    {foreach name="presell_state_array" item="val"}
+                    <option value="{$key}" {if $Request.get.state!='' && $key==$Request.get.state}selected{/if}>{$val}</option>
+                    {/foreach}
+                    {/notempty}
+                </select></td>
+            <th class="w110">{$Think.lang.presell_goods_name}</th>
+            <td class="w160"><input type="text" class="text w150" name="goods_name" value="{$Request.get.goods_name}"/></td>
+            <td class="w70 tc">
+                <input type="submit" class="submit" value="{$Think.lang.ds_search}"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th class="">{$Think.lang.presell_goods}</th>
+            <th class="w150">{$Think.lang.presell_price}</th>
+            <th class="w150">{$Think.lang.presell_type}</th>
+            <th class="w150">{$Think.lang.presell_state}</th>
+            <th class="w200">{$Think.lang.presell_time}</th>
+            <th class="w150">{$Think.lang.ds_handle}</th>
+        </tr>
+    </thead>
+    <tbody id="presell_list">
+        {notempty name="presell_list"}
+        {foreach name="presell_list" item="val"}
+        <tr class="bd-line">
+            <td><a href="{:url('Goods/index',['goods_id'=>$val.goods_id])}" target="_blank">{$val.goods_name}</a></td>
+            <td>{$val.presell_price}</td>
+            <td>{if $val.presell_type==1}{$Think.lang.presell_type_1}{else}{$Think.lang.presell_type_2}{/if}</td>
+            <td>{$val.presell_state_text}</td>
+            <td class="goods-time">{$val.presell_start_time|date="Y-m-d H:i"}<br>~<br>{$val.presell_end_time|date="Y-m-d H:i"}</td>
+            <td class="dscs-table-handle tc">
+                {if $val.editable}
+                <span>
+                    <a href="{:url('Sellerpromotionpresell/presell_edit',['presell_id'=>$val.presell_id])}" class="btn-blue">
+                        <i class="iconfont">&#xe731;</i>
+                        <p>{$Think.lang.ds_edit}</p>
+                    </a>
+                </span>
+                {/if}
+
+                {if $val.editable}
+                <span>
+                    <a href="javascript:;" dstype="btn_end_presell" data-presell-id={$val.presell_id} class="btn-red">
+                        <i class="iconfont">&#xe725;</i>
+                        <p>{$Think.lang.ds_end_presell}</p>
+                    </a>
+                </span>
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+        {else /}
+        <tr id="presell_list_norecord">
+            <td class="norecord" colspan="7">
+                <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span>
+                </div>
+            </td>
+        </tr>
+        {/notempty}
+    </tbody>
+    <tfoot>
+        {notempty name="presell_list"}
+        <tr>
+            <td colspan="7">
+                <div class="pagination">{$show_page|raw}</div>
+            </td>
+        </tr>
+        {/notempty}
+    </tfoot>
+</table>
+<form id="submit_form" action="" method="post">
+    <input type="hidden" id="presell_id" name="presell_id" value="">
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[dstype="btn_end_presell"]').on('click', function () {
+            var action = "{:url('Sellerpromotionpresell/presell_end')}";
+            var presell_id = $(this).attr('data-presell-id');
+            layer.confirm('{$Think.lang.ds_ensure_end}', {
+                btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                title: false,
+            }, function () {
+                $('#submit_form').attr('action', action);
+                $('#presell_id').val(presell_id);
+                ds_ajaxpost('submit_form', 'url', "{:url('Sellerpromotionpresell/index')}");
+            });
+        });
+    });
+</script>
+
+{/block}

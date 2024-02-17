@@ -1,0 +1,77 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_main"}
+<form method="get">
+    <table class="search-form">
+        <tr>
+            <td>&nbsp;</td>
+            <th>{$Think.lang.ds_state}</th>
+            <td class="w100">
+                <select name="bargainorder_state">
+                    <option value="">{$Think.lang.ds_please_choose}</option>
+                    {notempty name="bargainorder_state_array"}
+                    {foreach name="bargainorder_state_array" item="val"}
+                    <option value="{$key}" {if $Request.get.bargainorder_state!='' && $key==$Request.get.bargainorder_state}selected{/if}>{$val}</option>
+                    {/foreach}
+                    {/notempty}
+                </select>
+            </td>
+            <td class="w70 tc">
+                <input type="submit" class="submit" value="{$Think.lang.ds_search}"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th class="w80">{$Think.lang.bargain_name}</th>
+            <th class="w80">{$Think.lang.bargainorder_initiator_name}</th>
+            <th class="w80">{$Think.lang.bargain_total}</th>
+            <th class="w80">{$Think.lang.bargainorder_times}</th>
+            <th class="w80">{$Think.lang.bargainorder_current_price}</th>
+            <th class="w180">{$Think.lang.bargainorder_begintime}</th>
+            <th class="w80">{$Think.lang.ds_handle}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {notempty name="pbargainorder_list"}
+        {foreach name="pbargainorder_list" item="val"}
+        <tr class="bd-line">
+            <td>{$val.bargain_name}</td>
+            <td>{$val.bargainorder_initiator_name}</td>
+            <td>{$val.bargain_total}</td>
+            <td>{$val.bargainorder_times}</td>
+            <td>{$val.bargainorder_current_price}</td>
+            <td>{$val.bargainorder_begintime|date="Y-m-d H:i"}-{$val.bargainorder_endtime|date="Y-m-d H:i"}</td>
+            <td>
+                <span>
+                    <a href="{:url('Sellerpromotionbargain/bargain_log',['bargainorder_id'=>$val.bargainorder_id])}"
+                       class="btn-green">
+                        <i class="iconfont">&#xe734;</i>
+                        <p>{$Think.lang.ds_manage_bargain}</p>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {/foreach}
+        {else /}
+        <tr>
+            <td class="norecord" colspan="20">
+                <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span>
+                </div>
+            </td>
+        </tr>
+        {/notempty}
+    </tbody>
+    <tfoot>
+        {notempty name="bargaingroup_list"}
+        <tr>
+            <td colspan="20">
+                <div class="pagination">{$show_page|raw}</div>
+            </td>
+        </tr>
+        {/notempty}
+    </tfoot>
+</table>
+
+{/block}

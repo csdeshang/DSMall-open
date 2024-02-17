@@ -1,0 +1,112 @@
+<div class="dsc-receipt-info">
+    <div class="dsc-receipt-info-title">
+        <h3>{$Think.lang.consignee_information}</h3>
+        <a href="javascript:void(0)" ds_type="buy_edit" id="edit_reciver">[{$Think.lang.modification}]</a></div>
+    <div id="addr_list" class="dsc-candidate-items">
+        <ul>
+            <li>
+                <span class="true-name">{$address_info.address_realname}</span>
+                <span class="address">{if $address_info.cityerror}<span style="color: #ff4040;vertical-align: revert;">{$Think.lang.cart_step1_city_fail}</span>{/if}{if condition="$address_info.chain_id"}[{$Think.lang.self_service_station}]{/if}{$address_info.area_info}{$address_info.address_detail}</span>
+                <span class="phone"><i class="iconfont">&#xe60e;</i>{if condition="$address_info.address_mob_phone"}{$address_info.address_mob_phone}{else}{$address_info.address_tel_phone}{/if}</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+//隐藏收货地址列表
+    function hideAddrList(addr_id, true_name, address, phone,cityerror) {
+        $('#edit_reciver').show();
+        $("#address_id").val(addr_id);
+        $("#addr_list").html('<ul><li><span style="color: #ff4040;">'+cityerror+'</span><span class="true-name">' + true_name + '</span><span class="address">' + address + '</span><span class="phone"><i class="iconfont">&#xe60e;</i>' + phone + '</span></li></ul>');
+        $('.current_box').removeClass('current_box');
+        ableOtherEdit();
+        $('#edit_payment').click();
+    }
+//加载收货地址列表
+    $('#edit_reciver').on('click', function() {
+        $(this).hide();
+        disableOtherEdit('{$Think.lang.save_consignee_information} ');
+        $(this).parent().parent().addClass('current_box');
+        var url = HOMESITEURL + '/Buy/load_addr.html';
+        $('#addr_list').load(url);
+    });
+    
+//异步显示每个店铺运费 city_id计算运费area_id计算是否支持货到付款 goods判断是否支持配送到收货地区
+    function showShippingPrice(city_id, area_id) {
+        $('#buy_city_id').val('');
+        $('#buy_city_id').val(city_id);
+        var url = HOMESITEURL + '/Buy/change_addr.html';
+        var goods = '';
+        $('*[ds_goods]').each(function(){
+            goods=$(this).attr('ds_goods');
+            
+        })
+        $.post(url, {'freight_hash': '{$freight_hash}',city_id: city_id, 'area_id': area_id,'goods':goods}, function(data) {
+            if (data.state == 'success') {
+                $('#buy_city_id').val(city_id);
+                $('#allow_offpay').val(data.allow_offpay);
+                if (data.allow_offpay_batch) {
+                    var arr = new Array();
+                    $.each(data.allow_offpay_batch, function(k, v) {
+                        arr.push('' + k + ':' + (v ? 1 : 0));
+                    });
+                    $('#allow_offpay_batch').val(arr.join(";"));
+                }
+                $('#offpay_hash').val(data.offpay_hash);
+                $('#offpay_hash_batch').val(data.offpay_hash_batch);
+                var content = data.content;
+                var amount = 0;
+                for (var i in content) {
+                    $('#eachStoreFreight_' + i).attr('data-freight',content[i])
+                    amount = amount + parseFloat(content[i]);
+                }
+                calcOrder();
+                
+                $(".dsc-bottom").html("<a href='javascript:void(0)' class='dsc-btn dsc-btn-acidblue fr'>{$Think.lang.cart_index_submit_order}</a>")
+                $('.limit').remove();
+            }else{
+                $('.limit').remove();
+                if (data.limitidarray) {
+                    $.each(data.limitidarray, function(k, v) {
+                        $(".goodsid_"+v).append('<dd class="limit"> <span  style="color:#ff4040">{$Think.lang.cart_step1_goods_fail}</span></dd>')
+                    });
+                }
+                $(".dsc-bottom").html("<span class='fr' style='color:#ff4040;margin-right:20px;font-size:18px'>{$Think.lang.cart_step1_address_fail}</span>")
+            }
+
+        }, 'json');
+    }
+    //异步获取商品自提点
+    function showChainList(area_id){
+        $('*[ds_goods]').each(function(){
+            var goods=$(this).attr('ds_goods');
+            var url = HOMESITEURL + '/Buy/change_chain.html';
+            var obj=$(this)
+            obj.find('select').val(0)
+            $.post(url, {goods: goods, 'area_id': area_id}, function(data) {
+                var chain_list=data.result.chain_list
+                if(data.code==10000 && chain_list.length){
+                    var html='<option value="0">{$Think.lang.option_chain}</option>'
+                    for(var i in chain_list){
+                        html+='<option value="'+chain_list[i].chain_id+'">'+chain_list[i].chain_addressname+'('+chain_list[i].chain_area_info+chain_list[i].chain_address+')'+'</option>'
+                    }
+                    obj.find('select').html(html)
+                    
+                    obj.show()
+                }else{
+                    obj.hide()
+                }
+            }, 'json');
+        })
+    }
+    $(function() {
+        {notempty name="$address_info.address_id"}
+            showShippingPrice({$address_info.city_id},{$address_info.area_id});
+            showChainList({$address_info.area_id})
+        {else /}
+            $('#edit_reciver').click();
+        {/notempty}
+    });
+    
+</script>

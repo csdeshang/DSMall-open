@@ -1,0 +1,335 @@
+{include file="public/header" /}
+
+<div class="link-wrapper">
+    <div class="link-left">
+        <div class="link-menu active" onclick="showBlock(1)" data-id="1">商城页面</div>
+        <div class="link-menu" onclick="showBlock(2)" data-id="2">营销页面</div>
+        <div class="link-menu" onclick="showBlock(3)" data-id="3">积分页面</div>
+        <div class="link-menu" onclick="showBlock(4)" data-id="4">文章页面</div>
+        <div class="link-menu" onclick="showBlock(5)" data-id="5">店铺页面</div>
+        <div class="link-menu" onclick="showBlock(6)" data-id="6">商品页面</div>
+        <div class="link-menu" onclick="showBlock(7)" data-id="7">会员页面</div>
+    </div>
+    <div class="link-right">
+        <div class="link-path" style="display:none"></div>
+        <!-- 商城页面 -->
+        <div class="link-list" data-id="1">
+            <div class="link-item" onclick="setLink('/pages/home/index/Index')">首页</div>
+            <div class="link-item" onclick="setLink('/pages/home/map/Map')">定位</div>
+            <div class="link-item" onclick="setLink('/pages/home/brand/Brand')">品牌</div>
+            <div class="link-item" onclick="setLink('/pages/home/search/Search')">搜索</div>
+            <div class="link-item" onclick="setLink('/pages/member/cart/Cart')">购物车</div>
+            <div class="link-item" onclick="setLink('/pages/home/goodsdetail/ChainList')">门店列表</div>
+            <div class="link-item" onclick="setLink('/pages/home/chain/ChainNearby')">附近门店</div>
+            <div class="link-item" onclick="setLink('/pages/home/memberregister/Register')">用户注册</div>
+            <div class="link-item" onclick="setLink('/pages/home/memberlogin/Login')">用户登录</div>
+            <div class="link-item" onclick="setLink('/pages/home/memberforget/Forget')">忘记密码</div>
+            <div class="link-item" onclick="setLink('/pages/home/sellerlogin/Login')">卖家登录</div>
+            <div class="link-item" onclick="setLink('/pages/chain/login/Login')">门店登录</div>
+        </div>
+        <!-- 营销页面 -->
+        <div class="link-list" data-id="2" style="display:none">
+            <div class="link-item" onclick="setLink('/pages/home/activity/Activitylist')">活动列表</div>
+            <div class="link-item" onclick="loadActivity()">活动详情</div>
+            <div class="link-item" onclick="setLink('/pages/home/pintuan/PintuanList')">拼团列表</div>
+            <div class="link-item" onclick="setLink('/pages/home/bargain/Bargainlist')">砍价列表</div>
+            <div class="link-item" onclick="setLink('/pages/home/groupbuy/GroupBuyList')">抢购列表</div>
+            <div class="link-item" onclick="setLink('/pages/home/vrgroupbuy/GroupBuyList')">虚拟抢购列表</div>
+            <div class="link-item" onclick="setLink('/pages/home/presell/PresellList')">预售列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/live/LiveList')">直播列表</div>
+            <div class="link-item" onclick="loadLive()">直播详情</div>
+            <div class="link-item" onclick="setLink('/pages/home/marketmanage/Marketmanagelist')">抽奖列表</div>
+            <div class="link-item" onclick="loadMarket(1)">刮刮卡</div>
+            <div class="link-item" onclick="loadMarket(4)">生肖翻翻看</div>
+            <div class="link-item" onclick="loadMarket(2)">大转盘</div>
+            <div class="link-item" onclick="loadMarket(3)">砸金蛋</div>
+            <div class="link-item" onclick="loadBonus()">红包</div>
+            <div class="link-item" onclick="loadSpecial(0)">商城装修</div>
+        </div>
+        <!-- 积分页面 -->
+        <div class="link-list" data-id="3" style="display:none">
+            <div class="link-item" onclick="setLink('/pages/home/pointsgoods/Index')">积分首页</div>
+            <div class="link-item" onclick="setLink('/pages/home/pointsgoods/PointProd')">积分商品</div>
+            <div class="link-item" onclick="loadPointProd()">积分商品详情</div>
+            <div class="link-item" onclick="setLink('/pages/home/pointsgoods/PointVoucher')">积分代金券</div>
+            <div class="link-item" onclick="setLink('/pages/member/pointscart/Cart')">积分购物车</div>
+            <div class="link-item" onclick="setLink('/pages/member/point/PointSignin')">签到送积分</div>
+        </div>
+        <!-- 文章页面 -->
+        <div class="link-list" data-id="4" style="display:none">
+            <div class="link-item" onclick="setLink('/pages/home/article_list')">文章列表</div>
+            <div class="link-item" onclick="loadArticleClass()">文章分类</div>
+            <div class="link-item" onclick="loadArticle">文章详情</div>
+            <div class="link-item" onclick="loadDocument()">协议</div>
+        </div>
+        <!-- 店铺页面 -->
+        <div class="link-list" data-id="5" style="display:none">
+            <div class="link-item" onclick="setLink('/pages/home/storelist')">店铺列表</div>
+            <div class="link-item" onclick="loadStoreClass()">店铺分类</div>
+            <div class="link-item" onclick="loadStore(1)">店铺详情</div>
+            <div class="link-item" onclick="loadStore(2)">店铺装修</div>
+            <div class="link-item" onclick="loadStore(3)">店铺地图</div>
+            <div class="link-item" onclick="loadStore(4)">店铺介绍</div>
+            <div class="link-item" onclick="loadStore(5)">店铺代金券</div>
+            <div class="link-item" onclick="loadStore(6)">店铺商品分类</div>
+            <div class="link-item" onclick="loadStore(7)">店铺商品列表</div>
+        </div>
+        <!-- 商品页面 -->
+        <div class="link-list" data-id="6" style="display:none">
+            <div class="link-item" onclick="setLink('/pages/home/goodslist')">商品列表</div>
+            <div class="link-item" onclick="loadGoodsClass()">商品分类</div>
+            <div class="link-item" onclick="loadGoods(1)">商品详情</div>
+            <div class="link-item" onclick="loadGoods(2)">商品视频</div>
+            <div class="link-item" onclick="loadGoods(3)">商品咨询</div>
+        </div>
+        <!-- 会员页面 -->
+        <div class="link-list" data-id="7" style="display:none">
+            <div class="link-item" onclick="setLink('/pages/member/index/Index')">用户中心</div>
+            <div class="link-item" onclick="setLink('/pages/member/account/Account')">我的钱包</div>
+            <div class="link-item" onclick="setLink('/pages/member/orderreturn/Orderreturn')">退款退货</div>
+            <div class="link-item" onclick="setLink('/pages/member/predeposit/PredepositList')">资金明细</div>
+            <div class="link-item" onclick="setLink('/pages/member/predeposit/RechargeCardList')">充值卡明细</div>
+            <div class="link-item" onclick="setLink('/pages/member/withdraw/WithdrawList')">提现明细</div>
+            <div class="link-item" onclick="setLink('/pages/member/chat/ChatList')">聊天列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/friend/FriendList')">好友列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/consult/ConsultList')">商品咨询列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/recharge/RechargeList')">充值明细</div>
+            <div class="link-item" onclick="setLink('/pages/member/voucher/VoucherList')">代金券列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/notice/NoticeList')">通知列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/setting/AccountSet')">账号设置</div>
+            <div class="link-item" onclick="setLink('/pages/member/profile/ProfileSet')">个人信息</div>
+            <div class="link-item" onclick="setLink('/pages/member/address/AddressList')">地址列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/bank/BankList')">提现账户列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/refund/RefundList')">退款列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/vrrefund/VrRefundList')">虚拟订单退款列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/return/ReturnList')">退货列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/invoice/InvoiceList')">发票列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/inform/InformList')">举报商家列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/complaint/ComplaintList')">投诉商家列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/order/OrderList')">我的订单</div>
+            <div class="link-item" onclick="setLink('/pages/member/favorite/Favorite')">我的收藏</div>
+            <div class="link-item" onclick="setLink('/pages/member/vrorder/OrderList')">我的虚拟订单</div>
+            <div class="link-item" onclick="setLink('/pages/member/evaluate/EvaluateList')">订单评价列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/inviter/InviterManage')">推广海报</div>
+            <div class="link-item" onclick="setLink('/pages/member/inviter/InviterUser')">推广会员</div>
+            <div class="link-item" onclick="setLink('/pages/member/inviter/InviterOrder')">推广佣金</div>
+            <div class="link-item" onclick="setLink('/pages/member/bargain/Bargainlist')">用户砍价列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/marketmanagelog/Marketmanagelog')">活动记录</div>
+            <div class="link-item" onclick="setLink('/pages/member/bonusreceive/Bonusreceive')">红包记录</div>
+            <div class="link-item" onclick="setLink('/pages/member/pointsorder/OrderList')">积分订单列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/point/PointList')">积分明细</div>
+            <div class="link-item" onclick="setLink('/pages/member/arrivalnotice/Arrivalnotice')">到货通知列表</div>
+            <div class="link-item" onclick="setLink('/pages/member/browse/BrowseList')">浏览历史</div>
+            <div class="link-item" onclick="setLink('/pages/member/feedback/Feedback')">意见反馈</div>
+            <div class="link-item" onclick="setLink('/pages/member/auth/Auth')">会员认证</div>
+            <div class="link-item" onclick="setLink('/pages/member/sellerjoinin/Step1')">店铺入驻</div>
+        </div>
+
+        <div id="load_html"></div>
+    </div>
+</div>
+
+
+<style>
+    body{background-color: #fff;}
+    .link-wrapper{display:flex;background-color:#fff;align-items: stretch;}
+    .link-wrapper .link-left{padding:20px;margin-right:20px;border-right:1px solid #eee}
+    .link-wrapper .link-left .link-menu{line-height: 40px;cursor: pointer;font-size: 14px;}
+    .link-wrapper .link-left .link-menu.active{color:#3297ff}
+    .link-wrapper .link-right{flex:1;padding-right: 20px;padding-top:20px}
+    .link-wrapper .link-right .link-list .link-item{cursor: pointer;display:inline-block;line-height: 20px;padding:5px 10px;border-radius:2px;border:1px solid #eee;margin:5px 10px;white-space: nowrap;}
+    .link-path{margin-bottom: 10px;cursor: pointer;}
+    .link-path .leaf{color:#999;cursor: default;}
+
+    .data-search{display: flex;border: 1px solid #e1e1e1;align-items: stretch;height: 30px;line-height: 30px;width:200px;}
+    .data-search input{border:0;flex:1;width: 100%;}
+    .data-search .iconfont{border-left:1px solid #e1e1e1;padding:0 10px;cursor: pointer;}
+    .data-list{height: 250px;overflow: hidden;overflow-y: auto;}
+    .data-list .data-item{width:450px;cursor: pointer;padding: 10px 0;border-bottom: 1px dashed #eee;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-size:14px}
+    .data-list .data-item img{width:50px;height: 50px;margin-right: 10px;vertical-align: middle;border-radius: 3px;}
+    .data-list .no-data{text-align: center;padding-top:100px}
+    .data-class{margin-left:-20px}
+    .data-class-item{display: flex;font-size: 14px;line-height: 30px;cursor: pointer;}
+    .data-class-item .iconfont{color:#3297ff;font-size: 14px;width: 20px;}
+    .data-class-children{padding-left:20px;display: none;}
+    .data-class .active[data-parent_id] > .data-class-children{display: block;}
+</style>
+<script>
+    function showBlock(index){
+        $('.link-path').hide()
+        $('#load_html').hide()
+        $('.link-menu').removeClass('active')
+        $('.link-list').hide()
+        $('.link-menu[data-id='+index+']').addClass('active')
+        $('.link-list[data-id='+index+']').show()
+    }
+    function loadActivity(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(2)">营销页面</span>/<span class="leaf">活动详情</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_activity');
+    }
+    function loadLive(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(2)">营销页面</span>/<span class="leaf">直播详情</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_live');
+    }
+    function loadMarket(id){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        var text=''
+        var path=''
+        switch(id){
+            case 1:
+                path='%2Fpages%2Fhome%2Fmarketmanage%2FMarketcard'
+                text='刮刮卡'
+                break
+            case 2:
+            path='%2Fpages%2Fhome%2Fmarketmanage%2FMarketwheel'
+                text='大转盘'
+                break
+            case 3:
+            path='%2Fpages%2Fhome%2Fmarketmanage%2FMarketegg'
+                text='砸金蛋'
+                break
+            case 4:
+            path='%2Fpages%2Fhome%2Fmarketmanage%2FMarketzodiac'
+                text='生肖翻翻看'
+                break
+        }
+        $('.link-path').html('<span onclick="showBlock(2)">营销页面</span>/<span class="leaf">'+text+'</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_market?type='+id+'&path='+path);
+    }
+    function loadBonus(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(2)">营销页面</span>/<span class="leaf">红包</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_bonus');
+    }
+    function loadSpecial(id){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        if(!id){
+            $('.link-path').html('<span onclick="showBlock(2)">营销页面</span>/<span class="leaf">商城装修</span>')
+        }else{
+            $('.link-path').html('<span onclick="showBlock(5)">店铺页面</span>/<span onclick="loadStore(2)">选择店铺</span>/<span class="leaf">店铺装修</span>')
+        }
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_special?store_id='+id);
+    }
+    function loadPointProd(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(3)">积分页面</span>/<span class="leaf">积分商品详情</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_point_prod');
+    }
+    function loadArticleClass(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(4)">文章页面</span>/<span class="leaf">文章分类</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_article_class');
+    }
+    function loadArticle(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(4)">文章页面</span>/<span class="leaf">文章详情</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_article');
+    }
+    function loadDocument(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(4)">文章页面</span>/<span class="leaf">协议</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_document');
+    }
+    function loadStoreClass(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(5)">店铺页面</span>/<span class="leaf">店铺分类</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_store_class');
+    }
+    function loadStore(id){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        var text=''
+        var path=''
+        var callback=''
+        switch(id){
+            case 1:
+                path='%2Fpages%2Fhome%2Fstoredetail%2FStoredetail'
+                text='店铺详情'
+                break
+            case 2:
+                callback='loadSpecial'
+                text='选择店铺'
+                break
+            case 3:
+            path='%2Fpages%2Fhome%2Fstoredetail%2FStoremap'
+                text='店铺地图'
+                break
+            case 4:
+            path='%2Fpages%2Fhome%2Fstoreabout%2FStoreabout'
+                text='店铺介绍'
+                break
+            case 5:
+            path='%2Fpages%2Fhome%2Fstoredetail%2FStoreVoucher'
+                text='店铺代金券'
+                break
+            case 6:
+            path='%2Fpages%2Fhome%2Fstoregoodsclass%2FGoodsclass'
+                text='店铺商品分类'
+                break
+            case 7:
+            path='%2Fpages%2Fhome%2Fstoregoodslist%2FGoodslist'
+                text='店铺商品列表'
+                break
+        }
+        $('.link-path').html('<span onclick="showBlock(5)">店铺页面</span>/<span class="leaf">'+text+'</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_store?path='+path+'&callback='+callback);
+    }
+    function loadGoodsClass(){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        $('.link-path').html('<span onclick="showBlock(6)">商品页面</span>/<span class="leaf">商品分类</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_goods_class');
+    }
+    function loadGoods(id){
+        $('.link-path').show()
+        $('#load_html').show()
+        $('.link-list').hide()
+        var text=''
+        var path=''
+        switch(id){
+            case 1:
+            path='%2Fpages%2Fhome%2Fgoodsdetail%2FGoodsdetail'
+                text='商品详情'
+                break
+            case 2:
+            path='%2Fpages%2Fhome%2Fgoodsdetail%2FGoodsVideo'
+                text='商品视频'
+                break
+            case 3:
+            path='%2Fpages%2Fhome%2Fgoodsdetail%2FGoodsConsult'
+                text='商品咨询'
+                break
+        }
+        $('.link-path').html('<span onclick="showBlock(6)">商品页面</span>/<span class="leaf">'+text+'</span>')
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_goods?path='+path);
+    }
+    function setLink(path){
+        window.parent.setLink(path)
+        var index=parent.layer.getFrameIndex(window.name)
+        parent.layer.close(index)
+    }
+</script>

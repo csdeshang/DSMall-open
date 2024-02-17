@@ -1,0 +1,172 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_statgeneral}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.stat_validorder_explain}</li>
+        </ul>
+    </div>
+
+
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th colspan="15">{$stat_time|date="Y-m-d"}{$Think.lang.latest_news}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {$Think.lang.statstore_orderamount}&nbsp;<i title="{$Think.lang.statstore_orderamount_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.orderamount}{$Think.lang.ds_yuan}</b>
+            </td>
+            <td>
+                {$Think.lang.membernum}&nbsp;<i title="{$Think.lang.membernum_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.ordermembernum}</b>
+            </td>
+            <td>
+                {$Think.lang.statstore_ordernum}&nbsp;<i title="{$Think.lang.statstore_ordernum_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.ordernum}</b>
+            </td>
+            <td>
+                {$Think.lang.goodsnum}&nbsp;<i title="{$Think.lang.goodsnum_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.ordergoodsnum}</b>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {$Think.lang.average_price}&nbsp;<i title="{$Think.lang.average_price_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.priceavg}{$Think.lang.ds_yuan}</b>
+            </td>
+            <td>
+                {$Think.lang.average_per_member_price}&nbsp;<i title="{$Think.lang.average_per_member_price_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.orderavg}</b>
+            </td>
+            <td>
+                {$Think.lang.stat_newmember}&nbsp;<i title="{$Think.lang.stat_newmember_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.newmember}</b>
+            </td>
+            <td>
+                {$Think.lang.user_total}&nbsp;<i title="{$Think.lang.user_total_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.membernum}</b>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {$Think.lang.stat_newstore}&nbsp;<i title="{$Think.lang.stat_newstore_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.newstore}</b></td>
+            <td>
+                {$Think.lang.store_total}&nbsp;<i title="{$Think.lang.store_total_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.storenum}</b></td>
+            <td>
+                {$Think.lang.goods_add_total}&nbsp;<i title="{$Think.lang.goods_add_total_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.newgoods}</b></td>
+            <td>
+                {$Think.lang.goods_total}&nbsp;<i title="{$Think.lang.goods_total_tips}" class="tip iconfont">&#xe66f;</i>
+                <br><b>{$statnew_arr.goodsnum}</b></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th colspan="15">{$stat_time|date="Y-m-d"}{$Think.lang.sale_trend}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><div id="container" class="w100pre close_float" style="height:400px"></div></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="overflow: hidden;">
+    <div class="w40pre floatleft">
+        <table class="ds-default-table">
+            <thead class="thead">
+            <tr class="space">
+                <th colspan="15">{$Think.lang.store_sale_top_30}&nbsp;<i title="{$Think.lang.store_sale_top_30_tips}" class="tip iconfont">&#xe66f;</i></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{$Think.lang.statstore_number}</td>
+                <td>{$Think.lang.ds_store_name}</td>
+                <td>{$Think.lang.statstore_orderamount}</td>
+            </tr>
+            {foreach name="storetop30_arr" item="v"}
+            <tr>
+                <td>{$key+1}</td>
+                <td>{$v.store_name}</td>
+                <td>{$v.orderamount}</td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="w50pre floatleft" style="margin-left: 50px;">
+        <table class="ds-default-table">
+            <thead class="thead">
+            <tr class="space">
+                <th colspan="15">{$Think.lang.goods_sale_top_30}&nbsp;<i title="{$Think.lang.goods_sale_top_30_tips}" class="tip iconfont">&#xe66f;</i></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{$Think.lang.statstore_number}</td>
+                <td>{$Think.lang.ds_goods}</td>
+                <td>{$Think.lang.stat_storesale}</td>
+            </tr>
+            {foreach name="goodstop30_arr" item="v"}
+            <tr>
+                <td>{$key+1}</td>
+                <td class="alignleft"><a href="{:url('home/Goods/index',['goods_id'=>$v.goods_id])}" target="_blank">{$v.goods_name}</a></td>
+                <td>{$v.ordergoodsnum}</td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <div class="close_float"></div>
+</div>
+</div>
+<script>
+    jQuery.browser={};(function(){jQuery.browser.msie=false; jQuery.browser.version=0;if(navigator.userAgent.match(/MSIE ([0-9]+)./)){ jQuery.browser.msie=true;jQuery.browser.version=RegExp.$1;}})();
+</script>
+<script src="{$Think.PLUGINS_SITE_ROOT}/jquery.poshytip.min.js"></script>
+<script src="{$Think.PLUGINS_SITE_ROOT}/highcharts/highcharts.js"></script>
+<script>
+    $(function () {
+        //Ajax提示
+        $('.tip').poshytip({
+            className: 'tip-yellowsimple',
+            showTimeout: 1,
+            alignTo: 'target',
+            alignX: 'center',
+            alignY: 'top',
+            offsetY: 5,
+            allowTipHover: false
+        });
+    });
+    var chart = new Highcharts.Chart('container', {$stattoday_json|raw});
+</script>

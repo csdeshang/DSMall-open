@@ -1,0 +1,168 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.rechargecard_add_card_help1}</li>
+            <li>{$Think.lang.rechargecard_add_card_help2}</li>
+            <li>{$Think.lang.rechargecard_add_card_help3}</li>
+            <li>{$Think.lang.rechargecard_add_card_help4}</li>
+            <li>{$Think.lang.rechargecard_add_card_help5}</li>
+            <li>{$Think.lang.rechargecard_add_card_help6}</li>
+        </ul>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" name="form_add" id="form_add">
+        <table class="ds-default-table">
+            <tbody>
+            <tr>
+                <td colspan="2" class="required"><label class="validation">{$Think.lang.choose_publishing_mode}:</label></td>
+            </tr>
+            </tbody>
+
+            <tbody>
+            <tr class="noborder">
+                <td colspan="2" class="required">
+                    <label class="switch-tab-title">
+                        <input type="radio" name="type" value="0" checked="checked" class="tabswitch" />
+                        {$Think.lang.choose_publishing_mode_0}
+                    </label>
+                    <label class="switch-tab-title">
+                        <input type="radio" name="type" value="1" class="tabswitch" />
+                        {$Think.lang.choose_publishing_mode_1}
+                    </label>
+                    <label class="switch-tab-title">
+                        <input type="radio" name="type" value="2" class="tabswitch" />
+                        {$Think.lang.choose_publishing_mode_2}
+                    </label>
+                </td>
+            </tr>
+
+            <tr class="noborder tabswitch-target">
+                <td class="vatop rowform">
+                    {$Think.lang.rechargecard_total}：
+                    <input type="text" class="txt" name="total" style="width:40px;" />
+                    {$Think.lang.rechargecard_prefix}：
+                    <input type="text" class="txt" name="prefix" style="width:100px;" />
+                </td>
+                <td class="vatop tips">{$Think.lang.rechargecard_total_tips}</td>
+            </tr>
+
+            <tr class="noborder tabswitch-target" style="display:none;">
+                <td class="vatop rowform">
+            <span class="type-file-box">
+              <input type="text" name="textfile" id="textfile" class="type-file-text" />
+              <input type="button" name="button" id="button" value="上传" class="type-file-button" />
+              <input type="file" name="_textfile" class="type-file-file" size="30" hidefocus="true" onchange="$('#textfile').val(this.value);" />
+            </span>
+                </td>
+                <td class="vatop tips">{$Think.lang.rechargecard_file_tips}</td>
+            </tr>
+
+            <tr class="noborder tabswitch-target" style="display:none;">
+                <td class="vatop rowform">
+                    <textarea name="manual" style="width:300px;height:150px;"></textarea>
+                </td>
+                <td class="vatop tips">{$Think.lang.rechargecard_manual_tips}</td>
+            </tr>
+
+            </tbody>
+
+            <tbody>
+            <tr>
+                <td colspan="2" class="required"><label class="validation">{$Think.lang.rechargecard_denomination}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input class="txt" type="text" name="denomination" style="width:150px;" /></td>
+                <td class="vatop tips">{$Think.lang.rechargecard_denomination_tips}</td>
+            </tr>
+
+            <tr>
+                <td colspan="2" class="required"><label>{$Think.lang.rechargecard_batchflag}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input class="txt" type="text" name="batchflag" /></td>
+                <td class="vatop tips">{$Think.lang.rechargecard_batchflag_tips}</td>
+            </tr>
+
+            </tbody>
+
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="2" ><input class="btn" type="submit" value="{$Think.lang.ds_submit}"/></td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+
+        $('.tabswitch').click(function() {
+            var i = parseInt(this.value);
+            $('.tabswitch-target').hide().eq(i).show();
+        });
+
+        jQuery.validator.addMethod("r0total", function(value, element) {
+            var v = parseInt(value);
+            return $(":radio[name='type']:checked").val() != '0' || (value == v && v >= 1 && v <= 5000);
+        }, "{$Think.lang.r0total_message}");
+
+        jQuery.validator.addMethod("r0prefix", function(value, element) {
+            return $(":radio[name='type']:checked").val() != '0' || this.optional(element) || /^[0-9a-zA-Z]{0,16}$/.test(value);
+        }, "{$Think.lang.r0prefix_message}");
+
+        jQuery.validator.addMethod("r1textfile", function(value, element) {
+            return $(":radio[name='type']:checked").val() != '1' || value;
+        }, "{$Think.lang.r1textfile_message}");
+
+        jQuery.validator.addMethod("r2manual", function(value, element) {
+            return $(":radio[name='type']:checked").val() != '2' || value;
+        }, "{$Think.lang.r2manual_message}");
+
+        $("#form_add").validate({
+            errorPlacement: function(error, element){
+                error.appendTo(element.parents('tbody').find('tr:first td:first'));
+            },
+            rules : {
+                denomination : {
+                    required : true,
+                    min: 0.01,
+                    max: 1000
+                },
+                batchflag : {
+                    maxlength: 20
+                },
+                total : {
+                    r0total : true
+                },
+                prefix : {
+                    r0prefix : true
+                },
+                textfile : {
+                    r1textfile : true
+                },
+                manual : {
+                    r2manual : true
+                }
+            },
+            messages : {
+                denomination : {
+                    required : '{$Think.lang.rechargecard_denomination_required}',
+                    min : '{$Think.lang.rechargecard_denomination_min}',
+                    max: '{$Think.lang.rechargecard_denomination_max}'
+                },
+                batchflag : {
+                    maxlength: '{$Think.lang.rechargecard_batchflag_maxlength}'
+                }
+            }
+        });
+    });
+</script>

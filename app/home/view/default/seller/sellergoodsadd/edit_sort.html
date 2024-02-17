@@ -1,0 +1,43 @@
+<div class="eject_con">
+    <div id="warning" class="alert alert-error"></div>
+    <form method="post" action="{:url('Sellergoodsonline/edit_sort')}" id="sort_form">
+        <input type="hidden" name="commonid" value="{$Request.param.commonid}" />
+        <dl>
+            <dt>{$Think.lang.store_goods_index_sort}：</dt>
+            <dd>
+                <input type="text" class="text w80" name="g_sort" id="g_sort" value="" />
+                <p class="hint">{$Think.lang.sort_number_value}</p>
+            </dd>
+        </dl>
+        <div class="bottom">
+            <input type="submit" class="submit" value="{$Think.lang.ds_submit}"/>
+        </div>
+    </form>
+</div>
+<script>
+    $(function(){
+        $('#sort_form').validate({
+            errorLabelContainer: $('#warning'),
+            invalidHandler: function(form, validator) {
+                $('#warning').show();
+            },
+            submitHandler:function(form){
+                ds_ajaxpost('sort_form');
+            },
+            rules : {
+                g_sort : {
+                    required: true,
+                    min: 0,
+                    max: 128
+                }
+            },
+            messages : {
+                g_sort : {
+                    required: '<i class="iconfont">&#xe64c;</i>{$Think.lang.sort_number_value}',
+                    min: '<i class="iconfont">&#xe64c;</i>{$Think.lang.sort_number_value}',
+                    max: '<i class="iconfont">&#xe64c;</i>{$Think.lang.sort_number_value}'
+                }
+            }
+        });
+    });
+</script>

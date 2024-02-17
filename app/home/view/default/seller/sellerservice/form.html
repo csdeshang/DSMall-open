@@ -1,0 +1,60 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_main"}
+
+
+
+<div class="dssc-form-default">
+    <form id="store_service_form" enctype="multipart/form-data" method="post" >
+        <dl>
+            <dt><i class="required">*</i>{$Think.lang.store_service_title}{$Think.lang.ds_colon}</dt>
+            <dd><input type="text" value="{present name='store_service_info'}{$store_service_info.store_service_title}{/present}" name="store_service_title" id="store_service_title" class="w200 text"><span></span>
+                <p class="hint"></p></dd>
+        </dl>
+
+        <dl>
+            <dt>{$Think.lang.store_service_desc}{$Think.lang.ds_colon}</dt>
+            <dd><input type="text" value="{present name='store_service_info'}{$store_service_info.store_service_desc}{/present}" name="store_service_desc" id="store_service_desc" class="w200 text"><span></span>
+                <p class="hint"></p></dd>
+        </dl>
+        <dl>
+            <dt>{$Think.lang.ds_sort}{$Think.lang.ds_colon}</dt>
+            <dd><input type="text" value="{present name='store_service_info'}{$store_service_info.store_service_sort}{else}255{/present}" name="store_service_sort" id="store_service_sort" class="w200 text"><span></span>
+                <p class="hint"></p></dd>
+        </dl>
+
+        <div class="bottom">
+            <input type="submit" class="submit" value="{$Think.lang.ds_submit}">
+        </div>
+    </form>
+</div>
+
+<script>
+    //按钮先执行验证再提交表单
+    $(function () {
+        $("#store_service_form").validate({
+            submitHandler: function (form) {
+                ds_ajaxpost('store_service_form', 'url', '{:url("seller_service/index")}');
+            },
+            errorPlacement: function (error, element) {
+                element.nextAll('span').first().after(error);
+            },
+            rules: {
+                store_service_title: {
+                    required: true,
+                },
+            },
+            messages: {
+                store_service_title: {
+                    required: '{$Think.lang.store_service_title_required}',
+                },
+            }
+        });
+    });
+
+</script>
+
+
+
+
+
+{/block}

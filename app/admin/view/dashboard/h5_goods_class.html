@@ -1,0 +1,44 @@
+{include file="public/header" /}
+
+<div class="data-class">
+    <div data-parent_id="0" class="active"></div>
+</div>
+
+<script>
+    $(function(){
+        getClass(0)
+    })
+    var ac_list={}
+    function getClass(parent_id){
+        $.getJSON(ADMINSITEURL+'/Dashboard/h5_goods_class?ajax=1&parent_id='+parent_id,function(res){
+            ac_list['i_'+parent_id]=res.result
+            if(res.code==10000 && res.result.length){
+                $('.data-class [data-parent_id='+parent_id+'] > .data-class-item .iconfont').html('&#xe6db;').attr('onclick','setClass('+parent_id+')')
+                var html='<div class="data-class-children">'
+                for(var i in res.result){
+                    getClass(res.result[i].gc_id)
+                    html+='<div data-parent_id="'+res.result[i].gc_id+'">'
+                    html+='<div class="data-class-item">'
+                    html+='<span class="iconfont"></span>'
+                    html+='<span onclick="setLink(\'/pages/home/goodslist/Goodslist?cate_id='+res.result[i].gc_id+'\')">'+res.result[i].gc_name+'</span>'
+                    html+='</div>'
+                    html+='</div>'
+                }
+                html+='</div>'
+                $('.data-class [data-parent_id='+parent_id+']').append(html)
+            }
+            
+        })
+    }
+    function setClass(parent_id){
+        if(ac_list['i_'+parent_id] && ac_list['i_'+parent_id].length){
+            if($('.data-class [data-parent_id='+parent_id+']').hasClass('active')){
+                $('.data-class [data-parent_id='+parent_id+']').removeClass('active')
+                $('.data-class [data-parent_id='+parent_id+'] > .data-class-item .iconfont').html('&#xe6db;')
+            }else{
+                $('.data-class [data-parent_id='+parent_id+']').addClass('active')
+                $('.data-class [data-parent_id='+parent_id+'] > .data-class-item .iconfont').html('&#xe6dc;')
+            }
+        }
+    }
+</script>

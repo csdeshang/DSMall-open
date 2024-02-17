@@ -1,0 +1,351 @@
+{include file="public/header" /}
+
+
+
+
+
+<div class="page">
+    {if $joinin_detail.store_type != 1}
+    <table border="0" cellpadding="0" cellspacing="0" class="ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="20">{$Think.lang.company_contact_information}</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th class="w150">{$Think.lang.company_name}：</th>
+               <td colspan="20">{$joinin_detail.company_name}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.company_location}：</th>
+               <td>{$joinin_detail.company_address}</td>
+               <th>{$Think.lang.company_address}：</th>
+               <td>{$joinin_detail.company_address_detail}</td>
+               <th>{$Think.lang.registered_capital}：</th>
+               <td>{$joinin_detail.company_registered_capital}&nbsp;{$Think.lang.ten_thousand}{$Think.lang.ds_yuan} </td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.contact_name}：</th>
+               <td>{$joinin_detail.contacts_name}</td>
+               <th>{$Think.lang.contact_number}：</th>
+               <td>{$joinin_detail.contacts_phone}</td>
+               <th>{$Think.lang.e_mail}：</th>
+               <td>{$joinin_detail.contacts_email}</td>
+           </tr>
+       </tbody>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="20">{$Think.lang.business_license_information}</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th class="w150">{$Think.lang.business_license_number}：</th>
+               <td>{$joinin_detail.business_licence_number}</td></tr><tr>
+
+               <th>{$Think.lang.place_business_license}：</th>
+               <td>{$joinin_detail.business_licence_address}</td></tr><tr>
+
+               <th>{$Think.lang.validity_business_license}：</th>
+               <td>{$joinin_detail.business_licence_start} - {$joinin_detail.business_licence_end}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.legal_scope_business}：</th>
+               <td colspan="20">{$joinin_detail.business_sphere}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.business_license}<br />{$Think.lang.electronic_version}：</th>
+               <td colspan="20">
+                   {notempty name="joinin_detail.business_licence_number_electronic"}
+                   <a data-lightbox="lightbox-image"  href="{:get_store_joinin_imageurl($joinin_detail['business_licence_number_electronic'])}">
+                       <img src="{:get_store_joinin_imageurl($joinin_detail['business_licence_number_electronic'])}" alt="" height="200"/>
+                   </a>
+                   {/notempty}
+               </td>
+           </tr>
+       </tbody>
+   </table>
+  
+
+   <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="20">{$Think.lang.bank_information}：</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th class="w150">{$Think.lang.bank_name}：</th>
+               <td>{$joinin_detail.bank_account_name}</td>
+           </tr><tr>
+               <th>{$Think.lang.company_bank_account}：</th>
+               <td>{$joinin_detail.bank_account_number}</td></tr>
+           <tr>
+               <th>{$Think.lang.name_branch_bank}：</th>
+               <td>{$joinin_detail.bank_name}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.location_bank_account}：</th>
+               <td colspan="20">{$joinin_detail.bank_address}</td>
+           </tr>
+       </tbody>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="20">{$Think.lang.settlement_account_information}：</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th class="w150">{$Think.lang.name_branch_bank}：</th>
+               <td>{$joinin_detail.settlement_bank_account_name}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.company_bank_account}：</th>
+               <td>{$joinin_detail.settlement_bank_account_number}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.name_branch_bank}：</th>
+               <td>{$joinin_detail.settlement_bank_name}</td>
+           </tr>
+
+           <tr>
+               <th>{$Think.lang.location_bank_account}：</th>
+               <td>{$joinin_detail.settlement_bank_address}</td>
+           </tr>
+       </tbody>
+   </table>
+
+   {else /}
+   <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="6">{$Think.lang.store_and_contact_info}</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th>{$Think.lang.company_name}：</th>
+               <td>{$joinin_detail.company_name}</td>
+               <th>{$Think.lang.company_location}：</th>
+               <td>{$joinin_detail.company_address}</td>
+               <th>{$Think.lang.company_address}：</th>
+               <td>{$joinin_detail.company_address_detail}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.contact_name}：</th>
+               <td>{$joinin_detail.contacts_name}</td>
+               <th>{$Think.lang.contact_number}：</th>
+               <td>{$joinin_detail.contacts_phone}</td>
+               <th>{$Think.lang.e_mail}：</th>
+               <td>{$joinin_detail.contacts_email}</td>
+           </tr>
+       </tbody>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="20">{$Think.lang.identification_information}</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th class="w150">{$Think.lang.identification_number}：</th>
+               <td>{$joinin_detail.business_licence_number}</td></tr><tr>
+
+           </tr>
+
+           <tr>
+               <th>{$Think.lang.identification_photo}：</th>
+               <td colspan="20">
+                   {notempty name="joinin_detail.business_licence_number_electronic"}
+                   <a data-lightbox="lightbox-image"  href="{:get_store_joinin_imageurl($joinin_detail['business_licence_number_electronic'])}">
+                       <img src="{:get_store_joinin_imageurl($joinin_detail['business_licence_number_electronic'])}" alt="" height="200"/>
+                   </a>
+                   {/notempty}
+               </td>
+           </tr>
+       </tbody>
+   </table>
+
+
+   <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+       <thead>
+           <tr>
+               <th colspan="2">{$Think.lang.store_alipay_info}：</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th>{$Think.lang.store_alipay_account_name}：</th>
+               <td>{$joinin_detail.settlement_bank_account_name}</td>
+           </tr>
+           <tr>
+               <th>{$Think.lang.store_alipay_account_number}：</th>
+               <td>{$joinin_detail.settlement_bank_account_number}</td>
+           </tr>
+       </tbody>
+   </table>
+   {/if}
+  <form id="form_store_verify" action="{:url('Store/store_joinin_verify')}" method="post">
+    <input id="verify_type" name="verify_type" type="hidden" />
+    <input name="member_id" type="hidden" value="{$joinin_detail.member_id}" />
+    <table border="0" cellpadding="0" cellspacing="0" class="store-joinin ds-default-table">
+      <thead>
+        <tr>
+          <th colspan="20">{$Think.lang.store_operation_info}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th class="w150">{$Think.lang.ds_seller_name}：</th>
+          <td>{$joinin_detail.seller_name}</td>
+        </tr>
+        <tr>
+          <th class="w150">{$Think.lang.ds_store_name}：</th>
+          <td>{$joinin_detail.store_name}</td>
+        </tr>
+        <tr>
+          <th>{$Think.lang.ds_storegrade}：</th>
+          <td>{$joinin_detail.storegrade_name}（{$Think.lang.storegrade_price}：{$joinin_detail.storegrade_price|default="0"}{$Think.lang.ds_yuan}/{$Think.lang.ds_year}）</td>
+        </tr>
+        <tr>
+          <th class="w150">{$Think.lang.joinin_year}：</th>
+          <td>{$joinin_detail.joinin_year} {$Think.lang.ds_year}</td>
+        </tr>
+        <tr>
+          <th>{$Think.lang.ds_storeclass}：</th>
+          <td>{$joinin_detail.storeclass_name}（{$Think.lang.storeclass_bail}：{$joinin_detail.storeclass_bail} {$Think.lang.ds_yuan}）</td>
+        </tr>
+        <tr>
+          <th>{$Think.lang.paying_amount}：</th>
+          <td>
+          {if intval($joinin_detail.joinin_state) === 10}
+          <input type="text" value="{$joinin_detail.paying_amount}" name="paying_amount" /> {$Think.lang.ds_yuan}
+          {else /}
+          {$joinin_detail.paying_amount} {$Think.lang.ds_yuan}
+          {/if}
+          </td>
+        </tr>
+        <tr>
+          <th>{$Think.lang.store_bind_class}：</th>
+          <td colspan="2"><table border="0" cellpadding="0" cellspacing="0" id="table_category" class="type">
+              <thead>
+                <tr>
+                  <th>{$Think.lang.ds_class}1</th>
+                  <th>{$Think.lang.ds_class}2</th>
+                  <th>{$Think.lang.ds_class}3</th>
+                  <th>{$Think.lang.store_class_commis_rates}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {notempty name="joinin_detail.store_class_names"}
+                <?php $store_class_names = unserialize($joinin_detail['store_class_names']);?>
+                <?php if(!empty($store_class_names) && is_array($store_class_names)) {?>
+                <?php $store_class_commis_rates = explode(',', $joinin_detail['store_class_commis_rates']);?>
+                <?php for($i=0, $length = count($store_class_names); $i < $length; $i++) {?>
+                <?php $s_c_n = explode(',', $store_class_names[$i]);?>
+                <?php $class1=isset($s_c_n[0])?$s_c_n[0]:'';?>
+                <?php $class2=isset($s_c_n[1])?$s_c_n[1]:'';?>
+                <?php $class3=isset($s_c_n[2])?$s_c_n[2]:'';?>
+                <tr>
+                  <td>{$class1}</td>
+                  <td>{$class2}</td>
+                  <td>{$class3}</td>
+                  <td>
+                {if intval($joinin_detail.joinin_state) === 10}
+                  <input type="text" dstype="commis_rate" value="{if isset($store_class_commis_rates[$i])}{$store_class_commis_rates[$i]}{/if}" name="commis_rate[]" class="w100" /> %
+                {else /}
+                <?php echo $store_class_commis_rates[$i];?> %
+                {/if}
+                </td>
+                </tr>
+                <?php } ?>
+                <?php } ?>
+                {/notempty}
+                </tbody>
+        </table></td>
+    </tr>
+    <?php if(in_array(intval($joinin_detail['joinin_state']), array(STORE_JOIN_STATE_PAY, STORE_JOIN_STATE_FINAL))) {?>
+    <tr>
+        <th>{$Think.lang.storereopen_pay_cert}：</th>
+        <td>
+            {notempty name="joinin_detail.paying_money_certificate"}
+            <a data-lightbox="lightbox-image"  href="{:get_store_joinin_imageurl($joinin_detail['paying_money_certificate'])}"> <img src="{:get_store_joinin_imageurl($joinin_detail['paying_money_certificate'])}"  height="100"/> </a>
+            {/notempty}
+        </td>
+    </tr>
+    <tr>
+        <th>{$Think.lang.storereopen_pay_cert_explain}：</th>
+        <td>{$joinin_detail.paying_money_certificate_explain}</td>
+    </tr>
+    <?php } ?>
+   <?php if(in_array(intval($joinin_detail['joinin_state']), array(STORE_JOIN_STATE_NEW, STORE_JOIN_STATE_PAY))) { ?>
+    <tr>
+        <th>{$Think.lang.joinin_message}：</th>
+        <td colspan="2"><textarea id="joinin_message" name="joinin_message"></textarea></td>
+    </tr>
+    <?php } ?>
+    </tbody>
+    </table>
+   <?php if(in_array(intval($joinin_detail['joinin_state']), array(STORE_JOIN_STATE_NEW, STORE_JOIN_STATE_PAY))) { ?>
+    <div id="validation_message" style="color:red;display:none;"></div>
+    <div><a id="btn_fail" class="btn" href="JavaScript:void(0);"><span>{$Think.lang.ds_refuse}</span></a> <a id="btn_pass" class="btn" href="JavaScript:void(0);"><span>{$Think.lang.ds_pass}</span></a></div>
+    <?php } ?>
+  </form>
+</div>
+<link rel="stylesheet" href="{$Think.PLUGINS_SITE_ROOT}/js/jquery.lightbox/css/lightbox.min.css">
+<script src="{$Think.PLUGINS_SITE_ROOT}/js/jquery.lightbox/js/lightbox.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#btn_fail').on('click', function() {
+            if($('#joinin_message').val() == '') {
+                $('#validation_message').text('{$Think.lang.joinin_message_required}');
+                $('#validation_message').show();
+                return false;
+            } else {
+                $('#validation_message').hide();
+            }
+            layer.confirm("{$Think.lang.refuse_confirm}", {
+                btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                title: false,
+            }, function () {
+                $('#verify_type').val('fail');
+                $('#form_store_verify').submit();
+            });
+        });
+        $('#btn_pass').on('click', function() {
+            var valid = true;
+            $('[dstype="commis_rate"]').each(function(commis_rate) {
+                rate = $(this).val();
+                if(rate == '') {
+                    valid = false;
+                    return false;
+                }
+
+                var rate = Number($(this).val());
+                if(isNaN(rate) || rate < 0 || rate >= 100) {
+                    valid = false;
+                    return false;
+                }
+            });
+            if(valid) {
+                $('#validation_message').hide();
+                layer.confirm("{$Think.lang.store_join_view_confrim}", {
+                    btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                    title: false,
+                }, function () {
+                    $('#verify_type').val('pass');
+                    $('#form_store_verify').submit();
+                });
+            } else {
+                $('#validation_message').text('{$Think.lang.store_class_commis_rates_error}');
+                $('#validation_message').show();
+            }
+        });
+    });
+</script>

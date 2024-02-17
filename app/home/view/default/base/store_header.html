@@ -1,0 +1,147 @@
+        <link rel="stylesheet" href="{$Think.BASE_SITE_ROOT}/static/home/default/store/styles/default/css/base.css">
+        <link rel="stylesheet" href="{$Think.BASE_SITE_ROOT}/static/home/default/store/styles/default/css/shop.css">
+        <div class="header">
+            <div class="w1200">
+                    <div class="logo store_logo_wrap">
+                        <a href="{:url('Index/index')}">
+                            <img src="{:ds_get_pic(ATTACH_COMMON,$Think.config.ds_config.site_logo)}"/>
+                        </a>
+                        <a class="store_logo" href="{:url('Store/index',['store_id'=>$store_info.store_id])}">
+                            <img src="{:get_store_logo($store_info['store_avatar'],'store_avatar')}" alt="{$store_info.store_name}" title="{$store_info.store_name}" />
+                        </a>
+                        <div class="shop_info">
+                            <div class="shop_name">{$store_info.store_name}</div>
+                            <div class="shop_main">
+                                    <ul >
+                                        {notempty name="store_info.store_credit"}
+                                        {foreach name="store_info.store_credit" item="value"}
+                                        <li>
+                                            <p>{$value.text}</p><span class="credit">{$value.credit} {$Think.lang.credit_unit}</span>
+                                        </li>
+                                        {/foreach}
+                                        {/notempty}
+                                    </ul>
+                            </div>
+                            <div class="triangle"><i></i></div>
+                            <div class="extra-info clearfix">
+                                <div class="left">
+                                    <div class="shop-collect">
+                                        <div class="shop_logo"> <img src="{:get_store_logo($store_info['store_avatar'],'store_avatar')}" alt="{$store_info.store_name}" title="{$store_info.store_name}" /></div>
+                                        <a class="collect-btn" href="javascript:collect_store('{$store_info.store_id}','count','store_collect')" >{$Think.lang.ds_collect}</a>
+                                    </div>
+                                    <div class="shop-qr-code">
+                                        <img src="{$Think.HOME_SITE_URL}/qrcode?url={$Think.config.ds_config.h5_site_url}/pages/home/storedetail/Storedetail?id={$store_info.store_id}">
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <div class="dss-detail-rate">
+                                        <h4>{$Think.lang.ds_dynamic_evaluation}</h4>
+                                        <ul>
+                                            {notempty name="store_info.store_credit"}
+                                            {foreach name="store_info.store_credit" item="value"}
+                                            <li> {$value.text}：<span class="credit">{$value.credit} {$Think.lang.credit_unit}</span>
+                                            {/foreach}
+                                            {/notempty}
+                                        </ul>
+                                    </div>
+                                    <div class="extend ">
+                                        <h4>{$Think.lang.shop_service}</h4>
+                                        <dl class="no-border">
+                                            <dt class="fl"><span class="t_adjust">{$Think.lang.seller_name}</span><span>：</span></dt>
+                                            <dd class="fl">{$store_info.seller_name}</dd>
+                                        </dl>
+                                        <dl class="no-border">
+                                            <dt class="fl"><span class="t_adjust">{$Think.lang.company_name}</span><span>：</span></dt>
+                                            <dd class="fl">{$store_info.store_company_name}</dd>
+                                        </dl>
+                                        <dl class="no-border">
+                                            <dt class="fl"><span class="t_adjust">{$Think.lang.ds_srore_location}</span><span>：</span></dt>
+                                            <dd class="fl">{$store_info.area_info}</dd>
+                                        </dl>
+                                        {notempty name="store_info.store_phone"}
+                                        <dl class="no-border">
+                                            <dt class="fl"><span class="t_adjust">{$Think.lang.phone_space}</span><span>：</span></dt>
+                                            <dd class="fl">{$store_info.store_phone}</dd>
+                                        </dl>
+                                        {/notempty}
+                                        <dl>
+                                            <dt class="fl"><span class="t_adjust">{$Think.lang.business_licence_number_electronic}</span><span>：</span></dt>
+                                            <dd class="fl">
+                                                {if !$store_info.is_platform_store}
+                                                {if $store_info.business_licence_number_electronic}
+                                                <a href="{$store_info.business_licence_number_electronic}" target="_blank">{$Think.lang.ds_view}</a>
+                                                {/if}
+                                                {else}
+                                                {if $Think.config.ds_config.business_licence}
+                                                <a href="{:ds_get_pic(ATTACH_COMMON,$Think.config.ds_config.business_licence)}" target="_blank">{$Think.lang.ds_view}</a>
+                                                {/if}
+                                                {/if}
+                                            </dd>
+                                        </dl>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="search" class="head-search-bar">
+                        <form class="search-form" id="store_search_form" method="get" action="{:url('Store/goods_all')}">
+                            <input type="hidden" value="{$Request.param.store_id}" name="store_id">
+                            <input placeholder="{$Think.lang.search_merchandise_keywords}" name="inkeyword" id="keyword" type="text" class="input-text" value="{$Request.param.inkeyword}" maxlength="60" />
+                            <a href="javascript:$('#store_search_form').submit()" class="input-submit shop">{$Think.lang.search_shop}</a>
+                            <a href="javascript:void(0)" class="input-submit all">{$Think.lang.search_all}</a>
+                        </form>
+                    </div>
+            </div>
+        </div>
+        <div class="banner" style="background-image: url({if $store_info['store_banner']}{:get_store_logo($store_info['store_banner'],'store_banner')}{else}{$Think.BASE_SITE_ROOT}/static/home/default/store/styles/default/images/header.jpg{/if})">
+            <div class="w1200"></div>
+        </div>
+        <div class="dss-nav">
+            <div class="w1200">
+                <ul>
+                    <li><a href="{:url('Store/index',['store_id'=>$store_info.store_id])}"><span>{$Think.lang.ds_store_index}<i></i></span></a></li>
+                    <li><a href="{:url('Store/goods_all',['store_id'=>$store_info.store_id])}"><span>{$Think.lang.ds_whole_goods}<i></i></span></a></li>
+                    <li><a href="{:url('Storesnshome/index',['sid'=>$store_info.store_id])}"><span>{$Think.lang.ds_store_the_dynamic}<i></i></span></a></li>
+                    {notempty name="store_navigation_list"}
+                    {foreach name="store_navigation_list" item="value" }
+                    {if $value.storenav_url != ''}
+                    <li class=""><a href="{$value.storenav_url}"><span>{$value.storenav_title}<i></i></span></a></li>
+                    {else/}
+                    <li class=""><a href="{:url('Store/article',['store_id'=>$store_info.store_id,'storenav_id'=>$value.storenav_id])}"><span>{$value.storenav_title}<i></i></span></a></li>
+                    {/if}
+                    {/foreach}
+                    {/notempty}
+                </ul>
+            </div>
+        </div>
+        
+
+        
+        <!--面包屑导航 BEGIN-->
+        {notempty name="nav_link_list"}
+        <div class="dsh-breadcrumb-layout">
+            <div class="dsh-breadcrumb w1200"><i class="iconfont">&#xe6ff;</i>
+                {foreach $nav_link_list as $nav_link} 
+                {empty name="nav_link.link"}
+                <span>{$nav_link.title}</span>
+                {else /}
+                <span><a href="{$nav_link.link}">{$nav_link.title}</a></span><span class="arrow">></span>
+                {/empty}
+                {/foreach}
+            </div>
+        </div>
+        {/notempty}
+        <!--面包屑导航 END-->
+        <script>
+            $(".head-search-bar .all").click(function(){
+                var url = HOMESITEURL+"/Search/index";
+                $("#store_search_form").attr('action',url);
+                $("#store_search_form").submit();
+            })
+        </script>
+
+        
+
+
+

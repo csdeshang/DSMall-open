@@ -1,0 +1,57 @@
+<div class="eject_con">
+  <div id="warning"></div>
+  <form method="post" id="order_cancel_form" action="{$Request.url}">
+        <dl>
+            <dt>{$Think.lang.editable_page_name}{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input type="text" id="editable_page_name" name="editable_page_name" class="txt" value="{$editable_page.editable_page_name|default=''}">
+            </dd>
+        </dl>
+        <dl>
+            <dt>{$Think.lang.editable_page_path}{$Think.lang.ds_colon}</dt>
+            <dd>
+                    <label class="radio-label">
+                        <i  class="radio-common {if !isset($editable_page) || !$editable_page['editable_page_path']}selected{/if}">
+                            <input type="radio" value="" name="editable_page_path" {if !isset($editable_page) || !$editable_page['editable_page_path']}checked="checked"{/if}>
+                        </i>
+                        <span>{$Think.lang.none}</span>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <i  class="radio-common {if isset($editable_page) && $editable_page['editable_page_path']=='store/index'}selected{/if}">
+                            <input type="radio" value="store/index" name="editable_page_path" {if isset($editable_page) && $editable_page['editable_page_path']=='store/index'}checked="checked"{/if}>
+                        </i>
+                        <span>{$Think.lang.editable_page_path_list['store/index']}</span>
+                    </label>
+                    
+            </dd>
+        </dl>
+        <dl>
+            <dt>{$Think.lang.back_color}{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input type="text" id="back_color" name="back_color" class="text" value="{$editable_page.editable_page_theme_config.back_color|default=''}">
+            </dd>
+        </dl>
+    <dl class="bottom">
+      <dt>&nbsp;</dt>
+      <dd>
+        <input type="submit" class="submit" id="confirm_button" value="{$Think.lang.ds_ok}" />
+      </dd>
+    </dl>
+  </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#order_cancel_form').validate({
+            submitHandler:function(form){
+                ds_ajaxpost('order_cancel_form');
+            }
+        });
+    });
+
+    $(function(){
+        $('#cancel_button').click(function(){
+            DialogManager.close('page_form');
+         });
+});
+</script>

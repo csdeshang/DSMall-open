@@ -1,0 +1,512 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>{$html_title|default=$Think.config.ds_config.site_name}</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+        <meta name="keywords" content="{$seo_keywords|default=''}" />
+        <meta name="description" content="{$seo_description|default=''}" />
+        <script>
+            var BASESITEROOT = "{$Think.BASE_SITE_ROOT}";
+            var HOMESITEROOT = "{$Think.HOME_SITE_ROOT}";
+            var BASESITEURL = "{$Think.BASE_SITE_URL}";
+            var HOMESITEURL = "{$Think.HOME_SITE_URL}";
+            var TIMESTAMP = "{$Think.TIMESTAMP}";
+        </script>
+        <!--{if $live_apply_info.video_type!='tencent'}-->
+        <link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.8.8/skins/default/aliplayer-min.css" />
+        <script type="text/javascript" charset="utf-8" src="https://g.alicdn.com/de/prismplayer/2.8.8/aliplayer-min.js"></script>
+        <!--{else}-->
+        
+        <!--{if $active}-->
+        <script src="//imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer-2.3.3.js" charset="utf-8"></script>
+        <!--{else}-->
+        <link href="https://imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.css" rel="stylesheet">
+        <!--如果需要在 Chrome 和 Firefox 等现代浏览器中通过 H5 播放 HLS 格式的视频，需要在 tcplayer.v4.1.min.js 之前引入 hls.min.0.13.2m.js。-->
+        <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/libs/hls.min.0.13.2m.js"></script>
+        <!--播放器脚本文件-->
+        <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.v4.1.min.js"></script>
+        <!--{/if}-->
+        
+        <!--{/if}-->
+        <script src="{$Think.PLUGINS_SITE_ROOT}/jquery-2.1.4.min.js"></script>
+        <script src="{$Think.PLUGINS_SITE_ROOT}/layer/layer.js"></script>
+    </head>
+    <body class="room ">
+        <script src="{$Think.HOME_SITE_ROOT}/js/live_detail.js"></script>
+        <link rel="stylesheet" href="{$Think.HOME_SITE_ROOT}/css/live_detail.css">
+        <div> 
+
+            <div class="left_bar" id="J_left_bar" style="display: block;">
+                <div class="logo">
+                    <a href="{$Think.HOME_SITE_URL}" target="_blank" style='background-image:url({if $Think.config.ds_config.seller_center_logo == ''}{$Think.BASE_SITE_ROOT}/uploads/home/common/seller_center_logo.png{else}{:ds_get_pic(ATTACH_COMMON,$Think.config.ds_config.seller_center_logo)}{/if})'></a>
+                </div> 
+                <div class="avatar J_layerlogin"> 
+                    <a href="{:url('Member/index')}" target="_blank"><img src="{$member_avatar}" id="J_my_avatar" /></a> 
+                </div> 
+
+                <div class="bot"> 
+                    <div class="download">
+                        <div>
+                            <i class="iconfont">&#xe601;</i>
+                            <span>{$Think.lang.view_at_phone}</span>
+                        </div> 
+                        <div class="s_download_box"> 
+                            <div class="content"> 
+                                <div class="download_ecode"> 
+                                    <img src="{:url('Qrcode/index',['url'=>config('ds_config.h5_site_url').'/member/live_detail?live_apply_id='.$live_apply_info['live_apply_id']])}" alt="" /> 
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div>
+            </div> 
+            <div class="live_box" id="J_live_box" style="height: 900px; margin-top: -450px; "> 
+                <div class="w330"> 
+                    <div class="anchorinfo clearfix pr" id="J_anchorinfo"> 
+                        <div class="avatar J_u_card"> 
+                            <a href="{:url('Store/index',['store_id'=>$live_apply_info['live_apply_user_id']])}" target="_blank"> <img src="{$live_apply_info.live_apply_user_avatar}" /> </a> 
+                            <div class="authentication"></div> 
+                        </div> 
+                        <div class="info"> 
+                            <div class="nickname level_right">
+                                <a href="{:url('Store/index',['store_id'=>$live_apply_info['live_apply_user_id']])}" target="_blank">{$live_apply_info.live_apply_user_name}</a> 
+                            </div> 
+                            <div class="id">
+                                {$live_apply_info.area_info}
+                            </div> 
+                        </div> 
+                        <div id="follow_330" onclick="follow()" class="{if $live_apply_info.is_favorate}true_follow{else}follow_zi{/if} J_follow x_guide"></div> 
+
+                    </div> 
+                    {if $live_apply_info.goods_list}
+                    <div class="goods-list">
+                        {foreach name='live_apply_info.goods_list' item='goods'}
+                        <div class="goods-item">
+                            <div class="left">
+                                <a href="{:url('Goods/index',['goods_id'=>$goods['goods_id']])}" target="_blank"><img class="goods-image" src="{$goods.goods_image}"></a>
+                            </div>
+                            <div class="right">
+                                <div class="goods-name"><a href="{:url('Goods/index',['goods_id'=>$goods['goods_id']])}" target="_blank">{$goods.goods_name}</a></div>
+                                <div class="goods-info">
+                                    <div class="goods-price">{$goods.goods_price}{$Think.lang.ds_yuan}</div>
+                                    <div class="iconfont cart-btn" onclick='addCart({$goods.goods_id})'>&#xe6c9;</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/foreach}
+                    </div>
+                    {/if}
+                </div>
+                <!-- .w330 --> 
+                <div class="w400" id="J_w400" style="overflow: hidden;"> 
+                    <div class="content flash" id="J_flash" style="margin-left: 0px;">
+                            {if $active}
+                            <div id="id_test_video" style="width:100%; height:100%;"></div>
+                            {else}
+                            {if $live_apply_info.live_apply_video}
+                            <!--{if $live_apply_info.video_type=='tencent'}-->
+                            <video controls controlslist="nodownload" {if !$live_apply_info.file_id && $live_apply_info.live_apply_video}src="{$live_apply_info.live_apply_video}"{/if} id="id_test_video" autoplay="" style="width:100%;height:100%;"></video>
+                            <!--{else}-->
+                            <div id="id_test_video" style="width:100%; height:100%;"></div>
+                            <!--{/if}-->
+                            {else}
+                            <div style="position:absolute;text-align: center;top:50%;font-size:20px;width:100%;">
+                                {$Think.lang.live_not_online}{$live_apply_info.live_apply_push_message}
+                            </div>
+                            {/if}
+                            {/if}
+                    </div>
+                    <div class="heart" id="heart" onclick="addLike()"></div>
+                    <div class="cover" id="J_cover"> 
+                        <!-- ///.goldcoin --> 
+                        <div class="giftlist" id="J_continue_gift_1"> 
+   
+
+                        </div>
+                        <!-- .giftlist --> 
+
+                    </div> 
+
+
+
+                </div>
+                <!-- .w400 --> 
+                <div class="w360"> 
+                    <div class="msglist J_scroll" id="J_msglist" style="overflow: hidden; outline: none;"> 
+
+                    </div> 
+                    <div class="msgform" id="J_msgform"> 
+                        <div class="danmu on" id="J_send_danmu" onclick='toggleDanmu()'>
+                        </div> 
+                        <input type="text" id='message_content' class="text" maxlength="30" placeholder="{$Think.lang.chat_with_video_user}" /> 
+                        <input type="text" class="send" value="{$Think.lang.send}" id="J_comment" onclick='sendMessage()' /> 
+                        <!-- <form action="#"></form> --> 
+                    </div> 
+                    <div class="gift" id="J_giftaction"> 
+                        <div class="gift_window"> 
+                            <div class="window"> 
+                                <div class="giftlist"> 
+                                    <div class="gift_move"> 
+                                        <div class="mark">
+                                            <div> 
+                                                <span  class="" onclick='$(this).toggleClass("on")'> 
+                                                    <img class="img" src="{$Think.HOME_SITE_ROOT}/images/live/gift-item.png" /> 
+                                                    <i class='point'>100{$Think.lang.points_unit}</i>
+                                                </span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                                <span  class=""></span> 
+                                            </div>
+
+                                        </div> 
+
+                                    </div> 
+                                </div> 
+                                <div class="half_mark"></div> 
+                            </div> 
+                        </div> 
+                        <div class="giftform" id="J_gift_form"> 
+                            <div class="coin">
+                                {$Think.lang.points_unit}:
+                                <span id="J_mygoldcoin"><span class="J_layerlogin" id='member_points'>{$member_points}</span></span>
+                            </div>
+                            <div class="form">
+                                <span>{$Think.lang.number}</span>
+                                <input type="text" class="text" value="1" id="J_gift_num" /> 
+                                <button class="btn" id="J_send_gift" onclick='addGift()'>{$Think.lang.give}</button>
+                            </div> 
+                        </div> 
+                    </div>
+                </div>
+                <!-- .w360 --> 
+            </div>
+            <!-- .live_box --> 
+            <div style="width: 1000px; height:540px;"></div> 
+
+   
+        </div>
+        <script>
+            var canReconnect=true
+            var canLike = true
+            var ifConnect=false
+            var ws
+            var lockReconnect=false
+            var timeOut=false
+            var giftList=new Array()
+            function toggleDanmu(){
+                if($('#J_send_danmu').hasClass('on')){
+                    $('#J_send_danmu').removeClass('on')
+                    $('#J_msglist').hide()
+                }else{
+                    $('#J_send_danmu').addClass('on')
+                    $('#J_msglist').show()
+                }
+            }
+            function addGift(){
+                {if !$active}
+                return
+                {/if}
+                if(!$('#J_giftaction .giftlist .on')){
+                    layer.msg('{$Think.lang.gift_empty}')
+                }
+                var num=parseInt($('#J_gift_num').val())
+                if(isNaN(num) || num<1){
+                    layer.msg('{$Think.lang.num_error}')
+                }
+                $.getJSON('{:url("MemberLive/add_gift")}',{live_apply_id:{$live_apply_info.live_apply_id},num:num},function(res){
+                    if(res.code!=10000){
+                        layer.msg(res.message)
+                    }else{
+                        $('#member_points').text(res.result.member_points)
+                    }
+                })
+            }
+            function addLike() {
+                {if !$active}
+                return
+                {/if}
+                if (!canLike) {
+                    return
+                }
+                canLike = false
+                $("#heart").addClass('heartAnimation')
+                setTimeout(function () {
+                    canLike = true
+                    $("#heart").removeClass('heartAnimation')
+                }, 800)
+                $.getJSON('{:url("MemberLive/add_like")}',{live_apply_id:{$live_apply_info.live_apply_id}},function(res){
+                    
+                })
+            }
+            function follow(){
+                $.getJSON('{:url("Memberfavorites/favoritesstore")}',{fid:{$live_apply_info.live_apply_user_id}},function(res){
+                    if(!res.done){
+                        layer.msg(res.msg)
+                    }else{
+                        $('#follow_330').toggleClass('follow_zi')
+                        $('#follow_330').toggleClass('true_follow')
+                    }
+                })
+            }
+            function addCart(goods_id){
+                $.getJSON('{:url("Cart/add")}',{goods_id:goods_id,quantity:1},function(res){
+                    if(!res.state){
+                        layer.msg(res.msg)
+                    }else{
+                        layer.msg('{$Think.lang.ds_common_op_succ}')
+                    }
+                })
+            }
+            $(function () {
+                /*{if $active}*/
+                /*{if $Think.config.ds_config.video_type=='tencent'}*/
+                var player = new TcPlayer('id_test_video', {
+                    'm3u8_hd': '{$live_apply_info.live_apply_play_url}', // 请替换成实际可用的播放地址
+                    'autoplay': true, // iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
+                    'live': true,
+                    'controls': 'system',
+//          'systemFullscreen': true,
+                    'width': 499,
+                    'height': 900,
+                    'x5_player': true,
+                    'x5_type': 'h5',
+//          'x5_fullscreen': 'true',
+          'listener': function (res) {
+            if (res.type == 'error') {
+                var index=layer.confirm("{$Think.lang.live_error}", {
+                btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                title: false,
+            }, function () {
+                layer.close(index)
+                window.location.href = "{:url('Live/index')}";
+            })
+            }
+          }
+                })
+                /*{else}*/
+                var player = new Aliplayer({
+          "id": "id_test_video",
+          "source": "{$live_apply_info.live_apply_play_url}",
+          "width": "100%",
+          "height": "100%",
+          "autoplay": true,
+          "isLive": true,
+          "rePlay": false,
+          "playsinline": true,
+          "preload": true,
+          "controlBarVisibility": "hover",
+          "useH5Prism": true
+        }, function (player) {
+            player.on('liveStreamStop',function(){
+              var index=layer.confirm("{$Think.lang.live_error}", {
+                btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                title: false,
+            }, function () {
+                layer.close(index)
+                window.location.href = "{:url('Live/index')}";
+            })
+            });
+          }
+        );
+                /*{/if}*/
+                createWebSocket()
+                /*{else}*/
+                /*{if $live_apply_info.live_apply_video}*/
+                /*{if $live_apply_info.video_type=='tencent'}*/
+                var player = TCPlayer('id_test_video', {
+                    fileID: '{$live_apply_info.file_id}', // 请传入需要播放的视频 filID（必须）
+                    appID: '{$Think.config.ds_config.vod_tencent_appid}', // 请传入点播账号的 appID（必须）
+                    flash:{
+                        swf: '//{$Think.config.ds_config.vod_tencent_play_domain}/vod-player/{$Think.config.ds_config.vod_tencent_appid}/{$live_apply_info.file_id}/tcplayer/player.swf' //swf 文件地址（必须）
+                    },
+                    plugins:{
+                    ContinuePlay: { // 开启续播功能
+                      auto: true, //[可选] 是否在视频播放后自动续播
+                    },
+                    },
+                    psign:'{$live_apply_info.psign|default=""}'
+                  });
+                /*{else}*/
+                var player = new Aliplayer({
+          "id": "id_test_video",
+          "source": "{$live_apply_info.live_apply_video}",
+          "width": "100%",
+          "height": "100%",
+          "autoplay": true,
+          "isLive": false,
+          "rePlay": false,
+          "playsinline": true,
+          "preload": true,
+          "controlBarVisibility": "hover",
+          "useH5Prism": true
+        }, function (player) {
+
+          }
+        );
+                /*{/if}*/  
+                /*{/if}*/
+                /*{/if}*/
+            })
+            function sendMessage() {
+                {if !$active}
+                return
+                {/if}
+                var data=$('#message_content').val()
+                if (!ifConnect) {
+                    layer.msg('{$Think.lang.chat_system_error}')
+                    return
+                }
+                if (!data) {
+                    layer.msg('{$Think.lang.message_empty}')
+                    return
+                }
+                $.getJSON('{:url("MemberInstantMessage/add")}',{
+                    to_id:{$live_apply_info.live_apply_id},
+                    to_type: 2,
+                    message: data,
+                    message_type: 0
+                },function(res){
+                    layer.msg(res.message)
+                    if(res.code==10000){
+                        $('#message_content').val('')
+                    }
+                })
+            }
+            function createWebSocket() {
+                try {
+                    ws = new WebSocket('{$live_apply_info.instant_message_url}')
+                    init()
+                } catch (e) {
+                    reconnect()
+                }
+            }
+            function init() {
+                ws.onopen = wsOpen
+                ws.onmessage = wsMessage
+                ws.onclose = wsClose
+                ws.onerror = wsError
+            }
+            function reconnect() {
+                if (lockReconnect) {
+                    return
+                }
+                lockReconnect = true
+                // 没连接上会一直重连，设置延迟避免请求过多
+                timeOut && clearTimeout(timeOut)
+                timeOut = setTimeout(function () {
+                    createWebSocket()
+                    lockReconnect = false
+                }, 4000)
+            }
+            function wsOpen() {
+                ifConnect = true
+                // 心跳检测重置
+                heartCheck.start()
+            }
+            function wsMessage(res) {
+                var message = JSON.parse(res.data)
+                if (!message) {
+                    layer.msg('{$Think.lang.message_transfer_fail}{$Think.lang.ds_colon}' + res.data)
+                    return
+                }
+                var type = message.type || ''
+                switch (type) {
+                    // Events.php中返回的init类型的消息，将client_id发给后台进行uid绑定
+                    case 'init':
+                        var clientId = message.client_id
+
+                        $.getJSON('{:url("MemberLive/join_live")}',{live_apply_id:{$live_apply_info.live_apply_id},client_id:clientId}, function(res){
+                            if(res.code!=10000){
+                                layer.msg(res.message)
+                            }
+                        })
+                        break
+                    case 'leave':
+                        break
+                    case 'join':
+                        break
+                    case 'gift':
+                        
+                        var randnum=parseInt(Math.random()*10000)
+                        var html=''
+                            html+='<div class="gift" id="gift_'+randnum+'">'
+                            html+='    <div class="mark">' 
+                            html+='        <img src="'+message.member.member_avatar+'" alt="" class="avatar">' 
+                            html+='        <div class="info J_u_card">' 
+                            html+='            <span class="nickname level_left"><span class="level_16 level"> </span>'+message.member.member_name+'</span>' 
+                            html+='            <div class="detail">'
+                            html+='                {$Think.lang.give_out}'
+                            html+='                <span>{$Think.lang.rocket}</span><span>×'+message.gift_num+'</span>'
+                            html+='            </div>' 
+                            html+='        </div>' 
+                            html+='    </div>' 
+                            html+='    <div class="effect"> '
+                            html+='        <img src="{$Think.HOME_SITE_ROOT}/images/live/gift-item.png" alt="">'
+
+                            html+='    </div>'
+                            html+='</div>'
+                        $('#J_continue_gift_1').append(html)
+                        giftList.push(randnum)
+                        setTimeout(() => {
+                            $('#gift_'+giftList.shift()).remove();
+                            
+                        }, 1000)
+                        break
+                    default:
+                        var html='';
+                          html+='<div class="msg_1 J_u_card">'
+                          html+='  <div class="avatar">'
+                          html+='   <img src="'+message.instant_message_from_avatar+'" alt="" />'
+                          html+='  </div>' 
+                          html+='  <div class="info">' 
+                          html+='   <div class="clearfix">' 
+                          html+='    <span class="nickname fl ">'+message.instant_message_from_name+'</span>'
+                          html+='   </div>' 
+                          html+='   <div class="content">'
+                          html+=message.instant_message
+                          html+='   </div>' 
+                          html+='  </div>' 
+                          html+=' </div>'
+                        $('#J_msglist').append(html)
+                        $("#J_msglist").scrollTop($("#J_msglist").innerHeight());
+                }
+                heartCheck.start()
+            }
+            function wsClose(res) {
+                ifConnect = false
+                if (res.reason) {
+                    layer.msg('{$Think.lang.chat_system_disconnect}{$Think.lang.colon}' + res.reason)
+                }
+                if(canReconnect){
+                  reconnect()
+                }
+            }
+            function wsError(res) {
+                layer.msg(res.errMsg)
+                reconnect()
+            }
+// 心跳检测
+            var heartCheck = {
+                timeout: 3000,
+                timeoutObj: null,
+                start: function () {
+                    var self = this
+                    this.timeoutObj && clearInterval(this.timeoutObj)
+                    this.timeoutObj = setInterval(function () {
+                        // 这里发送一个心跳，后端收到后，返回一个心跳消息，
+                        ws.send('123456789')
+                    }, this.timeout)
+                },
+        stop:function(){
+            this.timeoutObj && clearInterval(this.timeoutObj)
+        }
+            }
+        </script>

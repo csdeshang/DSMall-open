@@ -1,0 +1,22 @@
+<div class="filter-detailc" id="addressDraw">
+  
+  <dl class="location-all">
+    <dt>{$Think.lang.provinces}</dt>
+    <dd>
+      <ul class="clearfix">
+		{foreach name="province_array" item="province" key="k" }
+		<li>
+		  <p class="lt">{$k}</p>
+		  <p class="lc">
+		  {foreach name="province" item="item" }
+		   <span><a href="{:replaceParam(array('area_id' => $item.area_id))}">{$item.area_name}</a></span> 
+		  {/foreach}
+		  </p>
+		</li>
+		{/foreach}
+        
+      </ul>
+    </dd>
+  </dl>
+  <p class="oreder-default"><a href="{:dropParam(array('area_id'))}">{$Think.lang.goods_class_index_area}</a></p>
+</div>

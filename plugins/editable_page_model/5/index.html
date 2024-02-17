@@ -1,0 +1,31 @@
+<div class="editable-page-model editable-page-model-5" style="background-color:{$config_info.back_color|default=''};">
+    <div class="editable-page-content" style="padding-top:{$config_info.padding_top|default=''};padding-bottom:{$config_info.padding_bottom|default=''};">
+        <div class='pr'>
+            <div class='goods-list'>
+                {if isset($config_info['goods_list']) && $config_info['goods_list']}
+                {foreach name='config_info.goods_list' item='goods'}
+                <div class="goods-item">
+                    <a href="{:url('goods/index',['goods_id'=>$goods['goods_id']])}">
+                    <div class="goods-image" style="background-image:url({:goods_thumb($goods, 1280)})"></div>
+                    <div class='goods-wrapper'>
+                        <div class='goods-name'>
+                            <div class='p strong'>{$goods['goods_name']}</div>
+                            <div class='p'>{$goods['goods_advword']}</div>
+                        </div>
+                        <div class="goods-info">
+                            <div class="goods-price">￥<span class="strong">{$goods['goods_price']}</span></div>
+                            <div class="red-btn">立刻购买</div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+                {/foreach}
+                {else}
+                <div class="no_results">
+                    <span>{$Think.lang.no_record}</span>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>

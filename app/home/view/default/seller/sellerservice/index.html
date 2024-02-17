@@ -1,0 +1,40 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}<a href="{:url('seller_service/add')}" class="dssc-btn dssc-btn-green"  title="{$Think.lang.ds_new}">{$Think.lang.ds_new}</a>{/block}
+{block name="seller_main"}
+
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th>{$Think.lang.store_service_title}</th>
+          <th class="align-center">{$Think.lang.store_service_desc}</th>
+          <th class="align-center">{$Think.lang.ds_sort}</th>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {notempty name="store_service_list"}
+        {foreach name="store_service_list" item="v" key="k" }
+        <tr class="bd-line">
+          <td><p class="name"><strong>{$v.store_service_title}</strong></p></td>
+          <td class="align-center">{$v.store_service_desc}</td>
+          <td class="align-center">{$v.store_service_sort}</td>
+            <td class="dscs-table-handle">
+                <span><a href="{:url('seller_service/edit',['id'=>$v.store_service_id])}" class="btn-blue"><i class="iconfont">&#xe731;</i><p>{$Think.lang.ds_edit}</p></a></span>
+                <span><a href="javascript:ds_ajaxget_confirm('{:url('seller_service/del',['id'=>$v.store_service_id])}','{$Think.lang.ds_ensure_del}');" class="btn-red"><i class="iconfont">&#xe725;</i><p>{$Think.lang.ds_del}</p></a></span>
+            </td>
+        </tr>
+        {/foreach}
+        <tr>
+            <td colspan="12"><div class="pagination"> {$show_page|raw}</div></td>
+        </tr>
+       {else /}
+        <tr>
+            <td colspan="12" class="norecord"><div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span></div></td>
+        </tr>
+       {/notempty}
+    </tbody>
+</table>
+       
+
+
+{/block}

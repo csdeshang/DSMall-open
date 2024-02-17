@@ -1,0 +1,92 @@
+{include file="public/header" /}
+
+
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_ownshop}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.ownshop_list_help1}</li>
+            <li>{$Think.lang.ownshop_list_help2}</li>
+        </ul>
+    </div>
+    
+
+    <form method="get" name="formSearch" id="formSearch">
+        <div class="ds-search-form">
+            <dl>
+                <dt>{$Think.lang.ds_store_name}</dt>
+                <dd><input type="text" value="{$Request.param.store_name}" name="store_name" id="store_name" class="txt" /></dd>
+            </dl>
+            <div class="btn_group">
+                <input type="submit" class="btn" value="{$Think.lang.ds_search}">
+                <a href="{:url('Ownshop/index')}" class="btn btn-default" title="{$Think.lang.ds_cancel}">{$Think.lang.ds_cancel}</a>
+            </div>
+        </div>
+    </form>
+
+
+    <form method="post" id="store_form">
+        <table class="ds-default-table">
+            <thead>
+                <tr class="thead">
+                    <th class="w48">{$Think.lang.ds_sort}</th>
+                    <th>{$Think.lang.ds_store_name}</th>
+                    <th>{$Think.lang.ds_member_name}</th>
+                    <th>{$Think.lang.ds_seller_name}</th>
+                    <th class="align-center">{$Think.lang.store_state}</th>
+                    <th class="align-center">{$Think.lang.bind_all_gc}</th>
+                    <th class="align-center">{$Think.lang.ds_handle}</th>
+                </tr>
+            </thead>
+            {notempty name="store_list"}
+            <tbody>
+                {foreach name="store_list" item="v" key="k" }
+                <tr class="" id="ds_row_{$v.store_id}">
+                    <td class="sort"><span class="editable"  ds_type="inline_edit" fieldname="store_sort" ajax_branch='store_sort' fieldid="{$v.store_id}" datatype="pint" maxvalue="255" title="{$Think.lang.ds_editable}">{$v.store_sort}</span></td>
+                    <td>
+                        <a target="_blank" href="{:url('/home/store/index',['store_id'=>$v.store_id])}" >{$v.store_name}</a>
+                    </td>
+                    <td>{$v.member_name}</td>
+                    <td>{$v.seller_name}</td>
+                    <td class="align-center w72">
+                        {if $v.store_state}{$Think.lang.ds_open}{else/}{$Think.lang.ds_close}{/if}
+                    </td>
+                    <td class="align-center w120">{if $v.bind_all_gc}{$Think.lang.ds_yes}{else/}{$Think.lang.ds_no}{/if}</td>
+                    <td class="align-center w200">
+                        <a href="javascript:dsLayerOpen('{:url('Ownshop/edit',['id'=>$v.store_id])}','{$Think.lang.ds_edit}-{$v.member_name}')" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.ds_edit}</a>
+                        {empty name="$v.bind_all_gc"}
+                        <a href="{:url('Ownshop/bind_class',['id'=>$v.store_id])}" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.bind_class}</a>
+                        {/empty}
+                        <a href="{:url('Ownshop/storejoinin_edit',['id'=>$v.store_id])}" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.register_info}</a>
+                        <!--<a href="javascript:dsLayerConfirm('{:url('Ownshop/del',['id'=>$v.store_id])}','{$Think.lang.ds_ensure_del}',{$v.store_id})" class="dsui-btn-del"><i class="iconfont"></i>{$Think.lang.ds_del}</a>-->
+                    </td>
+                </tr>
+               {/foreach}
+            </tbody>
+            {else/}
+            <tbody>
+                <tr class="no_data">
+                    <td colspan="15">{$Think.lang.ds_no_record}</td>
+                </tr>
+            </tbody>
+            {/notempty}
+        </table>
+        {$show_page|raw}
+    </form>
+</div>
+<script type="text/javascript" src="{$Think.ADMIN_SITE_ROOT}/js/jquery.edit.js" charset="utf-8"></script>

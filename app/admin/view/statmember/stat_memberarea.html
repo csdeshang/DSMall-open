@@ -1,0 +1,157 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_statmember}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" action="" name="formSearch" id="formSearch">
+        <div class="ds-search-form">
+            <dl>
+                <dd>
+                    <select name="search_type" id="search_type" class="querySelect">
+                        <option value="day" {if isset($search_arr.search_type) && $search_arr.search_type == 'day'}selected{/if}>{$Think.lang.search_type_day}</option>
+                        <option value="week" {if isset($search_arr.search_type) && $search_arr.search_type == 'week'}selected{/if}>{$Think.lang.search_type_week}</option>
+                        <option value="month" {if isset($search_arr.search_type) && $search_arr.search_type == 'month'}selected{/if}>{$Think.lang.search_type_month}</option>
+                    </select>
+                </dd>
+                <dd id="searchtype_day" style="display:none;">
+                    <input class="txt date" type="text" value="{:date('Y-m-d',$search_arr.day.search_time)}" id="search_time" name="search_time">
+                </dd>
+                <dd id="searchtype_week" style="display:none;">
+                    <select name="searchweek_year" class="querySelect">
+                        {foreach name="year_arr" item="v"}
+                        <option value="{$key}" {$search_arr.week.current_year== $key ? 'selected': ''}>{$v}</option>
+                        {/foreach}
+                    </select>
+                    <select name="searchweek_month" class="querySelect">
+                        {foreach name="month_arr" item="v"}
+                        <option value="{$key}" {$search_arr.week.current_month== $key ? 'selected':''}>{$v}</option>
+                        {/foreach}
+                    </select>
+                    <select name="searchweek_week" class="querySelect">
+                        {foreach name="week_arr" item="v"}
+                        <option value="{$v.key}"{$search_arr.week.current_week== $v['key'] ? 'selected' :''}>{$v.val}</option>
+                        {/foreach}
+                    </select>
+                </dd>
+                <dd id="searchtype_month" style="display:none;">
+                    <select name="searchmonth_year" class="querySelect">
+                        {foreach name="year_arr" item="v"}
+                        <option value="{$key}" {$search_arr.month.current_year== $key?'selected':''}>{$v}</option>
+                        {/foreach}
+                    </select>
+                    <select name="searchmonth_month" class="querySelect">
+                        {foreach name="month_arr" item="v"}
+                        <option value="{$key}" {$search_arr.month.current_month== $key?'selected':''}>{$v}</option>
+                        {/foreach}
+                    </select>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.ds_member_name}</dt>
+                <dd><input type="text" name="membername" value="{$Request.param.membername}"/></dd>
+            </dl>
+            <div class="btn_group">
+                <input type='text' style='display:none' name='t' value='{$searchtime}'>
+                <a href="javascript:void(0);" id="dssubmit" class="btn tooltip" title="{$Think.lang.ds_query}">{$Think.lang.ds_query}</a>
+                <a href="{:url('Statmember/area')}" class="btn btn-default" title="{$Think.lang.ds_cancel}">{$Think.lang.ds_cancel}</a>
+            </div>
+        </div>
+    </form>
+  <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="{$Think.lang.ds_explanation_tip}">{$Think.lang.ds_explanation}</h4>
+            <span id="explanationZoom" title="{$Think.lang.ds_explanation_close}" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.stat_validorder_explain}</li>
+            <li>{$Think.lang.statstore_stat_memberarea_help1}</li>
+            <li>{$Think.lang.statstore_stat_memberarea_help2}</li>
+            <li>{$Think.lang.statstore_stat_memberarea_help3}</li>
+        </ul>
+    </div>
+
+   <div id="stat_tabs" class="w100pre close_float ui-tabs" style="min-height:500px">
+      <div class="close_float tabmenu">
+      	<ul class="tab pngFix">
+      		<li><a href="#membernum_div" ds_type="showmap" data-param='{"type":"membernum"}'>{$Think.lang.membernum}</a></li>
+        	<li><a href="#ordernum_div" ds_type="showmap" data-param='{"type":"ordernum"}'>{$Think.lang.statstore_ordernum}</a></li>
+        	<li><a href="#orderamount_div" ds_type="showmap" data-param='{"type":"orderamount"}'>{$Think.lang.statstore_orderamount}</a></li>
+        </ul>
+      </div>
+     <!-- 下单会员数 -->
+      <div id="membernum_div" class="close_float" style="text-align:center;"></div>
+     <!-- 下单量 -->
+      <div id="ordernum_div" class="close_float" style="text-align:center;"></div>
+     <!-- 下单金额 -->
+      <div id="orderamount_div" class="close_float" style="text-align:center;"></div>
+   </div>
+  <!-- 统计列表 -->
+  <div id="statlist" class="w100pre close_float" style="text-align:right;"></div>
+
+</div>
+
+<script src="{$Think.PLUGINS_SITE_ROOT}/highcharts/highcharts.js"></script>
+<script src="{$Think.PLUGINS_SITE_ROOT}/statistics.js"></script>
+<script>
+//展示搜索时间框
+function show_searchtime(){
+    s_type = $("#search_type").val();
+    $("[id^='searchtype_']").hide();
+    $("#searchtype_"+s_type).show();
+}
+
+$(function () {
+    //切换登录卡
+    $('#stat_tabs').tabs();
+
+    //统计数据类型
+    var s_type = $("#search_type").val();
+    $('#search_time').datepicker({dateFormat: 'yy-mm-dd'});
+
+    show_searchtime();
+    $("#search_type").change(function(){
+        show_searchtime();
+    });
+
+    //更新周数组
+    $("[name='searchweek_month']").change(function(){
+        var year = $("[name='searchweek_year']").val();
+        var month = $("[name='searchweek_month']").val();
+        $("[name='searchweek_week']").html('');
+        $.getJSON(ADMINSITEURL+'/Common/getweekofmonth',{y:year,m:month},function(data){
+            if(data != null){
+                for(var i = 0; i < data.length; i++) {
+                    $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                }
+            }
+        });
+    });
+
+    $('#dssubmit').click(function(){
+        $('#formSearch').submit();
+    });
+
+    //加载统计地图
+    getStatMap('membernum');
+    $("[ds_type='showmap']").click(function(){
+        var data_str = $(this).attr('data-param');
+        eval('data_str = '+data_str);
+        getStatMap(data_str.type);
+    });
+    //加载统计列表
+    $('#statlist').load(ADMINSITEURL+'/Statmember/area_list?t={$searchtime}');
+});
+//加载统计地图
+function getStatMap(type){
+    $('#'+type+'_div').load(ADMINSITEURL+'/Statmember/area_map?type='+type+'&t={$searchtime}');
+}
+</script>

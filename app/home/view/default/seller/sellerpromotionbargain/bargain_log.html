@@ -1,0 +1,41 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_main"}
+
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th class="w80">{$Think.lang.pbargainlog_member_name}</th>
+                <th class="w80">{$Think.lang.pbargainlog_price}</th>
+                <th class="w80">{$Think.lang.pbargainlog_time}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {notempty name="pbargainlog_list"}
+            {foreach name="pbargainlog_list" item="val"}
+            <tr class="hover">
+                <td>{$val.pbargainlog_member_name}</td>
+                <td>{$val.pbargainlog_price}</td>
+                <td>{$val.pbargainlog_time|date="Y-m-d H:i"}</td>
+            </tr>
+           {/foreach}
+        {else /}
+        <tr>
+            <td class="norecord" colspan="20">
+                <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span>
+                </div>
+            </td>
+        </tr>
+        {/notempty}
+    </tbody>
+    <tfoot>
+        {notempty name="pbargainlog_list"}
+        <tr>
+            <td colspan="20">
+                <div class="pagination">{$show_page|raw}</div>
+            </td>
+        </tr>
+        {/notempty}
+    </tfoot>
+</table>
+
+{/block}

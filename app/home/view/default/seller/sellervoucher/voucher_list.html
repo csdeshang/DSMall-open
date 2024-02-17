@@ -1,0 +1,56 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}
+
+{/block}
+
+
+{block name="seller_main"}
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+                <th class="w50">{$Think.lang.voucher_id}</th>
+                <th class="w150">{$Think.lang.voucher_title}</th>
+                <th class="w150">{$Think.lang.voucher_code}</th>
+                <th class="w100">{$Think.lang.voucher_owner_name}</th>
+		<th class="w150">{$Think.lang.voucher_date}</th>
+                <th class="w100">{$Think.lang.voucher_price}</th>
+                <th class="w100">{$Think.lang.voucher_limit}</th>
+                <th class="w100">{$Think.lang.voucher_activedate}</th>
+                <th class="w100">{$Think.lang.voucher_state}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="voucher_list"}
+            {foreach name="voucher_list" item="voucher"}
+            <tr class="bd-line">
+                <td>{$voucher.voucher_id}</td>
+                <td>{$voucher.voucher_title}</td>
+                <td>{$voucher.voucher_code}</td>
+                <td>{$voucher.voucher_owner_name}</td>
+                <td>{$voucher.voucher_startdate|date="Y-m-d"}-{$voucher.voucher_enddate|date="Y-m-d"}</td>
+                <td>{$voucher.voucher_price}</td>
+                <td>{$voucher.voucher_limit}</td>
+                <td>{$voucher.voucher_activedate|date="Y-m-d"}</td>
+                <td>{:get_voucher_state($voucher['voucher_state'])}</td>
+            </tr>
+            {/foreach}
+            {else /}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="voucher_list"}
+            <tr>
+                <td colspan="20"><div class="pagination">{$show_page|raw}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+
+{/block}
+
+
+
+

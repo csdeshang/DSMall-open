@@ -1,0 +1,121 @@
+
+
+
+<div class="show_chain">
+    <div id="allmap" style="width:640px;height:400px"></div>
+</div>
+
+<script>
+    var map
+    $(function () {
+		if({$Think.config.ds_config.mapak_type} == '1'){
+			map = new AMap.Map("allmap", {
+			    resizeEnable: true,
+				zoom:15
+			});
+			//获取用户所在城市信息
+				AMap.plugin("AMap.CitySearch", function () {
+				    var citySearch = new AMap.CitySearch();
+				    citySearch.getLocalCity(function (status, result) {
+				      if (status === "complete" && result.info === "OK") {
+				        // 查询成功，result即为当前所在城市信息
+				        AMap.plugin("AMap.Geocoder", function () {
+				          var geocoder = new AMap.Geocoder({
+				            // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+				            city: result.adcode,
+				          });
+						  geocoder.getLocation(result.city, function(status1, result1) {
+							  var location = result1.geocodes[0].location;
+								var lng = location.lng;
+								var lat = location.lat;
+								
+								//初始化定位
+								var marker = new AMap.Marker({
+								    position: new AMap.LngLat(lng, lat),
+								    icon: '//api.map.baidu.com/images/marker_red_sprite.png',
+									zoom: 15
+								});
+								map.panTo([lng, lat]);
+								
+								/*{foreach name='chain_list' item='chain_info'}*/
+								mapAddMarker({:json_encode($chain_info)})
+								/*{/foreach}*/
+							});
+				        });
+				      }
+				    });
+				  });
+		}else{
+			// 百度地图API功能
+			map = new BMap.Map("allmap"); // 创建Map实例
+			var geolocation = new BMap.Geolocation();
+			geolocation.getCurrentPosition(function (r) {
+			    if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+			        var lng = r.point.lng;
+			        var lat = r.point.lat;
+			        var point = new BMap.Point(lng, lat);
+			        map.centerAndZoom(point, 16);
+			    } else {
+			        layer.msg('failed' + this.getStatus());
+			    }
+			}, {enableHighAccuracy: true})
+			var top_left_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT}); //左上角，添加默认缩放平移控件
+			
+			map.addControl(top_left_navigation);
+			map.enableScrollWheelZoom();
+			map.enableInertialDragging();
+			
+			map.enableContinuousZoom();
+			
+			var size = new BMap.Size(10, 20);
+			map.addControl(new BMap.CityListControl({
+			    anchor: BMAP_ANCHOR_TOP_LEFT,
+			    offset: size,
+			    // 切换城市之前事件
+			    // onChangeBefore: function(){
+			    //    alert('before');
+			    // },
+			    // 切换城市之后事件
+			    // onChangeAfter:function(){
+			    //   alert('after');
+			    // }
+			}));
+			/*{foreach name='chain_list' item='chain_info'}*/
+			mapAddMarker({:json_encode($chain_info)})
+			/*{/foreach}*/
+		}
+        
+    })
+    function mapAddMarker(info){
+		if({$Think.config.ds_config.mapak_type} == '1'){
+			var infoWindow = new AMap.InfoWindow({});
+			var marker = new AMap.Marker({
+			    position: new AMap.LngLat(info.chain_longitude, info.chain_latitude),
+			    icon: '//api.map.baidu.com/images/marker_red_sprite.png',
+				zoom: 15
+			});
+			marker.content = '<p>' + info.chain_addressname + '</p><p>' + info.chain_address + '</p>';
+			marker.on('click', markerClick);
+			map.add(marker);
+			 function markerClick(e) {
+				infoWindow.setContent(e.target.content);
+				infoWindow.open(map, e.target.getPosition());
+			}
+		}else{
+			var point = new BMap.Point(info.chain_longitude, info.chain_latitude);
+			    var marker = new BMap.Marker(point);  // 创建标注
+			map.addOverlay(marker);              // 将标注添加到地图中
+			var opts = {
+			    width : 200,     // 信息窗口宽度
+			    height: 100,     // 信息窗口高度
+			    title : info.chain_addressname , // 信息窗口标题
+			}
+			var infoWindow = new BMap.InfoWindow(info.chain_address, opts);  // 创建信息窗口对象 
+			marker.addEventListener("click", function(){          
+				map.openInfoWindow(infoWindow, point); //开启信息窗口
+			}); 
+		}
+        
+    }
+</script>
+

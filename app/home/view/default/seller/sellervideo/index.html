@@ -1,0 +1,84 @@
+{extend name="default/base/base_seller" /}
+{block name="seller_btn"}
+<a href="javascript:void(0);" class="dssc-upload-btn pr">
+    <span>
+        <input type="file" hidefocus="true" size="1" class="input-file" name="goodsvideo" id="goodsvideo">
+    </span>
+    <p><i class="iconfont">&#xe733;</i>{$Think.lang.store_video_upload}</p>
+</a>
+{/block}
+
+
+
+{block name="seller_main"}
+<div id="pictureFolder" class="dssc-picture-folder">
+    {notempty name="video_list"}
+    <form name="checkboxform" id="checkboxform" method="POST" action="">
+        <div class="dssc-picture-list">
+            <ul>
+                {foreach name="video_list" item="v" }
+                <li style="width:268px;height:268px">
+                    <dl style="width:240px;height:240px">
+                        <dt style="width:240px;height:240px">
+                            <div class="picture" style="width:240px;height:240px">
+                                <video controls="" height="240" width="240" src="{:goods_video($v.goodsvideo_name)}"/>
+                            </div>
+                        </dt>
+                        <dd class="buttons" style="top:0;left:0">
+                            <a href="javascript:void(0)" onclick="ds_ajaxget_confirm('{:url('Sellervideo/del_video',['id'=>$v.goodsvideo_id,'return_json'=>1])}', '{$Think.lang.store_video_delete_confirm_message}');"><i class="iconfont">&#xe725;</i>{$Think.lang.store_video_delete}</a>
+                        </dd>
+                    </dl>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </form>
+    <div class="pagination">{$show_page|raw}</div>
+    {else /}
+    <div class="warning-option"><i class="iconfont">&#xe64c;&nbsp;</i><span>{$Think.lang.no_record}</span></div>
+    {/notempty}
+</div>
+
+
+<script type="text/javascript" src="{$Think.PLUGINS_SITE_ROOT}/js/fileupload/jquery.iframe-transport.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.PLUGINS_SITE_ROOT}/js/fileupload/jquery.ui.widget.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.PLUGINS_SITE_ROOT}/js/fileupload/jquery.fileupload.js" charset="utf-8"></script>
+<link rel="stylesheet" href="{$Think.PLUGINS_SITE_ROOT}/js/jquery.lightbox/css/lightbox.min.css">
+<script src="{$Think.PLUGINS_SITE_ROOT}/js/jquery.lightbox/js/lightbox.min.js"></script>
+<script>
+                  $(function () {
+                      //鼠标触及区域li改变class
+                      $(".dssc-picture-list ul li").hover(function () {
+                          $(this).addClass("hover");
+                      }, function () {
+                          $(this).removeClass("hover");
+                      });
+
+                      var index
+                      // ajax 上传图片
+                      $('#goodsvideo').fileupload({
+                          dataType: 'json',
+                          url: HOMESITEURL + '/Sellervideo/video_upload.html',
+                          formData: {name: 'goodsvideo'},
+                          add: function (e, data) {
+                              index = layer.load()
+                              data.submit();
+                          },
+                          done: function (e, data) {
+                              layer.close(index);
+                              var param = data.result;
+                              if (typeof (param.error) != 'undefined') {
+                                  alert(param.error);
+                              } else {
+                                  window.location.reload()
+                              }
+                          }
+                      });
+                  });
+
+</script>
+
+
+
+
+{/block}

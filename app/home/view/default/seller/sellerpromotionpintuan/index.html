@@ -1,0 +1,152 @@
+dscs-table-handle{extend name="default/base/base_seller" /}
+{block name="seller_btn"}
+{if isset($isPlatformStore) || config('ds_config.promotion_pintuan_price')==0}
+<a class="dssc-btn dssc-btn-green" href="{:url('Sellerpromotionpintuan/pintuan_add')}"><i class="iconfont">&#xe6db;</i>{$Think.lang.pintuan_add}</a>
+{else /}
+{notempty name="current_pintuan_quota"}
+<a class="dssc-btn dssc-btn-green" style="right:100px" href="{:url('Sellerpromotionpintuan/pintuan_add')}"><i class="iconfont">&#xe6db;</i>{$Think.lang.pintuan_add}</a>
+<a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionpintuan/pintuan_quota_add')}" title=""><i class="iconfont">&#xe6a1;</i>{$Think.lang.package_renewal}</a>
+{else }
+<a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionpintuan/pintuan_quota_add')}" title=""><i class="iconfont">&#xe6a1;</i>{$Think.lang.purchase_package}</a>
+{/notempty}
+{/if}
+
+
+{/block}
+{block name="seller_main"}
+{if isset($isPlatformStore) || config('ds_config.promotion_pintuan_price')==0}
+<div class="alert alert-block mt10">
+    <ul>
+        <li>{$Think.lang.click_add_activity_button}</li>
+        <li>{$Think.lang.click_delete_button}</li>
+    </ul>
+</div>
+{else }
+<div class="alert alert-block mt10">
+    {notempty name="current_pintuan_quota"}
+    <strong>{$Think.lang.overdue_package}{$Think.lang.ds_colon}</strong><strong style="color:#F00;">{$current_pintuan_quota.pintuanquota_endtime|date="Y-m-d H:i:s"}</strong>
+    {else /}
+    <strong>{$Think.lang.please_package_first}</strong>
+    {/notempty}
+    <ul>
+        <li>{$Think.lang.pintuan_explain1}</li>
+        <li>{$Think.lang.pintuan_explain2}</li>
+        <li>3、<strong style="color: red">{$Think.lang.period_settlement_deduct}</strong>。</li>
+    </ul>
+</div>
+{/if}
+
+<form method="get">
+    <table class="search-form">
+        <tr>
+            <td>&nbsp;</td>
+            <th>{$Think.lang.ds_state}</th>
+            <td class="w100"><select name="state">
+                    {notempty name="pintuan_state_array"}
+                    <option value="">{$Think.lang.ds_please_choose}...</option>
+                    {foreach name="pintuan_state_array" item="val" key="key"}
+                    <option value="{$key}" {if condition="$Request.get.state != '' && $Request.get.state eq $key"}selected{/if}>{$val}</option>
+                    {/foreach}
+                    {/notempty}
+                </select></td>
+            <th class="w110">{$Think.lang.pintuan_name}</th>
+            <td class="w160"><input type="text" class="text w150" name="pintuan_name" value="{$Request.get.pintuan_name}"/></td>
+            <td class="w70 tc">
+                <input type="submit" class="submit" value="{$Think.lang.ds_search}"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="dssc-default-table">
+    <thead>
+        <tr>
+            <th class="w300">{$Think.lang.pintuan_name}</th>
+            <th class="w100">{$Think.lang.pintuan_state}</th>
+            <th class="w100">{$Think.lang.pintuan_count}</th>
+            <th class="w100">{$Think.lang.pintuan_ok_count}</th>
+            <th class="w150">{$Think.lang.pintuan_starttime}</th>
+            <th class="w150">{$Think.lang.pintuan_end_time}</th>
+            <th class="w100">{$Think.lang.pintuan_limit_number}</th>
+            <th class="w200">{$Think.lang.ds_handle}</th>
+        </tr>
+    </thead>
+    <tbody id="pintuan_list">
+        {notempty name="pintuan_list"}
+        {foreach name="pintuan_list" item="val"}
+        <tr class="bd-line">
+            <td><a href="{$Think.config.ds_config.h5_site_url}/home/goodsdetail?goods_id={$val.pintuan_goods_id}" target="_blank">{$val.pintuan_name}</a></td>
+            <td>{$val.pintuan_state_text}</td>
+            <td>{$val.pintuan_count}</td>
+            <td>{$val.pintuan_ok_count}</td>
+            <td class="goods-time">{$val.pintuan_starttime|date="Y-m-d H:i"}</td>
+            <td class="goods-time">{$val.pintuan_end_time|date="Y-m-d H:i"}</td>
+            <td>{$val.pintuan_limit_number}</td>
+            
+            <td class="dscs-table-handle tc">
+                {if $val.editable}
+                <span>
+                    <a href="{:url('Sellerpromotionpintuan/pintuan_edit',['pintuan_id'=>$val.pintuan_id])}" class="btn-blue">
+                        <i class="iconfont">&#xe731;</i>
+                        <p>{$Think.lang.ds_edit}</p>
+                    </a>
+                </span>
+                {/if}
+                <span>
+                    <a href="{:url('Sellerpromotionpintuan/pintuan_manage',['pintuan_id'=>$val.pintuan_id])}"
+                       class="btn-green">
+                        <i class="iconfont">&#xe734;</i>
+                        <p>{$Think.lang.ds_manage_pintuan}</p>
+                    </a>
+                </span>
+                {if $val.editable}
+                <span>
+                    <a href="javascript:;" dstype="btn_end_pintuan" data-pintuan-id={$val.pintuan_id} class="btn-red">
+                        <i class="iconfont">&#xe725;</i>
+                        <p>{$Think.lang.ds_end_pintuan}</p>
+                    </a>
+                </span>
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+        {else /}
+        <tr id="pintuan_list_norecord">
+            <td class="norecord" colspan="20">
+                <div class="warning-option"><i class="iconfont">&#xe64c;</i><span>{$Think.lang.no_record}</span>
+                </div>
+            </td>
+        </tr>
+        {/notempty}
+    </tbody>
+    <tfoot>
+        {notempty name="pintuan_list"}
+        <tr>
+            <td colspan="20">
+                <div class="pagination">{$show_page|raw}</div>
+            </td>
+        </tr>
+        {/notempty}
+    </tfoot>
+</table>
+<form id="submit_form" action="" method="post">
+    <input type="hidden" id="pintuan_id" name="pintuan_id" value="">
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[dstype="btn_end_pintuan"]').on('click', function () {
+            var action = "{:url('Sellerpromotionpintuan/pintuan_end')}";
+            var pintuan_id = $(this).attr('data-pintuan-id');
+            layer.confirm('{$Think.lang.ds_ensure_end}', {
+                btn: ['{$Think.lang.ds_ok}', '{$Think.lang.ds_cancel}'],
+                title: false,
+            }, function () {
+                $('#submit_form').attr('action', action);
+                $('#pintuan_id').val(pintuan_id);
+                ds_ajaxpost('submit_form', 'url', "{:url('Sellerpromotionpintuan/index')}");
+            });
+        });
+    });
+</script>
+
+{/block}

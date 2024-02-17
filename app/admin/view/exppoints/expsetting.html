@@ -1,0 +1,64 @@
+{include file="public/header" /}
+
+
+<div class="page">
+    <form method="post" name="settingForm" id="settingForm">
+        <table class="ds-default-table">
+            <tbody>
+            <tr>
+                <td class="" colspan="2">
+                    <table class="ds-default-table">
+                        <thead>
+                            <tr class="space">
+                                <th colspan="16">{$Think.lang.exp_rule}:</th>
+                            </tr>
+                            <tr class="thead">
+                                <th>{$Think.lang.ds_project}</th>
+                                <th>{$Think.lang.exp_value}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="hover">
+                            <td class="w200">{$Think.lang.exp_login}</td>
+                            <td><input id="exp_login" name="exp_login" value="{$list_setting.exp_login}" class="txt" type="text" style="width:60px;"></td>
+                        </tr>
+                        <tr class="hover">
+                            <td class="w200">{$Think.lang.exp_comments}</td>
+                            <td><input id="exp_comments" name="exp_comments" value="{$list_setting.exp_comments}" class="txt" type="text" style="width:60px;"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="ds-default-table">
+                        <thead>
+                        <tr class="thead">
+                            <th colspan="2">{$Think.lang.ds_buy}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="hover">
+                            <td class="w200">{$Think.lang.exp_orderrate}</td>
+                            <td><input id="exp_orderrate" name="exp_orderrate" value="{$list_setting.exp_orderrate}" class="txt" type="text" style="width:60px;">
+                                {$Think.lang.exp_orderrate_tips}
+                            </td>
+                        </tr>
+                        <tr class="hover">
+                            <td>{$Think.lang.exp_ordermax}</td>
+                            <td><input id="exp_ordermax" name="exp_ordermax" value="{$list_setting.exp_ordermax}" class="txt" type="text" style="width:60px;">
+                                 {$Think.lang.exp_ordermax_tips}
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr class="tfoot">
+                            <td colspan="2">
+                                <input class="btn" type="submit" value="{$Think.lang.ds_submit}"/>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,165 @@
+{include file="public/header" /}
+<form method="post" name="remark_form" id="remark_form" action="{:url('live_apply/view',['live_apply_id'=>$Request.param.live_apply_id])}">
+    <table class="ds-default-table nobdb">
+        <tbody>
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_cover}</label></td>
+                <td class="vatop rowform">
+                 {if $Think.config.ds_config.live_type==1}   
+                 <img width="200" height="200" src="{$live_apply_info.minipro_live_image_url}" />
+                 {else}
+                {if $live_apply_info.live_apply_cover_video}
+                <video controls="controls" width="200" height="200" src="{$live_apply_info.live_apply_cover_video_url}" />
+                {else}
+                <img width="200" height="200" src="{$live_apply_info.live_apply_cover_image_url}" />
+                {/if}
+                {/if}
+                </td>
+
+            </tr>
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_name}</label></td>
+                <td class="vatop rowform">{if $Think.config.ds_config.live_type==1}{$live_apply_info.minipro_live_name}{else}{$live_apply_info.live_apply_name}{/if}</td>
+
+            </tr>
+            {if $Think.config.ds_config.live_type!=1}
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_remark}</label></td>
+                <td class="vatop rowform">{$live_apply_info.live_apply_remark}</td>
+
+            </tr>
+            {/if}
+            {if $live_apply_info.goods_list}
+        
+            <tr class="noborder">
+                <td colspan="2">
+                    
+                    <div class='order'>
+                        <table class="ds-default-table goods">
+                            <tbody>
+                                <tr>
+                                    <th class="w60"></th>
+                                    <th>{$Think.lang.product_info}</th>
+                                    <th class="w72 align-center">{$Think.lang.product_price}</th>
+                                </tr>
+                                {foreach name='live_apply_info.goods_list' item='goods'}
+                                <tr>
+                                    <td><a href="{:url('/home/Goods/index',['goods_id'=>$goods.goods_id])}" target="_blank"><img  src="{$goods.goods_image}" width="60" height="60"/> </a></td>
+                                    <td><p><a href="{:url('/home/Goods/index',['goods_id'=>$goods.goods_id])}" target="_blank">{$goods.goods_name}</a></p></td>
+                                    <td><span class="red_common">{$Think.lang.currency}{$goods.goods_price}</span></td>
+                                </tr>
+                               {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </td>
+            </tr>
+            {/if}
+            {if $Think.config.ds_config.live_type==1}
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_push_state}</label></td>
+                <td class="vatop rowform">{if $live_apply_info.minipro_live_end_time>TIMESTAMP}{if $live_apply_info.minipro_live_start_time>TIMESTAMP}{$Think.lang.live_apply_push_state_text[0]}{else}{$Think.lang.live_apply_push_state_text[1]}{/if}{else}{$Think.lang.live_end}{/if}</td>
+            </tr>
+            {else}
+            {if $live_apply_info.live_apply_state==0 || $live_apply_info.live_apply_state==1}
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_video}</label></td>
+                <td class="vatop rowform"><input type='text' class='txt' name='live_apply_video' value='{$live_apply_info.live_apply_video}'></td>
+            </tr>
+            <tr class="noborder">
+                <td class="required"><label class="validation" for="live_apply_end_time">{$Think.lang.live_apply_end_time}</label></td>
+                <td class="vatop rowform"><input type="text" id="live_apply_end_time" class="txt date" name="live_apply_end_time" value="{if $live_apply_info.live_apply_end_time}{$live_apply_info.live_apply_end_time|date='Y-m-d H:i'}{/if}"/></td>
+            </tr>
+            {if $live_apply_info.live_apply_state==0}
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_state}</label></td>
+                <td class="vatop rowform onoff">
+                    <label for="rewrite_enabled_1"  class="cb-enable selected" title="{$Think.lang.ds_yes}>"><span>{$Think.lang.ds_yes}</span></label>
+                    <label for="rewrite_disabled_2" class="cb-disable" title="{$Think.lang.ds_no}"><span>{$Think.lang.ds_no}</span></label>
+                    <input id="rewrite_enabled_1" name="verify_state"  value="1" type="radio" checked="checked">
+                    <input id="rewrite_disabled_2" name="verify_state" value="0" type="radio">
+                </td>
+
+            </tr>
+
+            <tr class="noborder" dstype="reason" style="display :none;">
+                <td class="required w108"><label for="verify_reason">{$Think.lang.verify_reason}</label></td>
+                <td class="vatop rowform"><textarea rows="6" class="tarea" cols="60" name="verify_reason" id="verify_reason"></textarea></td>
+            </tr>
+            {/if}
+            {if $live_apply_info.active}
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_video}</label></td>
+                <td class="vatop rowform"><div id="id_test_video"></div></td>
+            </tr>
+            {else}
+            <tr class="noborder">
+                <td class="required w108"><label>{$Think.lang.live_apply_push_state}</label></td>
+                <td class="vatop rowform">{if $live_apply_info.live_apply_state==1}{if $live_apply_info.live_apply_end_time>TIMESTAMP}{$Think.lang.live_apply_push_state_text[$live_apply_info['live_apply_push_state']]}{else}{$Think.lang.live_end}{/if}{/if}</td>
+            </tr>
+            {/if}
+            <tr class="tfoot">
+                <td colspan="2">
+                    <input class="btn" type="submit" value="{$Think.lang.ds_submit}"/>
+                    {if $live_apply_info.active}
+                    <input class="btn" type="button" onclick="dsLayerConfirm('{:url('live_apply/close',['live_apply_id'=>$live_apply_info.live_apply_id])}','{$Think.lang.confirm_live_cut_off}',{$live_apply_info.live_apply_id})" value="{$Think.lang.live_cut_off}"/>
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+            {/if}
+        </tbody>
+
+    </table>
+</form>
+{if $Think.config.ds_config.live_type!=1}
+<link rel="stylesheet" href="{$Think.PLUGINS_SITE_ROOT}/js/jquery-ui-timepicker/jquery-ui-timepicker-addon.min.css">
+<script src="{$Think.PLUGINS_SITE_ROOT}/js/jquery-ui-timepicker/jquery-ui-timepicker-addon.min.js"></script>
+<script src="{$Think.PLUGINS_SITE_ROOT}/js/jquery-ui-timepicker/i18n/jquery-ui-timepicker-zh-CN.js"></script>
+{if $Think.config.ds_config.video_type=='aliyun'}
+<link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.8.8/skins/default/aliplayer-min.css" />
+<script type="text/javascript" charset="utf-8" src="https://g.alicdn.com/de/prismplayer/2.8.8/aliplayer-min.js"></script>
+{else}
+<script src="{$Think.PLUGINS_SITE_ROOT}/TcPlayer-2.3.2.js"></script>
+{/if}
+<script>
+    $(function() {
+        $('#live_apply_end_time').datetimepicker({dateFormat: 'yy-mm-dd'});
+        $('input[name="verify_state"]').click(function() {
+            if ($(this).val() == 1) {
+                $('tr[dstype="reason"]').hide();
+            } else {
+                $('tr[dstype="reason"]').show();
+            }
+        });
+        /*{if $live_apply_info.active}*/
+        /*{if $Think.config.ds_config.video_type=='aliyun'}*/
+        var player = new Aliplayer({
+          "id": "id_test_video",
+          "source": "{$live_apply_info.live_apply_play_url}",
+          "width": "650px",
+          "height": "450px",
+          "autoplay": true,
+          "isLive": true,
+          "rePlay": false,
+          "playsinline": true,
+          "preload": true,
+          "controlBarVisibility": "hover",
+          "useH5Prism": true
+        }, function (player) {
+            
+          }
+        );
+        /*{else}*/
+        var player = new TcPlayer('id_test_video', {
+        "m3u8": "{$live_apply_info.live_apply_play_url}", //请替换成实际可用的播放地址
+        "autoplay" : true,      //iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
+        "width" :  '650',//视频的显示宽度，请尽量使用视频分辨率宽度
+        "height" : '450'//视频的显示高度，请尽量使用视频分辨率高度
+        });
+        /*{/if}*/
+        /*{/if}*/
+    });
+</script>
+{/if}

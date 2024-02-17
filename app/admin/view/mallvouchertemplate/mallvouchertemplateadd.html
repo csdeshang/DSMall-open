@@ -1,0 +1,179 @@
+{include file="public/header" /}
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.ds_voucher_price_manage}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form id="add_form" method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_title}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_title" type="text" id="mallvouchertemplate_title" value="{$info.mallvouchertemplate_title|default=''}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_goodsclass}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <div id="gcategory" class="default_select">
+                        <input type="hidden" name="mallvouchertemplate_gcid" value="{$info.mallvouchertemplate_gcid}" class="mls_id" />
+                        <input type="hidden" name="mallvouchertemplate_gcname" value="{$spec.mallvouchertemplate_gcname|default=''}" class="mls_name" />
+                        {if $info.mallvouchertemplate_gcid}
+                        <span>{$info.mallvouchertemplate_gcname|default=''}</span>
+                        {/if}
+                        <select {if $info.mallvouchertemplate_gcid}style="display:none"{/if}>
+                            <option value="0">{$Think.lang.ds_allclass}</option>
+                            {foreach name="gc_list" item="gc"}
+                            <option value="{$gc.gc_id}">{$gc.gc_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_price}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_price" type="text" id="mallvouchertemplate_price" value="{$info.mallvouchertemplate_price|default=''}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_startdate}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_startdate" type="text" id="mallvouchertemplate_startdate" value="{$info.mallvouchertemplate_startdate|date='Y-m-d H:i'}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_enddate}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_enddate" type="text" id="mallvouchertemplate_enddate" value="{$info.mallvouchertemplate_enddate|date='Y-m-d H:i'}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_limit}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_limit" type="text" id="mallvouchertemplate_limit" value="{$info.mallvouchertemplate_limit|default=''}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_points}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_points" type="text" id="mallvouchertemplate_points" value="{$info.mallvouchertemplate_points|default='0'}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_quantity}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_quantity" type="text" id="mallvouchertemplate_quantity" value="{$info.mallvouchertemplate_quantity}" />
+                    <span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt><label class="validation">{$Think.lang.admin_mallvouchertemplate_eachlimit}{$Think.lang.ds_colon}</label></dt>
+                <dd>
+                    <input class="w400 text" name="mallvouchertemplate_eachlimit" placeholder="设置为0则表示没有限制" type="text" id="mallvouchertemplate_eachlimit" value="{$info.mallvouchertemplate_eachlimit}" />
+                    <span></span>
+                </dd>
+            </dl>
+            {if $action eq 'add'}
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input type="submit" class="btn" value="{$Think.lang.ds_submit}">
+                </dd>
+            </dl>
+            {/if}
+        </div>
+    </form>
+
+</div>
+<link rel="stylesheet" href="{$Think.PLUGINS_SITE_ROOT}/js/jquery-ui-timepicker/jquery-ui-timepicker-addon.min.css">
+<script src="{$Think.PLUGINS_SITE_ROOT}/js/jquery-ui-timepicker/jquery-ui-timepicker-addon.min.js"></script>
+<script src="{$Think.PLUGINS_SITE_ROOT}/js/jquery-ui-timepicker/i18n/jquery-ui-timepicker-zh-CN.js"></script>
+<script src="{$Think.PLUGINS_SITE_ROOT}/mlselection.js"></script>
+<script>
+    $(function() {
+        gcategoryInit("gcategory");
+    });
+</script>
+<script>
+    //按钮先执行验证再提交表单
+    $(function(){
+        $('#mallvouchertemplate_startdate').datetimepicker({dateFormat: 'yy-mm-dd'});
+        $('#mallvouchertemplate_enddate').datetimepicker({dateFormat: 'yy-mm-dd'});
+        
+
+        //页面输入内容验证
+        $("#add_form").validate({
+            errorPlacement: function(error, element){
+                var error_td = element.parent('dd').children('span');
+                error_td.append(error);
+            },
+
+            rules : {
+                mallvouchertemplate_title: {
+                    required : true,
+                    maxlength : 255
+                },
+                mallvouchertemplate_price: {
+                    required : true,
+                    digits : true,
+                    min : 0
+                },
+                mallvouchertemplate_limit:{
+                    required : true,
+                    digits : true,
+                    min : 0
+                },
+                mallvouchertemplate_quantity:{
+                    required : true,
+                    digits : true,
+                    min : 0
+                },
+                mallvouchertemplate_eachlimit:{
+                    required : true,
+                    digits : true,
+                    min : 0
+                }
+            },
+            messages : {
+                mallvouchertemplate_title: {
+                    required : '{$Think.lang.admin_mallvouchertemplate_title_error}',
+                    maxlength : '{$Think.lang.admin_mallvouchertemplate_title_lengtherror}'
+                },
+                mallvouchertemplate_price: {
+                    required : '{$Think.lang.admin_mallvouchertemplate_price_error}',
+                    digits : '{$Think.lang.admin_mallvouchertemplate_price_error}',
+                    min : '{$Think.lang.admin_mallvouchertemplate_price_error}'
+                },
+                mallvouchertemplate_limit: {
+                    required : '{$Think.lang.admin_mallvouchertemplate_limit_error}',
+                    digits : '{$Think.lang.admin_mallvouchertemplate_limit_error}',
+                    min : '{$Think.lang.admin_mallvouchertemplate_limit_error}'
+                },
+                mallvouchertemplate_quantity: {
+                    required : '{$Think.lang.admin_mallvouchertemplate_quantity_error}',
+                    digits : '{$Think.lang.admin_mallvouchertemplate_quantity_error}',
+                    min : '{$Think.lang.admin_mallvouchertemplate_quantity_error}'
+                },
+                mallvouchertemplate_eachlimit: {
+                    required : '{$Think.lang.admin_mallvouchertemplate_quantity_error}',
+                    digits : '{$Think.lang.admin_mallvouchertemplate_quantity_error}',
+                    min : '{$Think.lang.admin_mallvouchertemplate_quantity_error}'
+                }
+            }
+        });
+    });
+</script>

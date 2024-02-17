@@ -1,0 +1,28 @@
+{include file="public/header" /}
+<div class="data-search">
+    <input value="{$Request.param.keyword}" />
+    <span class="iconfont" onclick="goSearch()">&#xe654;</span>
+</div>
+<div class="data-list">
+    {notempty name="marketmanage_list"}
+        {foreach name="marketmanage_list" item="v"}
+        <div class="data-item" onclick="setLink('{$Request.param.path}?marketmanage_id={$v.marketmanage_id}')">{$v.marketmanage_name}</div>
+        {/foreach}
+        {else /}
+        <div class="no-data">{$Think.lang.ds_no_record}</div>
+    {/notempty}
+</div>
+{$show_page|raw}
+<script>
+    $(function(){
+        $('.pagination a').each(function(){
+            $(this).data('url',$(this).attr('href')).attr('href','javascript:void(0)')
+            $(this).click(function(){
+               $('#load_html').load($(this).data('url'));
+            })
+        })
+    })
+    function goSearch(){
+        $('#load_html').load(ADMINSITEURL+'/Dashboard/h5_market?path={$Request.param.path}&type={$Request.param.type}&keyword='+$('.data-search input').val());
+    }
+</script>

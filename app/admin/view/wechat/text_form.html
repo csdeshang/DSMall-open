@@ -1,0 +1,59 @@
+{include file="public/header" /}
+
+
+
+<div class="page">
+    <div class="ncap-form-default">
+        <form method="post" id="keyword_form">
+            <dl>
+                <dt><span class="error">*</span> {$Think.lang.keywords}</dt>
+                <dd><input type="text" name="keyword" id="keyword" value="{$key.keyword|default=''}" placeholder="{$Think.lang.keywords}"style="width: 300px"/></dd>
+            </dl>
+            <dl>
+                <dt><span class="error">*</span> {$Think.lang.k_value}</dt>
+                <dd><textarea name="text" id="text"  placeholder="{$Think.lang.k_value}">{$key.text|default=''}</textarea></dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd><input class="btn" type="submit" value="{$Think.lang.ds_submit}"/></dd>
+            </dl>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#keyword_form').validate({
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parent().parent().find('dd:last'));
+            },
+            rules: {
+                keyword: {
+                    required: true
+                },
+                text: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                keyword: {
+                    required: '{$Think.lang.keywords_required}'
+                },
+                text: {
+                    required: '{$Think.lang.k_value_required}',
+                    maxlength: '{$Think.lang.k_value_maxlength}'
+                }
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+

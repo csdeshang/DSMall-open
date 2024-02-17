@@ -1,0 +1,72 @@
+{include file="public/header" /}
+
+
+<div class="page">
+    
+    <form method="get" name="formSearch">
+        <div class="ds-search-form">
+            <dl>
+                <dt>{$Think.lang.ds_state}</dt>
+                <dd>
+                    <select name="bargainorder_state">
+                        <option value="">{$Think.lang.ds_please_choose}</option>
+                        {notempty name="bargainorder_state_array"}
+                        {foreach name="bargainorder_state_array" item="val"}
+                        <option value="{$key}" {if $Request.get.bargainorder_state!='' && $key==$Request.get.bargainorder_state}selected{/if}>{$val}</option>
+                        {/foreach}
+                        {/notempty}
+                    </select>
+                    <input name="bargain_id" value="{$Request.param.bargain_id}" type="hidden"/>
+                </dd>
+            </dl>
+            <div class="btn_group">
+                <a href="javascript:document.formSearch.submit();" class="btn" title="{$Think.lang.ds_query}">{$Think.lang.ds_query}</a>
+                {if $filtered}
+                <a href="{:url('Promotionbargain/bargain_order',['bargain_id'=>$Request.param.bargain_id])}" class="btn btn-default" title="{$Think.lang.ds_cancel}">{$Think.lang.ds_cancel}</a>
+                {/if}
+            </div>
+        </div>
+    </form>
+    
+    
+    
+    <!-- 列表 -->
+    <form id="list_form" method="post">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th width="80">{$Think.lang.bargain_name}</th>
+                <th width="80">{$Think.lang.bargainorder_initiator_name}</th>
+                <th width="80">{$Think.lang.bargain_total}</th>
+                <th width="80">{$Think.lang.bargainorder_times}</th>
+                <th width="80">{$Think.lang.bargainorder_current_price}</th>
+                <th width="180">{$Think.lang.bargainorder_begintime}</th>
+                <th width="80">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody id="treet1">
+            {notempty name="pbargainorder_list"}
+            {foreach name="pbargainorder_list" item="val"}
+            <tr class="hover">
+                <td>{$val.bargain_name}</td>
+                <td>{$val.bargainorder_initiator_name}</td>
+                <td>{$val.bargain_total}</td>
+                <td>{$val.bargainorder_times}</td>
+                <td>{$val.bargainorder_current_price}</td>
+                <td>{$val.bargainorder_begintime|date="Y-m-d H:i"}-{$val.bargainorder_endtime|date="Y-m-d H:i"}</td>
+                <td><a href="javascript:dsLayerOpen('{:url('Promotionbargain/bargain_log',['bargainorder_id'=>$val.bargainorder_id])}','{$Think.lang.pbargainlog}','800px','400px')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.pbargainlog}</a></td>
+            </tr>
+           {/foreach}
+            {else /}
+            <tr class="no_data">
+                <td colspan="7">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+        </table>
+        {$show_page|raw}
+    </form>
+
+</div>
+    
+    
