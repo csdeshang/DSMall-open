@@ -920,7 +920,7 @@ CREATE TABLE IF NOT EXISTS `#__goods` (
   `goods_collect` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商品收藏数量',
   `goods_spec` text NOT NULL COMMENT '商品规格序列化',
   `goods_storage` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商品库存',
-  `goods_weight` decimal(5,3) unsigned NOT NULL DEFAULT '0.000' COMMENT '商品重量',
+  `goods_weight` decimal(6,3) unsigned NOT NULL DEFAULT '0.000' COMMENT '商品重量',
   `goods_image` varchar(100) DEFAULT '' COMMENT '商品主图',
   `goods_lock` tinyint(3) unsigned DEFAULT '0' COMMENT '商品锁定 0未锁，1已锁',
   `goods_state` tinyint(3) unsigned DEFAULT '0' COMMENT '商品状态 0:下架 1:正常，10:违规（禁售）',
@@ -1421,7 +1421,7 @@ CREATE TABLE IF NOT EXISTS `#__inviterclass` (
   `inviterclass_name` varchar(60) NOT NULL COMMENT '等级名',
   `inviterclass_amount` decimal(10,2) NOT NULL COMMENT '等级门槛',
   PRIMARY KEY (`inviterclass_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='推广等级表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='推广等级表';
 
 
 
@@ -1685,7 +1685,9 @@ CREATE TABLE IF NOT EXISTS `#__mbusertoken` (
   `member_name` varchar(50) NOT NULL COMMENT '用户名',
   `member_token` varchar(50) NOT NULL COMMENT '登录令牌',
   `member_logintime` int(10) unsigned NOT NULL COMMENT '登录时间',
-  `member_clienttype` varchar(10) NOT NULL COMMENT '客户端类型 android wap',
+  `member_operationtime` int(10) unsigned NOT NULL COMMENT '最近活跃时间',
+  `member_clienttype` varchar(10) NOT NULL DEFAULT '' COMMENT '客户端访问类型 APP H5 weixin 小程序',
+  `member_devicetype` varchar(20) NOT NULL DEFAULT '' COMMENT '客户端设备类型及系统',
   `member_openid` varchar(50) DEFAULT NULL COMMENT '微信支付jsapi的openid缓存',
   PRIMARY KEY (`member_token_id`),
   KEY `member_id` (`member_id`),
@@ -1958,49 +1960,17 @@ CREATE TABLE IF NOT EXISTS `#__order` (
   `evaluation_state` tinyint(4) DEFAULT '0' COMMENT '评价状态 0：未评价 1：已评价 2:已过期未评价',
   `order_state` tinyint(4) NOT NULL DEFAULT '10' COMMENT '订单状态：0:已取消 10:未付款 14:待付定金 15:待付尾款 20:待发货 30:已发货 35:待自提 40:已收货',
   `refund_state` tinyint(1) unsigned DEFAULT '0' COMMENT '退款状态 0:无退款 1:部分退款 2:全部退款',
-  `lock_state` tinyint(1) unsigned DEFAULT '0' COMMENT '锁定状态:0:正常,大于0:锁定',
-  `delete_state` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除状态 0:未删除 1:放入回收站 2:彻底删除',
+  `order_refund_lock_state` tinyint(1) unsigned DEFAULT '0' COMMENT '锁定状态:0:正常,大于0:锁定',
   `refund_amount` decimal(10,2) DEFAULT '0.00' COMMENT '退款金额',
+  `delete_state` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除状态 0:未删除 1:放入回收站 2:彻底删除',
   `delay_time` int(10) unsigned DEFAULT '0' COMMENT '延迟时间,默认为0',
   `order_from` tinyint(4) NOT NULL DEFAULT '1' COMMENT '订单来源，1:PC 2:手机',
   `shipping_code` varchar(50) DEFAULT '' COMMENT '订单物流单号',
   `order_type` tinyint(4) DEFAULT NULL COMMENT '订单类型',
-  `ob_no` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '相关结算单号',
   PRIMARY KEY (`order_id`),
   KEY `store_id` (`store_id`),
   KEY `buyer_id` (`buyer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表';
-
-
-
-DROP TABLE IF EXISTS `#__orderbill`;
-CREATE TABLE IF NOT EXISTS `#__orderbill` (
-  `ob_no` int(11) NOT NULL AUTO_INCREMENT COMMENT '结算单编号(年月店铺ID)',
-  `ob_startdate` int(11) NOT NULL COMMENT '开始日期',
-  `ob_enddate` int(11) NOT NULL COMMENT '结束日期',
-  `ob_order_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '结算订单金额',
-  `ob_shipping_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '结算运费',
-  `ob_order_return_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '结算退单金额',
-  `ob_commis_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '结算佣金金额',
-  `ob_commis_return_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '结算退还佣金',
-  `ob_store_cost_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '店铺促销活动费用',
-  `ob_mall_voucher_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '店铺平台代金券金额',
-  `ob_vr_order_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟订单金额',
-  `ob_vr_order_return_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟订单退款金额',
-  `ob_vr_commis_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟佣金金额',
-  `ob_vr_commis_return_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟退还佣金金额',
-  `ob_vr_inviter_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟分销佣金金额',
-  `ob_result_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '应结金额',
-  `ob_createdate` int(11) DEFAULT '0' COMMENT '生成结算单日期',
-  `ob_state` enum('1','2','3','4') DEFAULT '1' COMMENT '结算状态 1，默认2，店家已确认3，平台已审核4，结算完成',
-  `ob_store_id` int(11) NOT NULL COMMENT '店铺ID',
-  `ob_store_name` varchar(50) DEFAULT NULL COMMENT '店铺名',
-  `ob_inviter_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分销的佣金',
-  `ob_seller_content` varchar(255) NOT NULL DEFAULT '' COMMENT '商家备注',
-  `ob_admin_content` varchar(255) NOT NULL DEFAULT '' COMMENT '管理员备注',
-  PRIMARY KEY (`ob_no`),
-  KEY `ob_store_id` (`ob_store_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='结算表';
 
 
 
@@ -2106,28 +2076,6 @@ CREATE TABLE IF NOT EXISTS `#__orderpay` (
   PRIMARY KEY (`pay_id`),
   KEY `pay_sn` (`pay_sn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单支付表';
-
-
-
-DROP TABLE IF EXISTS `#__orderstatis`;
-CREATE TABLE IF NOT EXISTS `#__orderstatis` (
-  `os_month` mediumint(9) unsigned NOT NULL DEFAULT '0' COMMENT '统计编号(年月)',
-  `os_order_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单金额',
-  `os_shipping_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '运费',
-  `os_order_returntotals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退单金额',
-  `os_commis_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '佣金金额',
-  `os_commis_returntotals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退还佣金',
-  `os_store_costtotals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '店铺促销活动费用',
-  `os_vr_order_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟订单金额',
-  `os_vr_order_return_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟订单退款金额',
-  `os_vr_commis_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟佣金金额',
-  `os_vr_commis_return_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟退还佣金金额',
-  `os_vr_inviter_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟分销佣金金额',
-  `os_result_totals` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '本期应结',
-  `os_createdate` int(11) DEFAULT NULL COMMENT '创建记录日期',
-  `os_inviter_totals` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '分销佣金',
-  PRIMARY KEY (`os_month`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='月销量统计表';
 
 
 
@@ -2792,28 +2740,27 @@ CREATE TABLE IF NOT EXISTS `#__refundreturn` (
   `goods_num` int(10) unsigned DEFAULT '1' COMMENT '商品数量',
   `refund_amount` decimal(10,2) DEFAULT '0.00' COMMENT '退款金额',
   `goods_image` varchar(100) DEFAULT NULL COMMENT '商品图片',
-  `order_goods_type` tinyint(1) unsigned DEFAULT '1' COMMENT '订单商品类型:1:默认2:抢购商品3:限时折扣商品4:组合套装 5:赠品6:拼团7:会员等级折扣8:砍价',
   `refund_type` tinyint(1) unsigned DEFAULT '1' COMMENT '申请类型:1:退款,2:退货',
-  `seller_state` tinyint(1) unsigned DEFAULT '1' COMMENT '卖家处理状态:1:待审核,2:同意,3:不同意',
-  `refund_state` tinyint(1) unsigned DEFAULT '1' COMMENT '申请状态:1:处理中,2:待管理员处理,3:已完成,4:已拒绝',
   `return_type` tinyint(1) unsigned DEFAULT '1' COMMENT '退货类型:1:不用退货,2:需要退货',
-  `order_lock` tinyint(1) unsigned DEFAULT '1' COMMENT '订单锁定类型:1:不用锁定,2:需要锁定',
-  `goods_state` tinyint(1) unsigned DEFAULT '1' COMMENT '物流状态:1:待发货,2:待收货,3:未收到,4:已收货',
-  `add_time` int(10) unsigned NOT NULL COMMENT '添加时间',
-  `seller_time` int(10) unsigned DEFAULT '0' COMMENT '卖家处理时间',
-  `admin_time` int(10) unsigned DEFAULT '0' COMMENT '管理员处理时间',
+  `refundreturn_goods_state` tinyint(1) unsigned DEFAULT '1' COMMENT '物流状态:1:待发货,2:待收货,3:未收到,4:已收货',
+  `refundreturn_seller_state` tinyint(1) unsigned DEFAULT '1' COMMENT '卖家处理状态:1:待审核,2:同意,3:不同意',
+  `refundreturn_seller_time` int(10) unsigned DEFAULT '0' COMMENT '卖家处理时间',
+  `refundreturn_seller_message` varchar(300) DEFAULT NULL COMMENT '卖家备注',
+  `refundreturn_admin_state` tinyint(1) unsigned DEFAULT '1' COMMENT '申请状态:1:处理中,2:待管理员处理,3:已完成,4:已拒绝',
+  `refundreturn_admin_time` int(10) unsigned DEFAULT '0' COMMENT '管理员处理时间',
+  `refundreturn_admin_message` varchar(300) DEFAULT NULL COMMENT '管理员备注',
+  `refundreturn_add_time` int(10) unsigned NOT NULL COMMENT '添加时间',
+  `refundreturn_buyer_message` varchar(300) DEFAULT NULL COMMENT '退款退货申请原因',
   `reason_id` int(10) unsigned DEFAULT '0' COMMENT '原因ID:0:其它',
   `reason_info` varchar(300) DEFAULT '' COMMENT '原因内容',
   `pic_info` varchar(300) DEFAULT '' COMMENT '退款退货图片',
-  `buyer_message` varchar(300) DEFAULT NULL COMMENT '退款退货申请原因',
-  `seller_message` varchar(300) DEFAULT NULL COMMENT '卖家备注',
-  `admin_message` varchar(300) DEFAULT NULL COMMENT '管理员备注',
   `express_id` tinyint(1) unsigned DEFAULT '0' COMMENT '物流公司编号',
   `invoice_no` varchar(50) DEFAULT NULL COMMENT '物流单号',
-  `ship_time` int(10) unsigned DEFAULT '0' COMMENT '发货时间,默认为0',
-  `delay_time` int(10) unsigned DEFAULT '0' COMMENT '收货延迟时间,默认为0',
-  `receive_time` int(10) unsigned DEFAULT '0' COMMENT '收货时间,默认为0',
-  `receive_message` varchar(300) DEFAULT NULL COMMENT '收货备注',
+  `refundreturn_ship_time` int(10) unsigned DEFAULT '0' COMMENT '发货时间,默认为0',
+  `refundreturn_delay_time` int(10) unsigned DEFAULT '0' COMMENT '收货延迟时间,默认为0',
+  `refundreturn_receive_time` int(10) unsigned DEFAULT '0' COMMENT '收货时间,默认为0',
+  `refundreturn_receive_message` varchar(300) DEFAULT NULL COMMENT '收货备注',
+  `refundreturn_money_state` tinyint(1) unsigned DEFAULT '0' COMMENT '是否支付:0:未支付,1:已支付',
   `commis_rate` smallint(6) DEFAULT '0' COMMENT '佣金比例',
   PRIMARY KEY (`refund_id`),
   KEY `order_id` (`order_id`),
@@ -3171,7 +3118,6 @@ CREATE TABLE IF NOT EXISTS `#__store` (
   `deliver_region` varchar(50) DEFAULT NULL COMMENT '店铺默认配送区域',
   `store_mgdiscount` text COMMENT '序列化会员等级折扣(店铺)',
   `store_mgdiscount_state` tinyint(1) DEFAULT '0' COMMENT '店铺是否开启序列化会员等级折扣',
-  `store_bill_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上一期结算时间',
   `store_avaliable_deposit` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '店铺已缴保证金',
   `store_freeze_deposit` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '店铺审核保证金',
   `store_payable_deposit` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '店铺应缴保证金',
@@ -3803,7 +3749,6 @@ CREATE TABLE IF NOT EXISTS `#__vrorder` (
   `evaluation_state` tinyint(4) NOT NULL DEFAULT '0' COMMENT '评价状态 0:默认 1:已评价 2:禁止评价',
   `evaluation_time` int(11) NOT NULL DEFAULT '0' COMMENT '评价时间',
   `use_state` tinyint(4) DEFAULT '0' COMMENT '使用状态 0:未使用 1:已使用',
-  `ob_no` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '相关结算单号',
   PRIMARY KEY (`order_id`),
   KEY `store_id` (`store_id`),
   KEY `buyer_id` (`buyer_id`)
@@ -7928,7 +7873,6 @@ INSERT INTO `#__config` (`id`, `code`, `value`, `remark`) VALUES
 (710 ,  'inviter_view',  '0',  '推广员审核'),
 (711 ,  'inviter_condition',  '0',  '推广员条件'), 
 (712 ,  'inviter_condition_amount',  '0',  '成为推广员的消费门槛'),
-(713 ,  'store_bill_cycle',  '7',  '店铺结算周期（天）'),
 (714 ,  'store_withdraw_cycle',  '1',  '店铺提现周期（天）'), 
 (715 ,  'store_withdraw_min',  '100',  '店铺最小提现金额（元）'),
 (716 ,  'store_withdraw_max',  '10000',  '店铺最大提现金额（元）'),
@@ -7967,7 +7911,7 @@ INSERT INTO `#__config` (`id`, `code`, `value`, `remark`) VALUES
 (774 ,  'word_filter_access_token',  '',  '百度应用access_token'),
 (775 ,  'word_filter_access_token_expire',  '',  '百度应用access_token过期时间'),
 (780 ,  'member_normal_register',  '1',  '用户普通注册（0关闭1开启）'),
-(781 ,  'mapak_type',  '1',  '地图类型，1：高德地图，2：百度地图'),
+(781 ,  'mapak_type',  '0',  '地图类型，0：不使用地图，1：高德地图，2：百度地图'),
 (782 ,  'gaode_ak',  '',  '高德地图key'),
 (783 ,  'gaode_jscode',  '',  '高德地图安全密钥'),
 (784 ,  'baiduservice_ak',  '',  '百度地图服务端密钥');
