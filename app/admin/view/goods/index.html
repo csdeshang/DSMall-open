@@ -173,7 +173,7 @@
               {if $v.is_appoint eq 1}<span class="appoint" >{$Think.lang.ds_appoint}</span>{/if}
               <i class="iconfont {if $v.mobile_body neq ''}open{/if}" >&#xe72b;</i>
             </dd>
-            <dd class="goods-store">{if isset($ownShopIds[$v['store_id']])}{$Think.lang.ds_platform}{else/}{$Think.lang.ds_three_party}{/if}{$Think.lang.ds_store}：{$v.store_name}-{$Think.lang.ds_store_id}：{$v.store_id}</dd></dl>
+            <dd class="goods-store">{$Think.lang.ds_three_party}{$Think.lang.ds_store}：{$v.store_name}-{$Think.lang.ds_store_id}：{$v.store_id}</dd></dl>
             </td>
           <td>
             <p>{$v.gc_name}</p>

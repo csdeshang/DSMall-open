@@ -8,6 +8,8 @@ namespace app\home\controller;
 
 use think\facade\View;
 use think\facade\Lang;
+use think\facade\Db;
+use app\common\model\Storemoneylog;
 
 /**
  * ============================================================================
@@ -62,23 +64,8 @@ class BaseSeller extends BaseMall {
             }
 
             // 店铺等级
-            if (session('is_platform_store')) {
-                $this->store_grade = array(
-                    'storegrade_id' => '0',
-                    'storegrade_name' => lang('exclusive_grade_stores'),
-                    'storegrade_goods_limit' => '0',
-                    'storegrade_album_limit' => '0',
-                    'storegrade_space_limit' => '999999999',
-                    'storegrade_template_number' => '6',
-                    // 'storegrade_template' => 'default|style1|style2|style3|style4|style5',
-                    'storegrade_price' => '0.00',
-                    'storegrade_description' => '',
-                    'storegrade_sort' => '255',
-                );
-            } else {
                 $store_grade = rkcache('storegrade', true);
                 $this->store_grade = @$store_grade[$this->store_info['grade_id']];
-            }
             if (session('seller_is_admin') !== 1 && request()->controller() !== 'Seller' && request()->controller() !== 'Sellerlogin') {
                 $this->checkPermission();
             }
@@ -112,20 +99,35 @@ class BaseSeller extends BaseMall {
      * @param $storecost_remark 费用备注
      */
     protected function recordStorecost($storecost_price, $storecost_remark) {
-        // 平台店铺不记录店铺费用
-        if (check_platform_store()) {
-            return false;
-        }
-        $storecost_model = model('storecost');
-        $param = array();
-        $param['storecost_store_id'] = session('store_id');
-        $param['storecost_seller_id'] = session('seller_id');
-        $param['storecost_price'] = $storecost_price;
-        $param['storecost_remark'] = $storecost_remark;
-        $param['storecost_state'] = 0;
-        $param['storecost_time'] = TIMESTAMP;
-        $storecost_model->addStorecost($param);
 
+        Db::startTrans();
+        try {
+
+            $storecost_model = model('storecost');
+            $param = array();
+            $param['storecost_store_id'] = session('store_id');
+            $param['storecost_seller_id'] = session('seller_id');
+            $param['storecost_price'] = $storecost_price;
+            $param['storecost_remark'] = $storecost_remark;
+            $param['storecost_state'] = 0;
+            $param['storecost_time'] = TIMESTAMP;
+            $storecost_model->addStorecost($param);
+            $storemoneylog_model = model('storemoneylog');
+            //扣除店铺费用
+            $data = array(
+                'store_id' => session('store_id'),
+                'storemoneylog_type' => $storemoneylog_model::TYPE_ORDER_SUCCESS,
+                'storemoneylog_state' => $storemoneylog_model::STATE_VALID,
+                'storemoneylog_add_time' => TIMESTAMP,
+                'store_avaliable_money' => -$storecost_price,
+                'storemoneylog_desc' => $storecost_remark,
+            );
+            $storemoneylog_model->changeStoremoney($data);
+            Db::commit();
+        } catch (Exception $ex) {
+            Db::rollback();
+        }
+        
         // 发送店铺消息
         $param = array();
         $param['code'] = 'store_cost';
@@ -157,6 +159,7 @@ class BaseSeller extends BaseMall {
         );
         model('cron')->addCron(array('cron_exetime'=>TIMESTAMP,'cron_type'=>'sendStoremsg','cron_value'=>serialize($param)));
     }
+    
 
     /**
      * 添加到任务队列
@@ -200,7 +203,7 @@ class BaseSeller extends BaseMall {
      *    当前选中的子菜单
      */
     protected function setSellerCurMenu($cursubmenu = '') {
-        $seller_menu = self::getSellerMenuList($this->store_info['is_platform_store']);
+        $seller_menu = self::getSellerMenuList();
         $seller_menu=$this->parseMenu($seller_menu);
         View::assign('seller_menu', $seller_menu);
         $curmenu = '';
@@ -308,7 +311,7 @@ class BaseSeller extends BaseMall {
      * 获取卖家菜单列表
      */
 
-    public static function getSellerMenuList($is_platform_store = 0) {
+    public static function getSellerMenuList() {
         //controller  注意第一个字母要大写
         $menu_list = array(
             'sellergoods' =>
@@ -342,7 +345,6 @@ class BaseSeller extends BaseMall {
                     array('name' => 'sellerdeliverset', 'text' => lang('delivery_settings'), 'action' => null, 'controller' => 'Sellerdeliverset', 'url' => (string) url('Sellerdeliverset/index'),),
                     array('name' => 'sellerevaluate', 'text' => lang('evaluation_management'), 'action' => null, 'controller' => 'Sellerevaluate', 'url' => (string) url('Sellerevaluate/index'),),
                     array('name' => 'sellertransport', 'text' => lang('sales_area'), 'action' => null, 'controller' => 'Sellertransport', 'url' => (string) url('Sellertransport/index'),),
-                    array('name' => 'Sellerbill', 'text' => lang('physical_settlement'), 'action' => null, 'controller' => 'Sellerbill', 'url' => (string) url('Sellerbill/index'),),
                 )
             ),
             'sellergroupbuy' =>
@@ -393,8 +395,7 @@ class BaseSeller extends BaseMall {
                 'submenu' => array(
                     array('name' => 'seller_consult', 'text' => lang('consulting_management'), 'action' => null, 'controller' => 'Sellerconsult', 'url' => (string) url('Sellerconsult/index'),),
                     array('name' => 'seller_complain', 'text' => lang('complaint_record'), 'action' => null, 'controller' => 'Sellercomplain', 'url' => (string) url('Sellercomplain/index'),),
-                    array('name' => 'seller_refund', 'text' => lang('refund_paragraph'), 'action' => null, 'controller' => 'Sellerrefund', 'url' => (string) url('Sellerrefund/index'),),
-                    array('name' => 'seller_return', 'text' => lang('refund_cargo'), 'action' => null, 'controller' => 'Sellerreturn', 'url' => (string) url('Sellerreturn/index'),),
+                    array('name' => 'seller_refundreturn', 'text' => '退款退货', 'action' => null, 'controller' => 'Sellerrefund', 'url' => (string) url('Sellerrefund/index'),),
                 )
             ),
             'sellerstatistics' =>
@@ -436,10 +437,8 @@ class BaseSeller extends BaseMall {
                 )
             ),
         );
-        if (!$is_platform_store) {
             $menu_list['seller']['submenu'] = array_merge(array(array('name' => 'seller_money', 'text' => lang('store_money'), 'action' => null, 'controller' => 'Sellermoney', 'url' => (string) url('Sellermoney/index'),), array('name' => 'seller_deposit', 'text' => lang('store_deposit'), 'action' => null, 'controller' => 'Sellerdeposit', 'url' => (string) url('Sellerdeposit/index'),),array('name' => 'sellerinfo', 'text' => lang('store_information'), 'action' => null, 'controller' => 'Sellerinfo', 'url' => (string) url('Sellerinfo/index'),),), $menu_list['seller']['submenu']);
             $menu_list['selleraccount']['submenu'] = array_merge(array(array('name' => 'sellercost', 'text' => lang('store_consumption'), 'action' => null, 'controller' => 'Sellercost', 'url' => (string) url('Sellercost/cost_list'),)), $menu_list['selleraccount']['submenu']);
-        }
         if (config('ds_config.inviter_open')) {
             $menu_list['sellerinviter'] = array(
                 'ico' => '&#xe6ed;',

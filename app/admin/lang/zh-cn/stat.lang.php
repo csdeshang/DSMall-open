@@ -42,9 +42,6 @@ $lang['stat_orderpricerange'] = '订单金额区间';
 $lang['stat_validorder_explain'] = "有效的订单为店铺和平台结算过的订单。";
 
 
-$lang['refund_state_yes'] = '同意退款';
-$lang['refund_state_no'] = '不同意退款';
-$lang['refund_state_confirm'] = '待审核';
 
 $lang['state_no_tile_limit'] = '无限制';
 $lang['statstore_grade'] = '所属等级';
@@ -300,9 +297,6 @@ $lang['admin_state'] = '平台确认';
 $lang['none'] = '无';
 $lang['refund_log'] = '退款记录';
 $lang['store_dynamic_score_statis'] = '店铺动态评分统计';
-$lang['admin_state_1'] = '处理中';
-$lang['admin_state_2'] = '待处理';
-$lang['admin_state_3'] = '已完成';
 
 
 $lang['is_numeric_error'] = '金额需为数字';

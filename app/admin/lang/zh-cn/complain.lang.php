@@ -9,9 +9,6 @@ $lang['complain_talk_list'] = '对话中';
 $lang['complain_finish_list'] = '已关闭';
 $lang['complain_subject_list'] = '投诉主题';
 
-$lang['refund_state_confirm']	= '待审核';
-$lang['refund_state_yes']	= '同意';
-$lang['refund_state_no']	= '不同意';
 $lang['ds_processed'] = '待处理';
 /**
  * 导航菜单

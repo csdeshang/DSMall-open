@@ -52,16 +52,6 @@
                     </select>
                 </dd>
             </dl>
-            <dl>
-                <dt>{$Think.lang.ob_no_state}</dt>
-                <dd>
-                    <select name="ob_no_state" class="querySelect">
-                        <option value="">{$Think.lang.ds_please_choose}</option>
-                        <option value="0" {if condition="$Request.param.ob_no_state eq '0'"}selected{/if}>{$Think.lang.ob_no_state_0}</option>
-                        <option value="1" {if condition="$Request.param.ob_no_state eq '1'"}selected{/if}>{$Think.lang.ob_no_state_1}</option>
-                    </select>
-                </dd>
-            </dl>
             
             
             
@@ -112,7 +102,6 @@
                 <th>{$Think.lang.ds_payment_code}</th>
                 <th>{$Think.lang.order_state}</th>
                 <th>{$Think.lang.refund_state}</th>
-                <th>{$Think.lang.ob_no}</th>
                 <th>{$Think.lang.ds_handle}</th>
             </tr>
         </thead>
@@ -126,11 +115,11 @@
         {foreach name="order_group_list" item="order_list" key="pay_sn"}
         <tbody>
             <tr>
-                <td class="sep-row" colspan="19"></td>
+                <td class="sep-row" colspan="20"></td>
             </tr>
             {if condition="$order_list.pay_amount>0"}
             <tr>
-                <td colspan="10"  class="bdl">{$Think.lang.ds_pay_amount}{$Think.lang.ds_colon}{$Think.lang.currency}{$order_list.pay_amount}</td>
+                <td colspan="9"  class="bdl">{$Think.lang.ds_pay_amount}{$Think.lang.ds_colon}{$Think.lang.currency}{$order_list.pay_amount}</td>
                 <td class="bdr"><a href="javascript:dsLayerOpen('{:url('Order/change_state',['state_type'=>'receive_pay','pay_sn'=>$pay_sn])}','{$Think.lang.ds_order}-{$pay_sn}')" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.order_change_received}</a></td>
             </tr>
             {/if}
@@ -144,16 +133,7 @@
                 <td>{$order.order_amount}</td>
                 <td>{:get_order_payment_name($order['payment_code'])}</td>
                 <td>{:get_order_state($order)}</td>
-                <td>{:get_order_refund_state($order['refund_state'])}</td>
-                <td>
-                    {if condition="$order.ob_no>0"}
-                    <a href="javascript:dsLayerOpen('{:url('Bill/show_bill',['ob_no'=>$order.ob_no])}','{$Think.lang.ds_view}-{$order.ob_no}')">
-                        {$order.ob_no}
-                    </a>
-                    {else /}
-                    {$Think.lang.ob_no_state_0}
-                    {/if}
-                </td>
+                <td>{if $order.order_refund_lock_state > 0} 退款退货中{else /}{:get_order_refund_state($order['refund_state'])}{/if}</td>
                 <td class="bdr">
                     <a href="javascript:dsLayerOpen('{:url('Order/show_order',['order_id'=>$order.order_id])}','{$Think.lang.ds_view}{$Think.lang.ds_order}-{$order.order_sn}')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_view}</a>
                     {if condition="$order.if_cancel"}

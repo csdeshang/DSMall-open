@@ -32,7 +32,7 @@
             target: '#zt_address'
         });
         function setMarker(lng, lat) {
-			if({$Think.config.ds_config.mapak_type} == '1'){
+			if('{$Think.config.ds_config.mapak_type}' === '1'){
 				map.clearMap();
 				marker = new AMap.Marker({
 				    position: new AMap.LngLat(lng, lat),
@@ -42,7 +42,8 @@
 				
 				map.add(marker);
 				map.panTo([lng, lat]);
-			}else{
+			}
+                        if('{$Think.config.ds_config.mapak_type}' === '2'){
 				map.clearOverlays();
 				var point = new BMap.Point(lng, lat);
 				var marker = new BMap.Marker(point); // 创建点

@@ -98,9 +98,6 @@ class Promotionbundling extends AdminControl
         View::assign('state_array', $state_array);
 
 
-        // 输出自营店铺IDS
-        // View::assign('flippedOwnShopIds', array_flip(model('store')->getOwnShopIds()));
-        View::assign('flippedOwnShopIds', '');
         $this->setAdminCurItem('index');
         return View::fetch();
     }

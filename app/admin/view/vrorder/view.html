@@ -23,14 +23,6 @@
                         <li><strong>{$Think.lang.vrorder_rcb_amount}:</strong>{$Think.lang.currency}{$order_info.rcb_amount}</li>
                         
                         <li><strong>{$Think.lang.refund_state}:</strong>{:get_order_refund_state($order_info['refund_state'])}</li>
-                        <li>
-                            <strong>{$Think.lang.ob_no}:</strong>
-                            {if condition="$order_info.ob_no>0"}
-                            {$Think.lang.ob_no_state_1}
-                            {else /}
-                            {$Think.lang.ob_no_state_0}
-                            {/if}
-                        </li>
                     </ul>
                 </td>
             </tr>

@@ -34,7 +34,7 @@ class Seller extends BaseSeller {
         if (intval($store_info['store_endtime']) > 0) {
             $store_info['store_endtime_text'] = date('Y-m-d', $store_info['store_endtime']);
             $reopen_time = $store_info['store_endtime'] - 3600 * 24 + 1 - TIMESTAMP;
-            if (!session('is_platform_store') && $store_info['store_endtime'] - TIMESTAMP >= 0 && $reopen_time < 2592000) {
+            if ($store_info['store_endtime'] - TIMESTAMP >= 0 && $reopen_time < 2592000) {
                 //到期续签提醒(<30天)
                 $store_info['reopen_tip'] = true;
             }
@@ -86,7 +86,6 @@ class Seller extends BaseSeller {
         unset($stime, $etime, $where, $field, $orderby);
         View::assign('goods_list', $goods_list);
         
-        if (!session('is_platform_store')) {
             
             if (config('ds_config.groupbuy_allow') == 1) {
                 // 抢购套餐
@@ -111,9 +110,6 @@ class Seller extends BaseSeller {
                 $voucherquota_info = model('voucher')->getVoucherquotaCurrent(session('store_id'));
                 View::assign('voucherquota_info', $voucherquota_info);
             }
-        } else {
-            View::assign('isPlatformStore', true);
-        }
         $phone_array = explode(',', config('ds_config.site_phone'));
         View::assign('phone_array', $phone_array);
 
@@ -143,9 +139,7 @@ class Seller extends BaseSeller {
         $no_payment = 0;        // 待付款
         $no_delivery = 0;       // 待发货
         $no_receipt = 0;        // 待收货
-        $refund_lock = 0;      // 售前退款
         $refund = 0;            // 售后退款
-        $return_lock = 0;      // 售前退货
         $return = 0;            // 售后退货
         $complain = 0;          //进行中投诉
 
@@ -179,33 +173,17 @@ class Seller extends BaseSeller {
         $no_delivery = $order_model->getOrderCountByID('store', session('store_id'), 'PayCount');
 
         $refundreturn_model = model('refundreturn');
-        // 售前退款
-        $condition = array();
-        $condition[]=array('store_id','=',session('store_id'));
-        $condition[]=array('refund_type','=',1);
-        $condition[]=array('order_lock','=',2);
-        $condition[]=array('refund_state','<', 3);
-        $refund_lock = $refundreturn_model->getRefundreturnCount($condition);
         // 售后退款
         $condition = array();
         $condition[]=array('store_id','=',session('store_id'));
         $condition[]=array('refund_type','=',1);
-        $condition[]=array('order_lock','=',1);
-        $condition[]=array('refund_state','<', 3);
+        $condition[]=array('refundreturn_admin_state','<', 3);
         $refund = $refundreturn_model->getRefundreturnCount($condition);
-        // 售前退货
-        $condition = array();
-        $condition[]=array('store_id','=',session('store_id'));
-        $condition[]=array('refund_type','=',2);
-        $condition[]=array('order_lock','=',2);
-        $condition[]=array('refund_state','<', 3);
-        $return_lock = $refundreturn_model->getRefundreturnCount($condition);
         // 售后退货
         $condition = array();
         $condition[]=array('store_id','=',session('store_id'));
         $condition[]=array('refund_type','=',2);
-        $condition[]=array('order_lock','=',1);
-        $condition[]=array('refund_state','<', 3);
+        $condition[]=array('refundreturn_admin_state','<', 3);
         $return = $refundreturn_model->getRefundreturnCount($condition);
 
         $condition = array();
@@ -214,12 +192,6 @@ class Seller extends BaseSeller {
         $complain_mod=model('complain');
         $complain = $complain_mod->getComplainCount($condition);
 
-        //待确认的结算账单
-        $bill_model = model('bill');
-        $condition = array();
-        $condition[] = array('ob_store_id','=',session('store_id'));
-        $condition[] = array('ob_state','=',BILL_STATE_CREATE);
-        $bill_confirm_count = $bill_model->getOrderbillCount($condition);
 
         //统计数组
         $statistics = array(
@@ -234,12 +206,9 @@ class Seller extends BaseSeller {
             'progressing' => $progressing,
             'payment' => $no_payment,
             'delivery' => $no_delivery,
-            'refund_lock' => $refund_lock,
             'refund' => $refund,
-            'return_lock' => $return_lock,
             'return' => $return,
             'complain' => $complain,
-            'bill_confirm' => $bill_confirm_count
         );
         exit(json_encode($statistics));
     }

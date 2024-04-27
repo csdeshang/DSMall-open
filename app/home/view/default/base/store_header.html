@@ -67,14 +67,8 @@
                                         <dl>
                                             <dt class="fl"><span class="t_adjust">{$Think.lang.business_licence_number_electronic}</span><span>：</span></dt>
                                             <dd class="fl">
-                                                {if !$store_info.is_platform_store}
                                                 {if $store_info.business_licence_number_electronic}
                                                 <a href="{$store_info.business_licence_number_electronic}" target="_blank">{$Think.lang.ds_view}</a>
-                                                {/if}
-                                                {else}
-                                                {if $Think.config.ds_config.business_licence}
-                                                <a href="{:ds_get_pic(ATTACH_COMMON,$Think.config.ds_config.business_licence)}" target="_blank">{$Think.lang.ds_view}</a>
-                                                {/if}
                                                 {/if}
                                             </dd>
                                         </dl>

@@ -12,15 +12,15 @@
                     <dt>{$Think.lang.application_return}</dt>
                     <dd class="bg"></dd>
                 </dl>
-                <dl class="{if $return.seller_time>0}current{/if}">
+                <dl class="{if $return.refundreturn_seller_time>0}current{/if}">
                     <dt>{$Think.lang.merchants_process_applications_returns}</dt>
                     <dd class="bg"> </dd>
                 </dl>
-                <dl class="{if $return.ship_time > 0 || $return.return_type==1}current{/if}">
+                <dl class="{if $return.refundreturn_ship_time > 0 || $return.return_type==1}current{/if}">
                     <dt>{$Think.lang.buyers_return_goods_merchants}</dt>
                     <dd class="bg"> </dd>
                 </dl>
-                <dl class="{if $return.admin_time > 0 }current{/if}">
+                <dl class="{if $return.refundreturn_admin_time > 0 }current{/if}">
                     <dt>{$Think.lang.confirm_goods}</dt>
                     <dd class="bg"> </dd>
                 </dl>
@@ -49,7 +49,7 @@
                 </dl>
                 <dl>
                     <dt>{$Think.lang.return_instructions}：</dt>
-                    <dd> {$return.buyer_message} </dd>
+                    <dd> {$return.refundreturn_buyer_message} </dd>
                 </dl>
                 <dl>
                     <dt>{$Think.lang.credentials_upload}：</dt>
@@ -68,12 +68,12 @@
                 <h3>{$Think.lang.business_processing}</h3>
                 <dl>
                     <dt>{$Think.lang.processing_state}{$Think.lang.ds_colon}</dt>
-                    <dd> {$state_array[$return['seller_state']]}</dd>
+                    <dd>{$return.refundreturn_seller_state_desc}</dd>
                 </dl>
-                {if $return.seller_time > 0}
+                {if $return.refundreturn_seller_time > 0}
                 <dl>
                     <dt>{$Think.lang.refund_seller_message}{$Think.lang.ds_colon}</dt>
-                    <dd>{$return.seller_message}</dd>
+                    <dd>{$return.refundreturn_seller_message}</dd>
                 </dl>
                 {/if}
                 {if $return['express_id'] > 0 && !empty($return['invoice_no'])}
@@ -82,23 +82,23 @@
                     <dd>{$express_name} , {$return.invoice_no}</dd>
                 </dl>
                 {/if}
-                {if $return.receive_time > 0}
+                {if $return.refundreturn_receive_time > 0}
                 <dl>
                     <dt>{$Think.lang.receiving_note}{$Think.lang.ds_colon}</dt>
-                    <dd>{$return.receive_message}</dd>
+                    <dd>{$return.refundreturn_receive_message}</dd>
                 </dl>
                 {/if}
-                {if $return.seller_state == 2 && $return.refund_state >= 2}
+                {if $return.refundreturn_seller_state == 2 && $return.refundreturn_admin_state >= 2}
                 <h3>{$Think.lang.mall_platform_processing_auditing}</h3>
                 <dl>
                     <dt>{$Think.lang.platform_confirm}{$Think.lang.ds_colon}</dt>
-                    <dd>{$admin_array[$return['refund_state']]}</dd>
+                    <dd>{$return.refundreturn_admin_state_desc}</dd>
                 </dl>
                 {/if}
-                {if $return.admin_time > 0}
+                {if $return.refundreturn_admin_time > 0}
                 <dl>
                     <dt>{$Think.lang.platform_note}{$Think.lang.ds_colon}</dt>
-                    <dd>{$return.admin_message}</dd>
+                    <dd>{$return.refundreturn_admin_message}</dd>
                 </dl>
                 {/if}
                 {if $return['express_id'] > 0 && !empty($return['invoice_no'])}

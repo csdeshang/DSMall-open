@@ -20,7 +20,6 @@ $lang['ds_end_pintuan'] = '提前结束';
 $lang['pintuan_add_start_time_explain'] = '开始时间不能为空且不能早于%s';
 $lang['pintuan_add_end_time_explain'] = '结束时间不能为空且不能晚于%s';
 $lang['time_error'] = '时间格式错误';
-$lang['param_error'] = '参数错误';
 $lang['pintuan_discount_explain'] = '折扣必须为0.1-9.9之间的数字';
 $lang['pintuan_buy_limit_explain'] = '购买限制必须为正整数';
 $lang['greater_than_start_time'] = '结束时间必须大于开始时间';

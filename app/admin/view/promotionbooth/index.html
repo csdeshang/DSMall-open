@@ -55,9 +55,6 @@
                 <td class="w60 picture"><div class="size-56x56"><span class="thumb size-56x56"><i></i><img src="{:goods_thumb($v,240)}" onload="javascript:ResizeImage(this,56,56);"/></span></div></td>
                 <td class="goods-name w270"><p><span>{$v.goods_name}</span></p>
                     <p class="store">{$Think.lang.ds_store_name}：{$v.store_name}
-                        {present name="flippedOwnShopIds[$v.store_id]"}
-                        <span class="ownshop">[{$Think.lang.ds_ownshop}]</span>
-                       {/present}
                     </p>
                 </td>
                 <td class="align-center">{$gc_list[$v['gc_id']]['gc_name']|default=''}</td>

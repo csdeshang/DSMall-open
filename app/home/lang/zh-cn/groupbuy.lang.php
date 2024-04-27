@@ -58,7 +58,6 @@ $lang['no_groupbuy_info'] = '没有抢购信息';
 $lang['no_groupbuy_template_soon'] = '没有即将开始的抢购活动';
 $lang['no_groupbuy_template_history'] = '没有历史抢购活动';
 $lang['no_groupbuy'] = '当前没有抢购信息';
-$lang['param_error'] = '参数错误';
 $lang['group_name_error'] = '抢购名称不能为空';
 $lang['group_goods_error'] = '请选择抢购商品';
 $lang['group_help_error'] = '抢购说明不能为空';

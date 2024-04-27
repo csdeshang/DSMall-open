@@ -37,9 +37,6 @@ class Sellerpromotionmansong extends BaseSeller {
         $mansongquota_model = model('pmansongquota');
         $pmansong_model = model('pmansong');
 
-        $isPlatformStore = check_platform_store() ? true : false;
-
-        View::assign('isPlatformStore', $isPlatformStore);
 
         $current_mansong_quota = $mansongquota_model->getMansongquotaCurrent(session('store_id'));
         View::assign('current_mansong_quota', $current_mansong_quota);
@@ -71,10 +68,6 @@ class Sellerpromotionmansong extends BaseSeller {
         $start_time = $pmansong_model->getMansongNewStartTime(session('store_id'));
 
         $end_time = TIMESTAMP;
-        $isPlatformStore = check_platform_store() ? true : false;
-        View::assign('isPlatformStore', $isPlatformStore);
-
-        if (!$isPlatformStore) {
             //检查当前套餐是否可用
             $current_mansong_quota = $mansongquota_model->getMansongquotaCurrent(session('store_id'));
             if (empty($current_mansong_quota)) {
@@ -89,7 +82,6 @@ class Sellerpromotionmansong extends BaseSeller {
                 $start_time = $current_mansong_quota['mansongquota_starttime'];
             }
             $end_time = $current_mansong_quota['mansongquota_endtime'];
-        }
 
         if (empty($start_time))
             $start_time = TIMESTAMP;
@@ -127,7 +119,6 @@ class Sellerpromotionmansong extends BaseSeller {
             $start_time = $start_time_limit;
         }
 
-        if (!check_platform_store()) {
             //检查当前套餐是否可用
             $current_mansong_quota = $mansongquota_model->getMansongquotaCurrent(session('store_id'));
             if (empty($current_mansong_quota)) {
@@ -148,7 +139,7 @@ class Sellerpromotionmansong extends BaseSeller {
             if ($end_time > $quota_end_time) {
                 ds_json_encode(10001, sprintf(lang('mansong_add_end_time_explain'), date('Y-m-d', $current_mansong_quota['mansongquota_endtime'])));
             }
-        }
+            
             if($end_time<TIMESTAMP){
                 ds_json_encode(10001, sprintf(lang('mansong_add_end_time_explain'), date('Y-m-d')));
             }

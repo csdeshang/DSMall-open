@@ -179,14 +179,14 @@ class ChainOrder extends BaseModel {
      * @param array $condition 条件
      * @return type
      */
-    public function editChainOrderCancel($order_id, $refund_state = 0, $return_state = 0) {
+    public function editChainOrderCancel($order_id, $chain_order_refund_state = 0, $return_state = 0) {
         $condition = array();
         $condition[] = array('order_id', '=', $order_id);
         $chain_order_info = $this->getChainOrderInfo($condition);
         if ($chain_order_info) {
             $data = array();
-            if ($refund_state) {
-                $data['chain_order_refund_state'] = $refund_state;
+            if ($chain_order_refund_state) {
+                $data['chain_order_refund_state'] = $chain_order_refund_state;
             }
             if ($chain_order_info['chain_order_type'] == 2) {//自提
                 if($return_state){

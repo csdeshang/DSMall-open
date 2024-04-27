@@ -32,12 +32,8 @@ class Sellerpromotionwholesale extends BaseSeller {
         $wholesalequota_model = model('wholesalequota');
         $wholesale_model = model('wholesale');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_wholesale_quota = $wholesalequota_model->getWholesalequotaCurrent(session('store_id'));
             View::assign('current_wholesale_quota', $current_wholesale_quota);
-        }
 
         $condition = array();
         $condition[] = array('store_id', '=', session('store_id'));
@@ -61,10 +57,6 @@ class Sellerpromotionwholesale extends BaseSeller {
      * 添加批发活动
      * */
     public function wholesale_add() {
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
-            View::assign('isPlatformStore', false);
             $wholesalequota_model = model('wholesalequota');
             $current_wholesale_quota = $wholesalequota_model->getWholesalequotaCurrent(session('store_id'));
             if (empty($current_wholesale_quota)) {
@@ -75,7 +67,6 @@ class Sellerpromotionwholesale extends BaseSeller {
                 }
             }
             View::assign('current_wholesale_quota', $current_wholesale_quota);
-        }
 
         //输出导航
         $this->setSellerCurMenu('Sellerpromotionwholesale');
@@ -102,7 +93,6 @@ class Sellerpromotionwholesale extends BaseSeller {
             ds_json_encode(10001, lang('greater_than_start_time'));
         }
 
-        if (!check_platform_store()) {
             //获取当前套餐
             $wholesalequota_model = model('wholesalequota');
             $current_wholesale_quota = $wholesalequota_model->getWholesalequotaCurrent(session('store_id'));
@@ -122,7 +112,7 @@ class Sellerpromotionwholesale extends BaseSeller {
             if ($end_time > $quota_end_time) {
                 ds_json_encode(10001, sprintf(lang('wholesale_add_end_time_explain'), date('Y-m-d', $current_wholesale_quota['wholesalequota_endtime'])));
             }
-        }
+            
             if($end_time<TIMESTAMP){
                 ds_json_encode(10001, sprintf(lang('wholesale_add_end_time_explain'), date('Y-m-d')));
             }
@@ -256,11 +246,6 @@ class Sellerpromotionwholesale extends BaseSeller {
      * 编辑批发活动
      * */
     public function wholesale_edit() {
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
-            View::assign('isPlatformStore', false);
-        }
         $wholesale_model = model('wholesale');
 
         $wholesale_info = $wholesale_model->getWholesaleInfoByID(input('param.wholesale_id'));

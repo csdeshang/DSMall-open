@@ -1,6 +1,6 @@
 {extend name="default/base/base_seller" /}
 {block name="seller_btn"}
-{if isset($isPlatformStore) || config('ds_config.groupbuy_price')==0}
+{if config('ds_config.groupbuy_price')==0}
 <a href="{:url('Sellergroupbuy/groupbuy_add_vr')}" style="right:100px"
    class="dssc-btn dssc-btn-green" title="{$Think.lang.new_virtual_goods_snap}"><i class="iconfont">&#xe6db;</i>{$Think.lang.new_virtual_panic_buying}</a>
 <a href="{:url('Sellergroupbuy/groupbuy_add')}" class="dssc-btn dssc-btn-green"
@@ -25,7 +25,7 @@
 
 {/block}
 {block name="seller_main"}
-{if isset($isPlatformStore) || config('ds_config.groupbuy_price')==0}
+{if config('ds_config.groupbuy_price')==0}
 <div class="alert alert-block mt10">
     <ul class="mt5">
         <li>{$Think.lang.purchase_plan1}</li>

@@ -3,14 +3,6 @@
 /**
  * 虚拟订单和实物订单
  */
-$lang['refund_state'] = '退款状态';
-$lang['refund_state_0'] = '无退款';
-$lang['refund_state_1'] = '部分退款';
-$lang['refund_state_2'] = '全部退款';
-$lang['ob_no'] = '结算单号';
-$lang['ob_no_state'] = '结算状态';
-$lang['ob_no_state_0'] = '未结算';
-$lang['ob_no_state_1'] = '已结算';
 
 $lang['order_state'] = '订单状态';
 $lang['order_state_new'] = '待付款';

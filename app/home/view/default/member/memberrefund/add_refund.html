@@ -63,7 +63,7 @@
                             <dl>
                                 <dt><i class="required">*</i>{$Think.lang.refund_instructions}：</dt>
                                 <dd>
-                                    <textarea name="buyer_message" rows="3" class="textarea w400"></textarea>
+                                    <textarea name="refundreturn_buyer_message" rows="3" class="textarea w400"></textarea>
                                     <br />
                                     <span class="error"></span> </dd>
                             </dl>
@@ -143,7 +143,7 @@
                             <dl>
                                 <dt><i class="required">*</i>{$Think.lang.refund_instructions}：</dt>
                                 <dd>
-                                    <textarea name="buyer_message" rows="3" class="textarea w400"></textarea>
+                                    <textarea name="refundreturn_buyer_message" rows="3" class="textarea w400"></textarea>
                                     <br />
                                     <span class="error"></span> </dd>
                             </dl>
@@ -196,7 +196,7 @@ $(function(){
                 min:0.01,
                 max:{$goods.goods_pay_price}
             },
-            buyer_message : {
+            refundreturn_buyer_message : {
                 required   : true
             }
         },
@@ -210,7 +210,7 @@ $(function(){
                 min   : '<i class="iconfont">&#xe64c;</i>{$Think.lang.refund_pay_min} 0.01',
 	            max   : '<i class="iconfont">&#xe64c;</i>{$Think.lang.refund_pay_refund} {$goods.goods_pay_price}'
             },
-            buyer_message  : {
+            refundreturn_buyer_message  : {
                 required   : '<i class="iconfont">&#xe64c;</i>{$Think.lang.please_fill_refund_instructions}'
             }
         }
@@ -235,7 +235,7 @@ $(function(){
                 min:1,
                 max:{$goods.goods_num}
             },
-            buyer_message : {
+            refundreturn_buyer_message : {
                 required   : true
             }
         },
@@ -255,7 +255,7 @@ $(function(){
                 min   : '<i class="iconfont">&#xe64c;</i>{$Think.lang.return_number_min} 1',
 	            max   : '<i class="iconfont">&#xe64c;</i>{$Think.lang.return_number_max} {$goods.goods_num}'
             },
-            buyer_message  : {
+            refundreturn_buyer_message  : {
                 required   : '<i class="iconfont">&#xe64c;</i>{$Think.lang.fill_return_refund_instructions}'
             }
         }

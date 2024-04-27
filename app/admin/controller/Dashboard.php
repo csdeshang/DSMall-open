@@ -475,9 +475,9 @@ class Dashboard extends AdminControl {
         // 订单总数
         $statistics['order'] = $order_model->getOrderCount(array());
         // 退款
-        $statistics['refund'] = $refundreturn_model->getRefundreturnCount(array('refund_type' => 1, 'refund_state' => 2));
+        $statistics['refund'] = $refundreturn_model->getRefundreturnCount(array('refund_type' => 1, 'refundreturn_admin_state' => 2));
         // 退货
-        $statistics['return'] = $refundreturn_model->getRefundreturnCount(array('refund_type' => 2, 'refund_state' => 2));
+        $statistics['return'] = $refundreturn_model->getRefundreturnCount(array('refund_type' => 2, 'refundreturn_admin_state' => 2));
         // 虚拟订单退款
         $statistics['vr_refund'] = $vrrefund_model->getVrrefundCount(array('admin_state' => 1));
         // 投诉
@@ -495,11 +495,6 @@ class Dashboard extends AdminControl {
         $condition =array();
         $condition =array(array('point_orderstate','in', array(11, 20)));
         $statistics['points_order'] = $pointsorder_model->getPointorderCount($condition);
-        //待审核账单
-        $bill_model = model('bill');
-        $statistics['check_billno'] = $bill_model->getOrderbillCount(array('ob_state'=>BILL_STATE_STORE_COFIRM));
-        //待支付账单
-        $statistics['pay_billno'] = $bill_model->getOrderbillCount(array('ob_state'=>BILL_STATE_STORE_COFIRM));
         // 平台客服
         $statistics['mall_consult'] = model('mallconsult')->getMallconsultCount(array('mallconsult_isreply' => 0));
         // 服务站

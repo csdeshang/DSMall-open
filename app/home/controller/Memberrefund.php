@@ -27,8 +27,6 @@ class Memberrefund extends BaseMember {
         parent::initialize();
         Lang::load(base_path() . 'home/lang/' . config('lang.default_lang') . '/memberrefund.lang.php');
         Lang::load(base_path() . 'home/lang/' . config('lang.default_lang') . '/memberorder.lang.php');
-        //向模板页面输出退款退货状态
-        $this->getRefundStateArray();
     }
 
     /**
@@ -71,18 +69,13 @@ class Memberrefund extends BaseMember {
 
         $goods_id = $goods['rec_id'];
         $condition = array();
-        $condition[] = array('buyer_id', '=', $order['buyer_id']);
         $condition[] = array('order_id', '=', $order['order_id']);
         $condition[] = array('order_goods_id', '=', $goods_id);
-        $condition[] = array('refund_state', '<', '3');
-        $refund_list = $refundreturn_model->getRefundreturnList($condition);
-        $refund = array();
-        if (!empty($refund_list) && is_array($refund_list)) {
-            $refund = $refund_list[0];
-        }
-        $refund_state = $refundreturn_model->getRefundState($order); //根据订单状态判断是否可以退款退货
+        $refund = $refundreturn_model->getRefundreturnInfo($condition);
+        
+        $if_allow_refund = $refundreturn_model->getOrderAllowRefundState($order); //根据订单状态判断是否可以退款退货
 
-        if ((isset($refund['refund_id']) && $refund['refund_id'] > 0) || $refund_state != 1) {//检查订单状态,防止页面刷新不及时造成数据错误
+        if (!empty($refund) || $if_allow_refund != 1 || $goods_id<=0) {//检查订单状态,防止页面刷新不及时造成数据错误
             $this->error(lang('param_error'), (string) url('Memberorder/index'));
         }
         if (request()->isPost() && $goods_id > 0) {
@@ -111,13 +104,6 @@ class Memberrefund extends BaseMember {
             $info = serialize($pic_array);
             $refund_array['pic_info'] = $info;
 
-            $trade_model = model('trade');
-            $order_shipped = $trade_model->getOrderState('order_shipped'); //订单状态30:已发货
-            if ($order['order_state'] == $order_shipped) {
-                $refund_array['order_lock'] = '2'; //锁定类型:1为不用锁定,2为需要锁定
-            } else {
-                $refund_array['order_lock'] = '1';
-            }
 
             $refund_array['refund_type'] = input('post.refund_type'); //类型:1为退款,2为退货
             $show_url = (string) url('Memberreturn/index');
@@ -127,18 +113,16 @@ class Memberrefund extends BaseMember {
                 $refund_array['return_type'] = '1';
                 $show_url = (string) url('Memberrefund/index');
             }
-            $refund_array['seller_state'] = '1'; //状态:1为待审核,2为同意,3为不同意
+            $refund_array['refundreturn_seller_state'] = '1'; //状态:1为待审核,2为同意,3为不同意
             $refund_array['refund_amount'] = ds_price_format($refund_amount);
             $refund_array['goods_num'] = $goods_num;
-            $refund_array['buyer_message'] = input('post.buyer_message');
-            $refund_array['add_time'] = TIMESTAMP;
+            $refund_array['refundreturn_buyer_message'] = input('post.refundreturn_buyer_message');
+            $refund_array['refundreturn_add_time'] = TIMESTAMP;
             $state = $refundreturn_model->addRefundreturn($refund_array, $order, $goods);
 
             if ($state) {
 
-                if ($order['order_state'] == $order_shipped) {
                     $refundreturn_model->editOrderLock($order_id);
-                }
                 //自提点订单锁定
                 $chain_order_model=model('chain_order');
                 $chain_order_model->editChainOrderLock($order_id);
@@ -160,7 +144,6 @@ class Memberrefund extends BaseMember {
      *
      */
     public function add_refund_all() {
-        $trade_model = model('trade');
         $refundreturn_model = model('refundreturn');
         $order_id = intval(input('param.order_id'));
         $condition = array();
@@ -176,18 +159,12 @@ class Memberrefund extends BaseMember {
         $order_amount = $order['order_amount']; //订单金额
         $order_amount -= $order['presell_deposit_amount'];
         $condition = array();
-        $condition[] = array('buyer_id', '=', $order['buyer_id']);
         $condition[] = array('order_id', '=', $order['order_id']);
         $condition[] = array('goods_id', '=', '0');
-        $condition[] = array('refund_state', '<', '3');
-        $refund_list = $refundreturn_model->getRefundreturnList($condition);
-        $refund = array();
-        if (!empty($refund_list) && is_array($refund_list)) {
-            $refund = $refund_list[0];
-        }
-        $order_paid = $trade_model->getOrderState('order_paid'); //订单状态20:已付款
+        $refund = $refundreturn_model->getRefundreturnInfo($condition);
+        
         $payment_code = $order['payment_code']; //支付方式
-        if ((isset($refund['refund_id']) && $refund['refund_id'] > 0) ||  !in_array($order['order_state'],[ORDER_STATE_PAY,ORDER_STATE_PICKUP]) || $payment_code == 'offline') {//检查订单状态,防止页面刷新不及时造成数据错误
+        if (!empty($refund) || !in_array($order['order_state'],[ORDER_STATE_PAY,ORDER_STATE_PICKUP]) || $payment_code == 'offline') {//检查订单状态,防止页面刷新不及时造成数据错误
             $this->error(lang('param_error'), 'home/memberrefund/index');
         }
         if (!request()->isPost()) {
@@ -199,16 +176,15 @@ class Memberrefund extends BaseMember {
         } else {
             $refund_array = array();
             $refund_array['refund_type'] = '1'; //类型:1为退款,2为退货
-            $refund_array['seller_state'] = '1'; //状态:1为待审核,2为同意,3为不同意
-            $refund_array['order_lock'] = '2'; //锁定类型:1为不用锁定,2为需要锁定
+            $refund_array['refundreturn_seller_state'] = '1'; //状态:1为待审核,2为同意,3为不同意
             $refund_array['goods_id'] = '0';
             $refund_array['order_goods_id'] = '0';
             $refund_array['reason_id'] = '0';
             $refund_array['reason_info'] = lang('refund_notice4');
             $refund_array['goods_name'] = lang('all_orders_refunded');
             $refund_array['refund_amount'] = ds_price_format($order_amount);
-            $refund_array['buyer_message'] = input('post.buyer_message');
-            $refund_array['add_time'] = TIMESTAMP;
+            $refund_array['refundreturn_buyer_message'] = input('post.refundreturn_buyer_message');
+            $refund_array['refundreturn_add_time'] = TIMESTAMP;
             $pic_array = array();
             $pic_array['buyer'] = $this->upload_pic(); //上传凭证
             $info = serialize($pic_array);
@@ -248,14 +224,14 @@ class Memberrefund extends BaseMember {
         if (trim($add_time_from) != '') {
             $add_time_from = strtotime(trim($add_time_from));
             if ($add_time_from !== false) {
-                $condition[] = array('add_time', '>=', $add_time_from);
+                $condition[] = array('refundreturn_add_time', '>=', $add_time_from);
             }
         }
         if (trim($add_time_to) != '') {
             $add_time_to = strtotime(trim($add_time_to));
             if ($add_time_to !== false) {
                 $add_time_to = $add_time_to + 86399;
-                $condition[] = array('add_time', '<=', $add_time_to);
+                $condition[] = array('refundreturn_add_time', '<=', $add_time_to);
             }
         }
 
@@ -332,31 +308,6 @@ class Memberrefund extends BaseMember {
         return $pic_array;
     }
 
-    function getRefundStateArray($type = 'all') {
-        $state_array = array(
-            '1' => lang('refund_state_confirm'),
-            '2' => lang('refund_state_yes'),
-            '3' => lang('refund_state_no')
-        ); //卖家处理状态:1为待审核,2为同意,3为不同意
-        View::assign('state_array', $state_array);
-
-        $admin_array = array(
-            '1' => lang('in_processing'),
-            '2' => lang('to_be_processed'),
-            '3' => lang('has_been_completed'),
-            '4' => lang('refund_state_no')
-        ); //确认状态:1为买家或卖家处理中,2为待平台管理员处理,3为退款退货已完成
-        View::assign('admin_array', $admin_array);
-
-        $state_data = array(
-            'seller' => $state_array,
-            'admin' => $admin_array
-        );
-        if ($type == 'all') {
-            return $state_data; //返回所有
-        }
-        return $state_data[$type];
-    }
 
     /**
      *    栏目菜单

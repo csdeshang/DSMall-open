@@ -51,14 +51,20 @@
                 <span></span>
                 <p class="hint"></p></dd>
         </dl>
+        
+        
         <dl>
             <dt><i class="required">*</i>{$Think.lang.chain_address}{$Think.lang.ds_colon}</dt>
             <dd><input type="text" value="{present name='chain_array'}{$chain_array.chain_address}{/present}" name="chain_address" id="chain_address" {if $Think.config.ds_config.mapak_type eq '2'}onkeyup="local.search($(this).val());"{/if} class="w200 text">
+                <!--{if $Think.config.ds_config.mapak_type neq '0'}-->
                 <input name="chain_longitude" id="longitude" value="{$chain_array.chain_longitude|default=''}" type="hidden" />
                 <input name="chain_latitude" id="latitude" value="{$chain_array.chain_latitude|default=''}" type="hidden" />
-                <div id="allmap" style="width:530px;height: 350px;margin-top: 20px"></div><span></span>
+                <div id="allmap" style="width:530px;height: 350px;margin-top: 20px"></div>
+                <!--{/if}-->
+                <span></span>
                 <p class="hint"></p></dd>
         </dl>
+        
 
         <dl>
             <dt><i class="required">*</i>{$Think.lang.chain_state}: </dt>
@@ -102,7 +108,8 @@
         }
 </script>
 <script type="text/javascript" src="//webapi.amap.com/maps?v=2.0&key={$Think.config.ds_config.gaode_ak}"></script>
-<!--{else}-->
+<!--{/if}-->
+<!--{if $Think.config.ds_config.mapak_type eq '2'}-->
 <script type="text/javascript" src="{$Think.HTTP_TYPE}api.map.baidu.com/api?v=2.0&ak={$Think.config.ds_config.baidu_ak}"></script>
 <!--{/if}-->
 
@@ -128,7 +135,7 @@
         $("#region").ds_region();
 		var lng = '{$chain_array.chain_longitude|default=""}';
 		var lat = '{$chain_array.chain_latitude|default=""}';
-		if ({$Think.config.ds_config.mapak_type} == '1'){
+		if('{$Think.config.ds_config.mapak_type}' === '1'){
 			var map = new AMap.Map("allmap", {
 			    resizeEnable: true,
 				zoom:15
@@ -241,7 +248,8 @@
 					map.add(marker);
 				});
 			}		 
-		}else{
+		}
+                if('{$Think.config.ds_config.mapak_type}' === '2'){
 			map = new BMap.Map("allmap");
 			if(!lng && !lat){
 				var geolocation = new BMap.Geolocation();

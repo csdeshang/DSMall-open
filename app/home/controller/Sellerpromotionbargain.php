@@ -36,12 +36,8 @@ class Sellerpromotionbargain extends BaseSeller {
         $bargainquota_model = model('pbargainquota');
         $pbargain_model = model('pbargain');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_bargain_quota = $bargainquota_model->getBargainquotaCurrent($this->store_info['store_id']);
             View::assign('current_bargain_quota', $current_bargain_quota);
-        }
 
         $condition = array();
         $condition[] = array('store_id', '=', $this->store_info['store_id']);
@@ -71,10 +67,6 @@ class Sellerpromotionbargain extends BaseSeller {
      * */
     public function bargain_add() {
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
-                View::assign('isPlatformStore', false);
                 $bargainquota_model = model('pbargainquota');
                 $current_bargain_quota = $bargainquota_model->getBargainquotaCurrent($this->store_info['store_id']);
                 if (empty($current_bargain_quota)) {
@@ -85,7 +77,6 @@ class Sellerpromotionbargain extends BaseSeller {
                     }
                 }
                 View::assign('current_bargain_quota', $current_bargain_quota);
-            }
 
             //输出导航
             $this->setSellerCurMenu('Sellerpromotionbargain');
@@ -101,7 +92,6 @@ class Sellerpromotionbargain extends BaseSeller {
             $data['member_name'] = $this->store_info['member_name'];
             $data['store_id'] = $this->store_info['store_id'];
             $data['store_name'] = $this->store_info['store_name'];
-            if (!check_platform_store()) {
                 //获取当前套餐
                 $bargainquota_model = model('pbargainquota');
                 $current_bargain_quota = $bargainquota_model->getBargainquotaCurrent($this->store_info['store_id']);
@@ -120,7 +110,6 @@ class Sellerpromotionbargain extends BaseSeller {
                 if ($data['bargain_endtime'] > $quota_end_time) {
                     ds_json_encode(10001, sprintf(lang('bargain_add_end_time_explain'), date('Y-m-d', $current_bargain_quota['bargainquota_endtime'])));
                 }
-            }
 
             //生成活动
             $pbargain_model = model('pbargain');
@@ -203,11 +192,6 @@ class Sellerpromotionbargain extends BaseSeller {
             $bargain_info = array_merge($bargain_info, $btn);
         }
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
-                View::assign('isPlatformStore', false);
-            }
             if (empty($bargain_info) || !$bargain_info['editable']) {
                 $this->error(lang('param_error'));
             }

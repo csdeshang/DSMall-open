@@ -37,12 +37,8 @@ class Sellerpromotionmgdiscount extends BaseSeller {
         $mgdiscountquota_model = model('pmgdiscountquota');
         //当前的和系统设置的会员等级进行比对
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
                 $current_mgdiscount_quota = $mgdiscountquota_model->getMgdiscountquotaCurrent(session('store_id'));
                 View::assign('current_mgdiscount_quota', $current_mgdiscount_quota);
-            }
             //当前店铺设置的会员等级对应的折扣
             $store = Db::name('store')->where('store_id', session('store_id'))->find();
             View::assign('mgdiscount_store_arr', $this->_get_mgdiscount_arr($store['store_mgdiscount']));
@@ -149,7 +145,6 @@ class Sellerpromotionmgdiscount extends BaseSeller {
         } else {
 
 
-            if (!check_platform_store()) {
                 //获取当前套餐
                 $mgdiscountquota_model = model('pmgdiscountquota');
                 $current_mgdiscount_quota = $mgdiscountquota_model->getMgdiscountquotaCurrent(session('store_id'));
@@ -168,7 +163,6 @@ class Sellerpromotionmgdiscount extends BaseSeller {
                 if (TIMESTAMP > $quota_end_time) {
                     ds_json_encode(10001, sprintf(lang('mgdiscount_add_end_time_explain'), date('Y-m-d', $current_mgdiscount_quota['mgdiscountquota_endtime'])));
                 }
-            }
 
             //获取提交的数据
             $goods_id = intval(input('post.mgdiscount_goods_id'));
@@ -240,7 +234,6 @@ class Sellerpromotionmgdiscount extends BaseSeller {
             return View::fetch($this->template_dir . 'mgdiscount_goods_add');
         } else {
 
-            if (!check_platform_store()) {
                 //获取当前套餐
                 $mgdiscountquota_model = model('pmgdiscountquota');
                 $current_mgdiscount_quota = $mgdiscountquota_model->getMgdiscountquotaCurrent(session('store_id'));
@@ -259,7 +252,6 @@ class Sellerpromotionmgdiscount extends BaseSeller {
                 if ($quota_start_time > $quota_end_time) {
                     ds_json_encode(10001, sprintf(lang('mgdiscount_add_end_time_explain'), date('Y-m-d', $current_mgdiscount_quota['mgdiscountquota_endtime'])));
                 }
-            }
 
             $member_model = model('member');
             //系统等级设置

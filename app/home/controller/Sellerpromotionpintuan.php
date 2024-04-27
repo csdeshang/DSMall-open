@@ -36,12 +36,8 @@ class Sellerpromotionpintuan extends BaseSeller {
         $pintuanquota_model = model('ppintuanquota');
         $ppintuan_model = model('ppintuan');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_pintuan_quota = $pintuanquota_model->getPintuanquotaCurrent(session('store_id'));
             View::assign('current_pintuan_quota', $current_pintuan_quota);
-        }
 
         $condition = array();
         $condition[] = array('store_id', '=', session('store_id'));
@@ -66,10 +62,6 @@ class Sellerpromotionpintuan extends BaseSeller {
      * */
     public function pintuan_add() {
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
-                View::assign('isPlatformStore', false);
                 $pintuanquota_model = model('ppintuanquota');
                 $current_pintuan_quota = $pintuanquota_model->getPintuanquotaCurrent(session('store_id'));
                 if (empty($current_pintuan_quota)) {
@@ -80,7 +72,6 @@ class Sellerpromotionpintuan extends BaseSeller {
                     }
                 }
                 View::assign('current_pintuan_quota', $current_pintuan_quota);
-            }
 
             //输出导航
             $this->setSellerCurMenu('Sellerpromotionpintuan');
@@ -118,7 +109,6 @@ class Sellerpromotionpintuan extends BaseSeller {
                 ds_json_encode(10001, lang('greater_than_start_time'));
             }
 
-            if (!check_platform_store()) {
                 //获取当前套餐
                 $pintuanquota_model = model('ppintuanquota');
                 $current_pintuan_quota = $pintuanquota_model->getPintuanquotaCurrent(session('store_id'));
@@ -137,7 +127,6 @@ class Sellerpromotionpintuan extends BaseSeller {
                 if ($end_time > $quota_end_time) {
                     ds_json_encode(10001, sprintf(lang('pintuan_add_end_time_explain'), date('Y-m-d', $current_pintuan_quota['pintuanquota_endtime'])));
                 }
-            }
             if($end_time<TIMESTAMP){
                 ds_json_encode(10001, sprintf(lang('pintuan_add_end_time_explain'), date('Y-m-d')));
             }
@@ -196,11 +185,6 @@ class Sellerpromotionpintuan extends BaseSeller {
      * */
     public function pintuan_edit() {
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
-                View::assign('isPlatformStore', false);
-            }
             $ppintuan_model = model('ppintuan');
 
             $pintuan_info = $ppintuan_model->getPintuanInfoByID(input('param.pintuan_id'));

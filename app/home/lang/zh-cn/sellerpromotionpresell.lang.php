@@ -20,7 +20,6 @@ $lang['ds_end_presell'] = '取消';
 $lang['presell_add_start_time_explain'] = '开始时间不能为空且不能早于%s';
 $lang['presell_add_end_time_explain'] = '结束时间不能为空且不能晚于%s';
 $lang['time_error'] = '时间格式错误';
-$lang['param_error'] = '参数错误';
 $lang['greater_than_start_time'] = '结束时间必须大于开始时间';
 $lang['greater_than_end_time'] = '发货时间必须大于结束时间';
 /**

@@ -30,9 +30,7 @@
             <dd>
                 <input id="end_time" name="end_time" type="text" class="text w130"/><em class="add-on"><i class="iconfont">&#xe8d6;</i></em><span></span>
                 <p class="hint">
-                    {notpresent name="isPlatformStore"}
                     {$Think.lang.start_time_cannot_greater_than}{$current_groupbuy_quota.groupbuyquota_endtime|date="Y-m-d H:i"}
-                    {/notpresent}
                 </p>
             </dd>
         </dl>
@@ -302,9 +300,7 @@
                 },
                 end_time : {
                     required : true,
-                    {notpresent name='isPlatformStore'}
-                        lessThanDate : "{$current_groupbuy_quota.groupbuyquota_endtime|date='Y-m-d H:i'}",
-                    {/notpresent}
+                    lessThanDate : "{$current_groupbuy_quota.groupbuyquota_endtime|date='Y-m-d H:i'}",
                     greaterThanStartDate : true
                 },
                 groupbuy_goods_id: {
@@ -340,9 +336,7 @@
             },
             end_time : {
                 required : '<i class="iconfont">&#xe64c;</i>{$Think.lang.end_snap_time_cannot_empty}',
-                {notpresent name="isPlatformStore"}
                 lessThanDate : "<i class='iconfont'>&#xe64c;</i>{$Think.lang.snap_must_less}{present name='current_groupbuy_quota'}{$current_groupbuy_quota.groupbuyquota_endtime|date='Y-m-d H:i'}{/present}",
-                {/notpresent}
                 greaterThanStartDate : '<i class="iconfont">&#xe64c;</i>{$Think.lang.must_greater_start_time}'
             },
             groupbuy_goods_id: {

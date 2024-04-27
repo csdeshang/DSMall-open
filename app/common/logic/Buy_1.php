@@ -557,13 +557,8 @@ class Buy_1 {
         $offline_pay = model('payment')->getPaymentOpenInfo(array(array('payment_code', '=', 'offline')));
         if ($offline_pay) {
             //下单里包括平台自营商品并且平台已开启货到付款，则显示货到付款项及对应商品数量,取出支持货到付款的店铺ID组成的数组，目前就一个，DEFAULT_PLATFORM_STORE_ID
-            $offline_store_id_array = model('store')->getOwnShopIds();
             foreach ($buy_list as $value) {
-                if (in_array($value['store_id'], $offline_store_id_array)) {
-                    $buy_goods_list['offline'][] = $value;
-                } else {
-                    $buy_goods_list['online'][] = $value;
-                }
+                $buy_goods_list['online'][] = $value;
             }
         }
         return $buy_goods_list;
@@ -1137,13 +1132,8 @@ class Buy_1 {
             $offline_pay = model('payment')->getPaymentOpenInfo(array(array('payment_code', '=', 'offline')));
             if ($offline_pay) {
                 //下单里包括平台自营商品并且平台已开启货到付款
-                $offline_store_id_array = model('store')->getOwnShopIds();
                 foreach ($store_id_array as $store_id) {
-                    //if (in_array($store_id,$offline_store_id_array)) {
                     $store_pay_type_list[$store_id] = 'offline';
-                    //} else {
-                    //    $store_pay_type_list[$store_id] = 'online';
-                    //}
                 }
             }
         }

@@ -109,7 +109,6 @@ class Goods extends AdminControl {
 
         View::assign('verify', array('1' => lang('goods_verify_1'), '0' => lang('goods_verify_0'), '10' => lang('goods_verify_10')));
 
-        View::assign('ownShopIds', array_fill_keys(model('store')->getOwnShopIds(), true));
 
         $type = input('param.type');
         if(!in_array($type, array('lockup','waitverify','allgoods'))){

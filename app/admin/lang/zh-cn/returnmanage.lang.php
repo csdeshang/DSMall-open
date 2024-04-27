@@ -7,11 +7,7 @@ $lang['refund_message_null']	= '备注信息不能为空';
 $lang['refund_order_add_time']		= '申请时间';
 
 $lang['refund_seller_message']	= '商家备注';
-$lang['refund_state']	= '审核状态';
 $lang['refund_state_null']	= '请选择审核状态';
-$lang['refund_state_confirm']	= '待审核';
-$lang['refund_state_yes']	= '同意';
-$lang['refund_state_no']	= '不同意';
 
 
 $lang['refund_buyer_message']	= '退款原因';
@@ -43,10 +39,6 @@ $lang['none'] = '无';
 $lang['seller_state'] = '商家审核';
 $lang['refund_reason'] = '退货说明';
 
-$lang['admin_state_1'] = '处理中';
-$lang['admin_state_2'] = '待处理';
-$lang['admin_state_3'] = '已完成';
-$lang['admin_state_4'] = '已拒绝';
 $lang['refund_all'] = '所有记录';
 return $lang;
 ?>

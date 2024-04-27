@@ -285,7 +285,6 @@ class Config extends AdminControl {
             $order_auto_receive_day = intval(input('post.order_auto_receive_day'));
             $order_auto_cancel_day = intval(input('post.order_auto_cancel_day'));
             $code_invalid_refund = intval(input('post.code_invalid_refund'));
-            $store_bill_cycle = intval(input('post.store_bill_cycle'));
             if ($order_auto_receive_day < 1 || $order_auto_receive_day > 100) {
                 $this->error(lang('automatic_confirmation_receipt') . '1-100' . lang('numerical'));
             }
@@ -295,13 +294,9 @@ class Config extends AdminControl {
             if ($code_invalid_refund < 1 || $code_invalid_refund > 100) {
                 $this->error(lang('exchange_code_refunded_automatically') . '1-100' . lang('numerical'));
             }
-            if ($store_bill_cycle < 7) {
-                $this->error(lang('store_bill_cycle_error'));
-            }
             $update_array['order_auto_receive_day'] = $order_auto_receive_day;
             $update_array['order_auto_cancel_day'] = $order_auto_cancel_day;
             $update_array['code_invalid_refund'] = $code_invalid_refund;
-            $update_array['store_bill_cycle'] = $store_bill_cycle;
             $result = $config_model->editConfig($update_array);
             if ($result) {
                 $this->log(lang('ds_edit') . lang('auto_set'), 1);

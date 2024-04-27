@@ -573,7 +573,6 @@ class Buy
         //是否能使用货到付款(只有包含平台店铺的商品才会判断)
         //$if_include_platform_store = array_key_exists(DEFAULT_PLATFORM_STORE_ID,$freight_list['iscalced']) || array_key_exists(DEFAULT_PLATFORM_STORE_ID,$freight_list['nocalced']);
 
-        //$offline_store_id_array = model('store')->getOwnShopIds();
         $order_platform_store_ids = array();
 
         if (!empty($freight_list['iscalced']) && is_array($freight_list['iscalced']))

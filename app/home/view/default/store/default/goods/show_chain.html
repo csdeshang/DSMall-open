@@ -2,13 +2,15 @@
 
 
 <div class="show_chain">
+    <!--{if $Think.config.ds_config.mapak_type neq '0'}-->
     <div id="allmap" style="width:640px;height:400px"></div>
+    <!--{/if}-->
 </div>
 
 <script>
     var map
     $(function () {
-		if({$Think.config.ds_config.mapak_type} == '1'){
+		if('{$Think.config.ds_config.mapak_type}' === '1'){
 			map = new AMap.Map("allmap", {
 			    resizeEnable: true,
 				zoom:15
@@ -45,7 +47,8 @@
 				      }
 				    });
 				  });
-		}else{
+		}
+                if('{$Think.config.ds_config.mapak_type}' === '2'){
 			// 百度地图API功能
 			map = new BMap.Map("allmap"); // 创建Map实例
 			var geolocation = new BMap.Geolocation();
@@ -87,7 +90,7 @@
         
     })
     function mapAddMarker(info){
-		if({$Think.config.ds_config.mapak_type} == '1'){
+		if('{$Think.config.ds_config.mapak_type}' === '1'){
 			var infoWindow = new AMap.InfoWindow({});
 			var marker = new AMap.Marker({
 			    position: new AMap.LngLat(info.chain_longitude, info.chain_latitude),
@@ -101,7 +104,8 @@
 				infoWindow.setContent(e.target.content);
 				infoWindow.open(map, e.target.getPosition());
 			}
-		}else{
+		}
+                if('{$Think.config.ds_config.mapak_type}' === '2'){
 			var point = new BMap.Point(info.chain_longitude, info.chain_latitude);
 			    var marker = new BMap.Marker(point);  // 创建标注
 			map.addOverlay(marker);              // 将标注添加到地图中

@@ -59,8 +59,6 @@ class Promotionbooth extends AdminControl {
         View::assign('show_page', $pbooth_model->page_info->render());
 
         $this->setAdminCurItem('index');
-        // 输出自营店铺IDS
-        View::assign('flippedOwnShopIds', array_flip(model('store')->getOwnShopIds()));
         return View::fetch();
     }
 

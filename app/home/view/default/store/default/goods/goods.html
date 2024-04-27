@@ -739,7 +739,8 @@
         }
 </script>
 <script type="text/javascript" src="//webapi.amap.com/maps?v=2.0&key={$Think.config.ds_config.gaode_ak}"></script>
-<!--{else}-->
+<!--{/if}-->
+<!--{if $Think.config.ds_config.mapak_type eq '2'}-->
 <script type="text/javascript" src="{$Think.HTTP_TYPE}api.map.baidu.com/api?v=2.0&ak={$Think.config.ds_config.baidu_ak}"></script>
 <!--{/if}-->
 <script>
@@ -830,7 +831,7 @@ $(function(){
     // 规格选择
     $('dl[dstype="ds-spec"]').find('a').each(function(){
         $(this).click(function(){
-            if ($(this).hasClass('hovered') || $(this).hasClass('disable')) {
+            if ($(this).hasClass('hovered')) {
                 return false;
             }
             $(this).parents('ul:first').find('a').removeClass('hovered');
@@ -1217,9 +1218,6 @@ $(document).ready(function(){
 		<?php } ?>
 		var _args = '';
 		_args += "&tid=<?php echo $goods['transport_id']?>";
-		<?php if ($store_info['is_platform_store']) { ?>
-		_args += "&super=1";
-		<?php } ?>
 		if (_args != '') {
 			_args += '&area_id=' + calc_area_id ;
 			if (typeof calced_area[calc_area_id] == 'undefined') {

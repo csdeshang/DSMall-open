@@ -84,7 +84,6 @@ class Sellergoodsadd extends BaseSeller {
         }
 
         // 如果不是自营店铺或者自营店铺未绑定全部商品类目，读取绑定分类
-        if (!check_platform_store_bindingall_goodsclass()) {
             //商品分类  支持批量显示分类
             $storebindclass_model = model('storebindclass');
             $goods_class = model('goodsclass')->getGoodsclassForCacheModel();
@@ -114,7 +113,6 @@ class Sellergoodsadd extends BaseSeller {
                     }
                 }
             }
-        }
 
         // 更新常用分类信息
         $goods_class = $goodsclass_model->getGoodsclassLineForTag($gc_id);
@@ -294,7 +292,6 @@ class Sellergoodsadd extends BaseSeller {
                 $common_array['is_goodsfcode'] = intval(input('post.is_fc'));
                 $common_array['is_appoint'] = intval(input('post.is_appoint'));     // 只有库存为零的商品可以预约
                 $common_array['appoint_satedate'] = $common_array['is_appoint'] == 1 ? strtotime(input('post.g_saledate')) : '';   // 预约商品的销售时间
-                $common_array['is_platform_store'] = in_array(session('store_id'), model('store')->getOwnShopIds()) ? 1 : 0;
 
                 // 保存数据
                 $common_id = $goods_model->addGoodsCommon($common_array);
@@ -343,7 +340,6 @@ class Sellergoodsadd extends BaseSeller {
                             $goods['virtual_invalid_refund'] = $common_array['virtual_invalid_refund'];
                             $goods['is_goodsfcode'] = $common_array['is_goodsfcode'];
                             $goods['is_appoint'] = $common_array['is_appoint'];
-                            $goods['is_platform_store'] = $common_array['is_platform_store'];
                             switch($common_array['virtual_type']){
                                 case 1:
                                     $goods['virtual_content'] = $value['vc_card'];
@@ -407,7 +403,6 @@ class Sellergoodsadd extends BaseSeller {
                         $goods['virtual_invalid_refund'] = $common_array['virtual_invalid_refund'];
                         $goods['is_goodsfcode'] = $common_array['is_goodsfcode'];
                         $goods['is_appoint'] = $common_array['is_appoint'];
-                        $goods['is_platform_store'] = $common_array['is_platform_store'];
                         switch($common_array['virtual_type']){
                                 case 1:
                                     $goods['virtual_content'] = input('post.vc_card');

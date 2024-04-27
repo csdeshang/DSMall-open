@@ -3,7 +3,7 @@
     <form action="{:url('Sellerreturn/receive',['return_id'=>$return.refund_id])}" method="post" id="post_form">
         <dl>
             <dt>{$Think.lang.delivery_time}{$Think.lang.ds_colon}</dt>
-            <dd> {$return.delay_time|date="Y-m-d H:i:s"} </dd>
+            <dd> {$return.refundreturn_delay_time|date="Y-m-d H:i:s"} </dd>
         </dl>
         <dl>
             <dt>{$Think.lang.logistics_information}{$Think.lang.ds_colon}</dt>
@@ -14,7 +14,7 @@
             <dd><select name="return_type">
                     <option value="">{$Think.lang.ds_please_choose}</option>
                     <option value="4">{$Think.lang.has_been_received}</option>
-                    {if $delay_time > 0}
+                    {if $refundreturn_delay_time > 0}
                     <option value="3">{$Think.lang.not_yet_received}</option>
                     {/if}
                 </select>

@@ -126,8 +126,6 @@ class Storebindclass extends BaseModel {
         if (empty($goods_list) || !is_array($goods_list))
             return array();
 
-        // 获取绑定所有类目的自营店
-        $own_shop_ids = model('store')->getOwnShopIds(true);
 
         //定义返回数组
         $store_gc_id_commis_rate = array();

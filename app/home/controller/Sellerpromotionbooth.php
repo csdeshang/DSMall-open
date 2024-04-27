@@ -39,10 +39,6 @@ class Sellerpromotionbooth extends BaseSeller {
         $where[] = array('boothquota_endtime', '<', TIMESTAMP);
         $pbooth_model->editBoothClose($where);
 
-        $isPlatformStore = check_platform_store() ? true : false;
-        View::assign('isPlatformStore', $isPlatformStore);
-        $hasList = $isPlatformStore;
-        if (!$isPlatformStore) {
             // 检查是否已购买套餐
             $where = array();
             $where[] = array('store_id', '=', session('store_id'));
@@ -56,7 +52,6 @@ class Sellerpromotionbooth extends BaseSeller {
                 $update = array('boothgoods_state' => $pbooth_model::STATE0);
                 $pbooth_model->editBooth($update, $where);
             }
-        }
 
         if ($hasList) {
             // 查询已选择商品
@@ -213,7 +208,6 @@ class Sellerpromotionbooth extends BaseSeller {
 
         $pbooth_model = model('pbooth');
 
-        if (!check_platform_store()) {
             // 验证套餐时候过期
             $booth_info = $pbooth_model->getBoothquotaInfo(array(
                 array('store_id', '=', session('store_id')),
@@ -225,7 +219,6 @@ class Sellerpromotionbooth extends BaseSeller {
                     $this->_echoJson($data);
                 }
             }
-        }
 
         // 验证已添加商品数量，及选择商品是否已经被添加过
         $bootgoods_info = $pbooth_model->getBoothgoodsList(array(array('store_id' ,'=', session('store_id'))), 'goods_id');

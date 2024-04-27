@@ -35,51 +35,7 @@ class Store extends BaseModel {
      *   // ..
      * )
      */
-    protected $ownShopIds;
 
-    /**
-     * 删除缓存自营店铺的ID
-     * @access public
-     * @author csdeshang
-     */
-    public function dropCachedOwnShopIds() {
-        $this->ownShopIds = null;
-        dkcache('own_shop_ids');
-    }
-
-    /**
-     * 获取自营店铺的ID
-     * @access public
-     * @author csdeshang
-     * @param boolean $bind_all_gc = false 是否只获取绑定全部类目的自营店 默认否（即全部自营店）
-     * @return int
-     */
-    public function getOwnShopIds($bind_all_gc = false) {
-
-        $data = $this->ownShopIds;
-
-        // 属性为空则取缓存
-        if (!$data) {
-            $data = rkcache('own_shop_ids');
-
-            // 缓存为空则查库
-            if (!$data) {
-                $data = array();
-                $all_own_shops = Db::name('store')->field('store_id,bind_all_gc')->where(array('is_platform_store' => 1,))->select()->toArray();
-                foreach ((array) $all_own_shops as $v) {
-                    $data[$v['store_id']] = (int) (bool) $v['bind_all_gc'];
-                }
-
-                // 写入缓存
-                wkcache('own_shop_ids', $data);
-            }
-
-            // 写入属性
-            $this->ownShopIds = $data;
-        }
-
-        return array_keys($bind_all_gc ? array_filter($data) : $data);
-    }
 
     /**
      * 查询店铺列表

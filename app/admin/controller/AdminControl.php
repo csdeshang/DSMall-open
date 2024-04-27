@@ -488,11 +488,6 @@ class AdminControl extends BaseController {
                         'text' => lang('ds_storejoin'),
                         'args' => 'index,Storejoin,store',
                     ),
-                    'Ownshop' => array(
-                        'ico'=>'&#xe6ec;',
-                        'text' => lang('ds_ownshop'),
-                        'args' => 'index,Ownshop,store',
-                    ),
                 ),
             ),
             'trade' => array(
@@ -513,22 +508,12 @@ class AdminControl extends BaseController {
                     'refund' => array(
                         'ico'=>'&#xe6f3;',
                         'text' => lang('ds_refund'),
-                        'args' => 'refund_manage,Refund,trade',
-                    ),
-                    'return' => array(
-                        'ico'=>'&#xe6f3;',
-                        'text' => lang('ds_return'),
-                        'args' => 'return_manage,Returnmanage,trade',
+                        'args' => 'refund_manage,Refundreturn,trade',
                     ),
                     'vrrefund' => array(
                         'ico'=>'&#xe6f3;',
                         'text' => lang('ds_vrrefund'),
                         'args' => 'refund_manage,Vrrefund,trade',
-                    ),
-                    'Bill' => array(
-                        'ico'=>'&#xe69c;',
-                        'text' => lang('ds_bill_manage'),
-                        'args' => 'show_statis,Bill,trade',
                     ),
                     'consulting' => array(
                         'ico'=>'&#xe71c;',
@@ -646,11 +631,6 @@ class AdminControl extends BaseController {
                         'ico'=>'&#xe6ec;',
                         'text' => lang('ds_statstore'),
                         'args' => 'newstore,Statstore,stat',
-                    ),
-                    'stat_trade' => array(
-                         'ico'=>'&#xe745;',
-                        'text' => lang('ds_stattrade'),
-                        'args' => 'income,Stattrade,stat',
                     ),
                     'stat_goods' => array(
                         'ico'=>'&#xe732;',
@@ -818,7 +798,6 @@ class AdminControl extends BaseController {
                     array('name' => lang('ds_storesnstrace'), 'action' => null, 'controller' => 'Storesnstrace'),
                     array('name' => lang('ds_Storehelp'), 'action' => null, 'controller' => 'Storehelp'),
                     array('name' => lang('ds_storejoin'), 'action' => null, 'controller' => 'Storejoin'),
-                    array('name' => lang('ds_ownshop'), 'action' => null, 'controller' => 'Ownshop'),
                 )),
             array('name' => lang('ds_member'), 'child' => array(
                     array('name' => lang('ds_member_manage'), 'action' => null, 'controller' => 'Member'),
@@ -835,10 +814,8 @@ class AdminControl extends BaseController {
             array('name' => lang('ds_trade'), 'child' => array(
                     array('name' => lang('ds_order'), 'action' => null, 'controller' => 'Order'),
                     array('name' => lang('ds_vrorder'), 'action' => null, 'controller' => 'Vrorder'),
-                    array('name' => lang('ds_refund'), 'action' => null, 'controller' => 'Refund'),
-                    array('name' => lang('ds_return'), 'action' => null, 'controller' => 'Returnmanage'),
+                    array('name' => lang('ds_refund'), 'action' => null, 'controller' => 'Refundreturn'),
                     array('name' => lang('ds_vrrefund'), 'action' => null, 'controller' => 'Vrrefund'),
-                    array('name' => lang('ds_bill_manage'), 'action' => null, 'controller' => 'Bill'),
                     array('name' => lang('ds_consulting'), 'action' => null, 'controller' => 'Consulting'),
                     array('name' => lang('ds_inform'), 'action' => null, 'controller' => 'Inform'),
                     array('name' => lang('ds_evaluate'), 'action' => null, 'controller' => 'Evaluate'),

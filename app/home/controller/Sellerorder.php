@@ -66,6 +66,10 @@ class Sellerorder extends BaseSeller {
         }
 
         $order_list = $order_model->getOrderList($condition, 10, '*', 'order_id desc', 0, array('order_goods', 'order_common', 'ppintuanorder', 'member'));
+        
+        $refundreturn_model = model('refundreturn');
+        $order_list = $refundreturn_model->getGoodsRefundList($order_list);
+        
         View::assign('show_page', $order_model->page_info->render());
         View::assign('expresscf_kdn_if_open', $this->store_info['expresscf_kdn_if_open']);
 
@@ -80,7 +84,7 @@ class Sellerorder extends BaseSeller {
             //显示发货
             $order_info['if_send'] = $order_model->getOrderOperateState('send', $order_info);
             //显示锁定中
-            $order_info['if_lock'] = $order_model->getOrderOperateState('lock', $order_info);
+            $order_info['if_order_refund_lock'] = $order_model->getOrderOperateState('order_refund_lock', $order_info);
             //显示物流跟踪
             $order_info['if_deliver'] = $order_model->getOrderOperateState('deliver', $order_info);
 
@@ -126,7 +130,7 @@ class Sellerorder extends BaseSeller {
         $condition = array();
         $condition[] = array('order_id','=',$order_id);
         $condition[] = array('store_id','=',session('store_id'));
-        $order_info = $order_model->getOrderInfo($condition, array('order_common', 'order_goods', 'member', 'ppintuanorder'));
+        $order_info = $order_model->getOrderInfo($condition, array('order_common', 'order_goods', 'member', 'orderlog', 'ppintuanorder'));
         if (empty($order_info)) {
             $this->error(lang('store_order_none_exist'));
         }
@@ -134,15 +138,11 @@ class Sellerorder extends BaseSeller {
         $refundreturn_model = model('refundreturn');
         $order_list = array();
         $order_list[$order_id] = $order_info;
-        $order_list = $refundreturn_model->getGoodsRefundList($order_list, 1); //订单商品的退款退货显示
+        $order_list = $refundreturn_model->getGoodsRefundList($order_list); //订单商品的退款退货显示
         $order_info = $order_list[$order_id];
-        $refund_all = isset($order_info['refund_list'][0]) ? $order_info['refund_list'][0] : '';
-        if (!empty($refund_all) && $refund_all['seller_state'] < 3) {//订单全部退款商家审核状态:1为待审核,2为同意,3为不同意
-            View::assign('refund_all', $refund_all);
-        }
 
         //显示锁定中
-        $order_info['if_lock'] = $order_model->getOrderOperateState('lock', $order_info);
+        $order_info['if_order_refund_lock'] = $order_model->getOrderOperateState('order_refund_lock', $order_info);
 
         //显示调整运费
         $order_info['if_modify_price'] = $order_model->getOrderOperateState('modify_price', $order_info);
@@ -181,10 +181,6 @@ class Sellerorder extends BaseSeller {
             $order_info['order_confirm_day'] = $order_info['delay_time'] + config('ds_config.order_auto_receive_day') * 24 * 3600;
         }
 
-        //如果订单已取消，取得取消原因、时间，操作人
-        if ($order_info['order_state'] == ORDER_STATE_CANCEL) {
-            $order_info['close_info'] = $order_model->getOrderlogInfo(array('order_id' => $order_info['order_id']), 'log_id desc');
-        }
         $order_info['chain_order_type'] = 0;
         //如果是待自提则获取提货码
         $chain_order_model = model('chain_order');

@@ -140,7 +140,7 @@
   </div>
   <div class="dsg-layout-r">
 
-      {if !$store_info['is_platform_store'] || $groupbuy_info['groupbuy_is_vr']}
+      {if $groupbuy_info['groupbuy_is_vr']}
       <div class="dsg-store">
           <div class="title">{$Think.lang.store_info}</div>
           <div class="content">
@@ -149,7 +149,6 @@
                       <dt>{$Think.lang.captions_merchants|raw}：</dt>
                       <dd> {$groupbuy_info.store_name}</dd>
                   </dl>
-                  {if !$store_info['is_platform_store']}
                   <dl class="all-rate">
                       <dt>{$Think.lang.composite_score}：</dt>
                       <dd>
@@ -164,7 +163,6 @@
                           {/foreach}
                       </ul>
                   </div>
-                  {/if}
                   <dl class="messenger">
                       <dt>{$Think.lang.online_customer_service}：</dt>
                       <dd member_id="{$store_info.member_id}">

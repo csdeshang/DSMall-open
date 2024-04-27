@@ -5,7 +5,6 @@ $lang['adjust_storedeposit'] = '保证金调节';
 $lang['available'] = '可用';
 $lang['freeze'] = '冻结';
 $lang['store_open_add_deposit'] = '店铺入驻保证金';
-$lang['store_bill_time'] = '上期结算时间';
 
 $lang['storegrade_id'] = '店铺等级ID';
 $lang['storeclass_id'] = '店铺分类ID';

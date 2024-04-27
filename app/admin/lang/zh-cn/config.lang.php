@@ -1,9 +1,5 @@
 <?php
 $lang['config_business_licence'] = '营业执照';
-$lang['store_bill_cycle'] = '店铺结算周期';
-$lang['store_bill_cycle_tips'] = '自动为店铺结算的周期，需大于等于7天（因为有7天可退款期）';
-$lang['store_bill_cycle_error'] = '店铺结算周期设置错误';
-$lang['store_bill_cycle_required'] = '请填写店铺结算周期';
 
 $lang['site_name'] = '网站名称';
 $lang['seller_center_logo'] = '商家中心LOGO';

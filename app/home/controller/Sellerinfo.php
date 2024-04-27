@@ -176,7 +176,7 @@ class Sellerinfo extends BaseSeller {
         if (intval($store_info['store_endtime']) > 0) {
             $store_info['store_endtime_text'] = date('Y-m-d', $store_info['store_endtime']);
             $reopen_time = $store_info['store_endtime'] - 3600 * 24 + 1 - TIMESTAMP;
-            if (!check_platform_store() && $store_info['store_endtime'] - TIMESTAMP >= 0 && $reopen_time < 2592000) {
+            if ($store_info['store_endtime'] - TIMESTAMP >= 0 && $reopen_time < 2592000) {
                 //(<30天)
                 $store_info['reopen'] = true;
             }
@@ -186,7 +186,7 @@ class Sellerinfo extends BaseSeller {
         if (!empty($reopen_list)) {
             $last = reset($reopen_list);
             $store_endtime = $store_info['store_endtime'];
-            if (!check_platform_store() && $store_endtime - TIMESTAMP < 2592000 && $store_endtime - TIMESTAMP >= 0) {
+            if ($store_endtime - TIMESTAMP < 2592000 && $store_endtime - TIMESTAMP >= 0) {
                 //(<30天)
                 $store_info['reopen'] = true;
             } else {
@@ -353,7 +353,6 @@ class Sellerinfo extends BaseSeller {
                     'name' => 'bind_class', 'text' => lang('ds_member_path_bind_class'),
                     'url' => (string) url('Sellerinfo/bind_class')
                 );
-                if (!check_platform_store()) {
                     $menu_array[] = array(
                         'name' => 'index', 'text' => lang('ds_member_path_store_info'),
                         'url' => (string) url('Sellerinfo/index')
@@ -362,7 +361,6 @@ class Sellerinfo extends BaseSeller {
                         'name' => 'reopen', 'text' => lang('ds_member_path_store_reopen'),
                         'url' => (string) url('Sellerinfo/reopen')
                     );
-                }
                 break;
             case 'reopen':
                 $menu_array = array(

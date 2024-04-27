@@ -82,7 +82,7 @@
                     </dl>
                 </td>
                 <td>{$val.refund_amount}</td>
-                <td>{$admin_array[$val.admin_state]}</td>
+                <td>{$val.admin_state_desc}</td>
                 <td class="bdr"><a  href="{:url('Membervrrefund/view',['refund_id'=>$val.refund_id])}" class="dsm-btn">{$Think.lang.ds_view} </a></td>
             </tr>
             {/foreach}

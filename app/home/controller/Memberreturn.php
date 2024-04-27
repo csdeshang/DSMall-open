@@ -25,8 +25,6 @@ class Memberreturn extends BaseMember {
     public function initialize() {
         parent::initialize();
         Lang::load(base_path() . 'home/lang/'.config('lang.default_lang').'/memberreturn.lang.php');
-        //向模板页面输出退款退货状态
-        $this->getRefundStateArray();
     }
 
     /**
@@ -51,14 +49,14 @@ class Memberreturn extends BaseMember {
         if (trim($add_time_from) != '') {
             $add_time_from = strtotime(trim($add_time_from));
             if ($add_time_from !== false) {
-                $condition[] = array('add_time','>=', $add_time_from);
+                $condition[] = array('refundreturn_add_time','>=', $add_time_from);
             }
         }
         if (trim($add_time_to) != '') {
             $add_time_to = strtotime(trim($add_time_to));
             if ($add_time_to !== false) {
                 $add_time_to=$add_time_to+86399;
-                $condition[] = array('add_time','<=', $add_time_to);
+                $condition[] = array('refundreturn_add_time','<=', $add_time_to);
             }
         }
 
@@ -95,16 +93,16 @@ class Memberreturn extends BaseMember {
         View::assign('return', $return);
         $express_list = rkcache('express', true);
         View::assign('express_list', $express_list);
-        if ($return['seller_state'] != '2' || $return['goods_state'] != '1') {//检查状态,防止页面刷新不及时造成数据错误
+        if ($return['refundreturn_seller_state'] != '2' || $return['refundreturn_goods_state'] != '1') {//检查状态,防止页面刷新不及时造成数据错误
             ds_json_encode(10001,lang('param_error'));
         }
         if (request()->isPost()) {
             $refund_array = array();
-            $refund_array['ship_time'] = TIMESTAMP;
-            $refund_array['delay_time'] = TIMESTAMP;
+            $refund_array['refundreturn_ship_time'] = TIMESTAMP;
+            $refund_array['refundreturn_delay_time'] = TIMESTAMP;
             $refund_array['express_id'] = input('post.express_id');
             $refund_array['invoice_no'] = input('post.invoice_no');
-            $refund_array['goods_state'] = '2';
+            $refund_array['refundreturn_goods_state'] = '2';
             $state = $refundreturn_model->editRefundreturn($condition, $refund_array);
             if ($state) {
                 ds_json_encode(10000,lang('ds_common_save_succ'));
@@ -155,12 +153,12 @@ class Memberreturn extends BaseMember {
         }
         View::assign('return', $return);
         if (request()->isPost()) {
-            if ($return['seller_state'] != '2' || $return['goods_state'] != '3') {//检查状态,防止页面刷新不及时造成数据错误
+            if ($return['refundreturn_seller_state'] != '2' || $return['refundreturn_goods_state'] != '3') {//检查状态,防止页面刷新不及时造成数据错误
                 ds_json_encode(10001,lang('param_error'));
             }
             $refund_array = array();
-            $refund_array['delay_time'] = TIMESTAMP;
-            $refund_array['goods_state'] = '2';
+            $refund_array['refundreturn_delay_time'] = TIMESTAMP;
+            $refund_array['refundreturn_goods_state'] = '2';
             $state = $refundreturn_model->editRefundreturn($condition, $refund_array);
             if ($state) {
                 ds_json_encode(10000,lang('ds_common_save_succ'));
@@ -242,30 +240,5 @@ class Memberreturn extends BaseMember {
         return $item_list;
     }
 
-    function getRefundStateArray($type = 'all') {
-        $state_array = array(
-            '1' => lang('refund_state_confirm'),
-            '2' => lang('refund_state_yes'),
-            '3' => lang('refund_state_no')
-        ); //卖家处理状态:1为待审核,2为同意,3为不同意
-        View::assign('state_array', $state_array);
-
-        $admin_array = array(
-            '1' => lang('in_processing'),
-            '2' => lang('to_be_processed'),
-            '3' => lang('has_been_completed'),
-            '4' => lang('refund_state_no')
-        ); //确认状态:1为买家或卖家处理中,2为待平台管理员处理,3为退款退货已完成
-        View::assign('admin_array', $admin_array);
-
-        $state_data = array(
-            'seller' => $state_array,
-            'admin' => $admin_array
-        );
-        if ($type == 'all') {
-            return $state_data; //返回所有
-        }
-        return $state_data[$type];
-    }
 
 }

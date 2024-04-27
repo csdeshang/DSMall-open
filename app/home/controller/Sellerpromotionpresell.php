@@ -36,12 +36,8 @@ class Sellerpromotionpresell extends BaseSeller {
         $presellquota_model = model('presellquota');
         $presell_model = model('presell');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_presell_quota = $presellquota_model->getPresellquotaCurrent($this->store_info['store_id']);
             View::assign('current_presell_quota', $current_presell_quota);
-        }
 
         $condition = array();
         $condition[] = array('store_id', '=', $this->store_info['store_id']);
@@ -71,10 +67,6 @@ class Sellerpromotionpresell extends BaseSeller {
      * */
     public function presell_add() {
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
-                View::assign('isPlatformStore', false);
                 $presellquota_model = model('presellquota');
                 $current_presell_quota = $presellquota_model->getPresellquotaCurrent($this->store_info['store_id']);
                 if (empty($current_presell_quota)) {
@@ -85,7 +77,6 @@ class Sellerpromotionpresell extends BaseSeller {
                     }
                 }
                 View::assign('current_presell_quota', $current_presell_quota);
-            }
 
             //输出导航
             $this->setSellerCurMenu('Sellerpromotionpresell');
@@ -157,7 +148,6 @@ class Sellerpromotionpresell extends BaseSeller {
             $data['member_name'] = $this->store_info['member_name'];
             $data['store_id'] = $this->store_info['store_id'];
             $data['store_name'] = $this->store_info['store_name'];
-            if (!check_platform_store()) {
                 //获取当前套餐
                 $presellquota_model = model('presellquota');
                 $current_presell_quota = $presellquota_model->getPresellquotaCurrent($this->store_info['store_id']);
@@ -176,7 +166,6 @@ class Sellerpromotionpresell extends BaseSeller {
                 if ($data['presell_end_time'] > $quota_end_time) {
                     ds_json_encode(10001, sprintf(lang('presell_add_end_time_explain'), date('Y-m-d', $current_presell_quota['presellquota_endtime'])));
                 }
-            }
 
             //生成活动
             $presell_model = model('presell');
@@ -203,11 +192,6 @@ class Sellerpromotionpresell extends BaseSeller {
             $presell_info = array_merge($presell_info, $btn);
         }
         if (!request()->isPost()) {
-            if (check_platform_store()) {
-                View::assign('isPlatformStore', true);
-            } else {
-                View::assign('isPlatformStore', false);
-            }
             if (empty($presell_info) || !$presell_info['editable']) {
                 $this->error(lang('param_error'));
             }

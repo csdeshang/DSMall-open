@@ -90,7 +90,7 @@
                                 {else/}
                                 {$Think.lang.ds_common_shipping_free}
                                 {/if}
-                                {if empty($order['lock_state'])}
+                                {if empty($order['order_refund_lock_state'])}
                                 {if $order['order_state'] == ORDER_STATE_PAY}
                                 
                                 {if !isset($order.pintuanorder_state) || $order.pintuanorder_state==2}

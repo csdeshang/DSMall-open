@@ -54,7 +54,7 @@ class Sellergroupbuy extends BaseSeller {
         if (intval(config('ds_config.groupbuy_price')) == 0) {
             ds_json_encode(10001, lang('param_error'));
         }
-        $groupbuy_quota_quantity = intval(input('post.groupbuy_quota_quantity'));
+        $groupbuy_quota_quantity = intval(input('param.groupbuy_quota_quantity'));
         if ($groupbuy_quota_quantity <= 0) {
             ds_json_encode(10001, lang('purchase_quantity_cannot_empty'));
         }
@@ -98,12 +98,8 @@ class Sellergroupbuy extends BaseSeller {
         $groupbuy_model = model('groupbuy');
         $groupbuyquota_model = model('groupbuyquota');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_groupbuy_quota = $groupbuyquota_model->getGroupbuyquotaCurrent(session('store_id'));
             View::assign('current_groupbuy_quota', $current_groupbuy_quota);
-        }
 
         $condition = array();
         $condition[] = array('store_id', '=', session('store_id'));
@@ -132,11 +128,7 @@ class Sellergroupbuy extends BaseSeller {
     public function groupbuy_add() {
         $groupbuyquota_model = model('groupbuyquota');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_groupbuy_quota = $groupbuyquota_model->getGroupbuyquotaCurrent(session('store_id'));
-//            halt($current_groupbuy_quota);
             if (empty($current_groupbuy_quota)) {
                 if (intval(config('ds_config.groupbuy_price')) != 0) {
                     $this->error(lang('please_buy_package_first'), (string) url('Sellergroupbuy/groupbuy_quota_add'));
@@ -145,7 +137,6 @@ class Sellergroupbuy extends BaseSeller {
                 }
             }
             View::assign('current_groupbuy_quota', $current_groupbuy_quota);
-        }
         // 根据后台设置的审核期重新设置抢购开始时间
         View::assign('groupbuy_starttime', TIMESTAMP + intval(config('ds_config.groupbuy_review_day')) * 86400);
 
@@ -170,13 +161,11 @@ class Sellergroupbuy extends BaseSeller {
         $goods_model = model('goods');
         $groupbuyquota_model = model('groupbuyquota');
 
-        if (!check_platform_store()) {
             // 检查套餐
             $current_groupbuy_quota = $groupbuyquota_model->getGroupbuyquotaCurrent(session('store_id'));
             if (empty($current_groupbuy_quota) && intval(config('ds_config.groupbuy_price')) != 0) {
                 $this->error(lang('please_buy_package_first'), (string) url('Store_groupbuy/groupbuy_quota_add'));
             }
-        }
 
         $goods_info = $goods_model->getGoodsInfoByID($goods_id);
         if (empty($goods_info) || $goods_info['store_id'] != session('store_id')) {
@@ -380,9 +369,6 @@ class Sellergroupbuy extends BaseSeller {
     public function groupbuy_add_vr() {
         $groupbuyquota_model = model('groupbuyquota');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_groupbuy_quota = $groupbuyquota_model->getGroupbuyquotaCurrent(session('store_id'));
             if (empty($current_groupbuy_quota)) {
                 if (intval(config('ds_config.groupbuy_price')) != 0) {
@@ -392,7 +378,6 @@ class Sellergroupbuy extends BaseSeller {
                 }
             }
             View::assign('current_groupbuy_quota', $current_groupbuy_quota);
-        }
 
         // 根据后台设置的审核期重新设置抢购开始时间
         View::assign('groupbuy_starttime', TIMESTAMP + intval(config('ds_config.groupbuy_review_day')) * 86400);

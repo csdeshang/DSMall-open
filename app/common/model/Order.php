@@ -66,6 +66,16 @@ class Order extends BaseModel {
             $order_info['extend_order_goods'] = $order_goods_list;
         }
         
+        //追加返回订单日志
+        if (in_array('orderlog', $extend)) {
+            //取商品列表
+            $orderlog_list = $this->getOrderlogList(array('order_id' => $order_info['order_id']));
+            foreach ($orderlog_list as $orderlog_key => $orderlog) {
+                $orderlog_list[$orderlog_key]['log_time_desc'] = date('Y-m-d H:i:s',$orderlog['log_time']);
+            }
+            $order_info['extend_orderlog'] = $orderlog_list;
+        }
+        
         //追加返回拼团订单信息
         if (in_array('ppintuanorder', $extend)) {
             //取拼团订单附加列表
@@ -621,11 +631,8 @@ class Order extends BaseModel {
 
             //申请退款
             case 'refund_cancel':
-                if (isset($order_info['refund'])) {
-                    $state = $order_info['refund'] == 1 && !intval($order_info['lock_state']);
-                    if($order_info['ob_no']){//已结算不可以退款
-                        $state = FALSE;
-                    }
+                if (isset($order_info['if_allow_order_refund'])) {
+                    $state = ($order_info['if_allow_order_refund'] == 1);
                 } else {
                     $state = FALSE;
                 }
@@ -677,38 +684,38 @@ class Order extends BaseModel {
 
             //发货
             case 'send':
-                $state = !$order_info['lock_state'] && $order_info['order_state'] == ORDER_STATE_PAY;
+                $state = !$order_info['order_refund_lock_state'] && $order_info['order_state'] == ORDER_STATE_PAY;
                 break;
 
             //收货
             case 'receive':
-                $state = !$order_info['lock_state'] && $order_info['order_state'] == ORDER_STATE_SEND;
+                $state = !$order_info['order_refund_lock_state'] && $order_info['order_state'] == ORDER_STATE_SEND;
                 break;
 
             //评价
             case 'evaluation':
-                $state = !$order_info['refund_state'] && !$order_info['lock_state'] && !$order_info['evaluation_state'] && $order_info['order_state'] == ORDER_STATE_SUCCESS;
+                $state = !$order_info['refund_state'] && !$order_info['order_refund_lock_state'] && !$order_info['evaluation_state'] && $order_info['order_state'] == ORDER_STATE_SUCCESS;
                 break;
 
             //锁定
-            case 'lock':
-                $state = intval($order_info['lock_state']) ? true : false;
+            case 'order_refund_lock':
+                $state = intval($order_info['order_refund_lock_state']) ? true : false;
                 break;
 
             //快递跟踪
             case 'deliver':
-                $state = !empty($order_info['shipping_code']) && in_array($order_info['order_state'], array(ORDER_STATE_SEND, ORDER_STATE_SUCCESS));
+                $state = !$order_info['order_refund_lock_state'] && !empty($order_info['shipping_code']) && in_array($order_info['order_state'], array(ORDER_STATE_SEND, ORDER_STATE_SUCCESS));
                 break;
 
             //放入回收站
             case 'delete':
-                $state = in_array($order_info['order_state'], array(ORDER_STATE_CANCEL, ORDER_STATE_SUCCESS)) && $order_info['delete_state'] == 0;
+                $state = !$order_info['order_refund_lock_state'] && in_array($order_info['order_state'], array(ORDER_STATE_CANCEL, ORDER_STATE_SUCCESS)) && $order_info['delete_state'] == 0;
                 break;
 
             //永久删除、从回收站还原
             case 'drop':
             case 'restore':
-                $state = in_array($order_info['order_state'], array(ORDER_STATE_CANCEL, ORDER_STATE_SUCCESS)) && $order_info['delete_state'] == 1;
+                $state = !$order_info['order_refund_lock_state'] && in_array($order_info['order_state'], array(ORDER_STATE_CANCEL, ORDER_STATE_SUCCESS)) && $order_info['delete_state'] == 1;
                 break;
         }
         return $state;

@@ -1,6 +1,6 @@
 {extend name="default/base/base_seller" /}
 {block name="seller_btn"}
-{if $isPlatformStore || config('ds_config.promotion_booth_price')==0}
+{if config('ds_config.promotion_booth_price')==0}
 <a class="dssc-btn dssc-btn-green" href="javascript:void(0);" dstype="select_goods"><i class="iconfont">&#xe6db;</i>{$Think.lang.added_items}</a>
 {else /}
 
@@ -19,7 +19,7 @@
 {/block}
 {block name="seller_main"}
 
-{if $isPlatformStore || config('ds_config.promotion_booth_price')==0}
+{if config('ds_config.promotion_booth_price')==0}
 <div class="alert alert-block mt10">
     <ul>
         <li>{$Think.lang.subscription_fee_notice1}</li>
@@ -47,7 +47,7 @@
 </div>
 {/if}
 
-{if $isPlatformStore || config('ds_config.promotion_booth_price')==0 || (!empty($booth_quota) && $booth_quota['boothquota_state'] == 1)}
+{if config('ds_config.promotion_booth_price')==0 || (!empty($booth_quota) && $booth_quota['boothquota_state'] == 1)}
 <div nvtype="div_goods_select" class="div-goods-select" style="display: none;">
     <table class="search-form">
         <tr><th class="w150"><strong>{$Think.lang.search_store_items}</strong></th><td class="w160"><input dstype="search_goods_name" type="text w150" class="text" name="goods_name" value=""/></td>

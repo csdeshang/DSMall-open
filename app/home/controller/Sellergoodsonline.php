@@ -316,7 +316,6 @@ class Sellergoodsonline extends BaseSeller {
         }
 
         // 三方店铺验证是否绑定了该分类
-        if (!check_platform_store()) {
             //商品分类 提供批量显示所有分类插件
             $storebindclass_model = model('storebindclass');
             $goods_class = model('goodsclass')->getGoodsclassForCacheModel();
@@ -346,7 +345,6 @@ class Sellergoodsonline extends BaseSeller {
                     }
                 }
             }
-        }
         // 分类信息
         $goods_class = model('goodsclass')->getGoodsclassLineForTag(intval(input('post.cate_id')));
         $goods_model = model('goods');
@@ -444,7 +442,6 @@ class Sellergoodsonline extends BaseSeller {
         $update_common['is_goodsfcode'] = $update_common['is_virtual'] ? 0 : intval(input('post.is_fc'));
         $update_common['is_appoint'] = $update_common['is_virtual'] ? 0 : intval(input('post.is_appoint'));     // 只有库存为零的商品可以预约
         $update_common['appoint_satedate'] = $update_common['is_appoint'] == 1 ? strtotime(input('post.g_saledate')) : '';   // 预约商品的销售时间
-        $update_common['is_platform_store'] = in_array(session('store_id'), model('store')->getOwnShopIds()) ? 1 : 0;
 
         // 开始事务
         Db::startTrans();
@@ -525,7 +522,6 @@ class Sellergoodsonline extends BaseSeller {
                             $update['is_have_gift'] = 0;
                             $goodsgift_model->delGoodsgift(array('goods_id' => $goods_id));
                         }
-                        $update['is_platform_store'] = $update_common['is_platform_store'];
                         $goods_model->editGoodsById($update, $goods_id);
                     } else {
                         $insert = array();
@@ -566,7 +562,6 @@ class Sellergoodsonline extends BaseSeller {
                         $insert['virtual_invalid_refund'] = $update_common['virtual_invalid_refund'];
                         $insert['is_goodsfcode'] = $update_common['is_goodsfcode'];
                         $insert['is_appoint'] = $update_common['is_appoint'];
-                        $insert['is_platform_store'] = $update_common['is_platform_store'];
                         switch($update_common['virtual_type']){
                                 case 1:
                                     $insert['virtual_content'] = $value['vc_card'];
@@ -654,7 +649,6 @@ class Sellergoodsonline extends BaseSeller {
                         $update['is_have_gift'] = 0;
                         $goodsgift_model->delGoodsgift(array('goods_id' => $goods_id));
                     }
-                    $update['is_platform_store'] = $update_common['is_platform_store'];
                     $goods_model->editGoodsById($update, $goods_id);
                 } else {
                     $insert = array();
@@ -695,7 +689,6 @@ class Sellergoodsonline extends BaseSeller {
                     $insert['virtual_invalid_refund'] = $update_common['virtual_invalid_refund'];
                     $insert['is_goodsfcode'] = $update_common['is_goodsfcode'];
                     $insert['is_appoint'] = $update_common['is_appoint'];
-                    $insert['is_platform_store'] = $update_common['is_platform_store'];
                     switch($update_common['virtual_type']){
                                 case 1:
                                     $insert['virtual_content'] = input('post.vc_card');

@@ -82,9 +82,32 @@
                         {notempty name="$goods.goods_type_cn"}
                         <span class="sale-type">{$goods.goods_type_cn}</span>
                         {/notempty}
+                        
                     </dd>
                 </dl></td>
-            <td>{$goods.goods_price}</td>
+            <td>
+                {$goods.goods_price}
+                {if isset($goods['extend_order_goods_refund'])}
+                <p>
+                商品{if $goods['extend_order_goods_refund']['refundreturn_admin_time'] > 0}成功{else}申请{/if}退款:{$goods.extend_order_goods_refund.refund_amount}
+                {if $goods['extend_order_goods_refund']['refund_type'] == 1}
+                    {if $goods['extend_order_goods_refund']['refundreturn_seller_state'] == 1}
+                    <a target="_blank" href="{:url('Sellerrefund/edit',['refund_id'=>$goods.extend_order_goods_refund.refund_id])}" target="_blank">[立即处理]</a>
+                    {else}
+                    <a target="_blank" href="{:url('Sellerrefund/view',['refund_id'=>$goods.extend_order_goods_refund.refund_id])}" target="_blank">[查看]</a>
+                    {/if}
+                {/if}
+                {if $goods['extend_order_goods_refund']['refund_type'] == 2}
+                    {if $goods['extend_order_goods_refund']['refundreturn_seller_state'] == 1}
+                    <a target="_blank" href="{:url('Sellerreturn/edit',['return_id'=>$goods.extend_order_goods_refund.refund_id])}" target="_blank">[立即处理]</a>
+                    {else}
+                    <a target="_blank" href="{:url('Sellerreturn/view',['return_id'=>$goods.extend_order_goods_refund.refund_id])}" target="_blank">[查看]</a>
+                    {/if}
+                {/if}
+                </p>
+                {/if}
+                
+            </td>
             <td>{$goods.goods_num}</td>
 
             <!-- S 合并TD -->
@@ -131,10 +154,15 @@
                     {$Think.lang.store_order_evaluated}
                     {/if}
                 </p>
+                
+                <!-- 订单的退款,商品未发货才可申请 -->
+                {if isset($order['extend_order_refund'])}
+                <p><a href="{:url('Sellerrefund/view',['refund_id'=>$order.extend_order_refund.refund_id])}" target="_blank">订单退款详情</a></p>
+                {/if}
 
                 <!-- 订单查看 -->
                 <p><a href="{:url('Sellerorder/show_order',['order_id'=>$order_id])}" target="_blank">{$Think.lang.store_order_view_order}</a></p>
-
+                
                 <!-- 物流跟踪 -->
                 <p>
                     {if $order.if_deliver}
@@ -147,6 +175,9 @@
 
             <!-- 取消订单 -->
             <td class="bdl bdr" rowspan="{$order.goods_count}">
+                {if isset($order.extend_order_refund) && $order.extend_order_refund.refundreturn_seller_state == 1}
+                <p><a class="dssc-btn dssc-btn-red mt10" target='_blank' href="{:url('Sellerrefund/edit',['refund_id'=>$order.extend_order_refund.refund_id])}"/>处理退款</a></p>
+                {/if}
                 {if $order.if_cancel}
                 <p><a href="javascript:void(0)" class="dssc-btn dssc-btn-red mt5" ds_type="dialog" uri="{:url('Sellerorder/change_state',['state_type'=>'order_cancel','order_id'=>$order.order_id,'order_sn'=>$order.order_sn])}" dialog_title="{$Think.lang.store_order_cancel_order}" dialog_id="seller_order_cancel_order" dialog_width="400" id="order{$order.order_id}_action_cancel" /><i class="iconfont">&#xe699;</i>{$Think.lang.store_order_cancel_order}</a></p>
                 {/if}
@@ -170,10 +201,6 @@
                 <p>{$order.pintuanorder_state_text}</p>
                 {/if}
 
-                <!-- 锁定 -->
-                {if $order.if_lock}
-                <p>{$Think.lang.refund_return_goods}</p>
-                {/if}
             </td>
             {/if}
             <!-- E 合并TD -->

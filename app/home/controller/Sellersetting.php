@@ -68,7 +68,7 @@ class Sellersetting extends BaseSeller {
                 $store = $store_model->getStoreInfo(array('store_name' => input('param.store_name')));
                 //店铺名存在,则提示错误
                 if (!empty($store) && ($store_id != $store['store_id'])) {
-                    $this->error(lang('please_change_another_name'));
+                    ds_json_encode(10001, lang('please_change_another_name'));
                 }
                 $param['store_name'] = input('post.store_name');
             }
@@ -81,10 +81,15 @@ class Sellersetting extends BaseSeller {
                 Db::name('goodscommon')->where($where)->update($update);
                 Db::name('goods')->where($where)->update($update);
             }
+            
+            $store_validate = ds_validate('store');
+            if (!$store_validate->scene('seller_setting')->check($param)) {
+                ds_json_encode(10001, $store_validate->getError());
+            }
 
             $this->getMiniProCode(1);
             $store_model->editStore($param, array('store_id' => $store_id));
-            $this->success(lang('ds_common_save_succ'), (string) url('Sellersetting/setting'));
+            ds_json_encode(10000, lang('ds_common_save_succ'));
         }
         /**
          * 实例化店铺等级模型
@@ -307,10 +312,6 @@ class Sellersetting extends BaseSeller {
             'curr_image' => $curr_image
         );
 
-        // 自营店全部可用
-        if (check_platform_store()) {
-            $themes = array_keys($style_data);
-        } else {
             /**
              * 店铺等级
              */
@@ -321,7 +322,7 @@ class Sellersetting extends BaseSeller {
              * 可用主题
              */
             $themes = explode('|', $grade['storegrade_template']);
-        }
+            
         $theme_list = array();
         /**
          * 可用主题预览图片
@@ -608,21 +609,22 @@ class Sellersetting extends BaseSeller {
      */
     protected function getSellerItemList() {
         $menu_array = array(
-            1 => array(
+            array(
                 'name' => 'store_setting', 'text' => lang('ds_member_path_store_config'),
                 'url' => (string) url('Sellersetting/setting')
             ),
-            2 => array(
+            array(
                 'name' => 'store_map', 'text' => lang('ds_member_path_store_map'),
                 'url' => (string) url('Sellersetting/map')
             ),
-            4 => array(
+            array(
                 'name' => 'store_slide', 'text' => lang('ds_member_path_store_slide'),
                 'url' => (string) url('Sellersetting/store_slide')
-            ), 5 => array(
+            ),
+            array(
                 'name' => 'store_theme', 'text' => lang('store_theme'), 'url' => (string) url('Sellersetting/theme')
             ),
-            7 => array(
+            array(
                 'name' => 'store_mobile', 'text' => lang('mobile_phone_store_settings'), 'url' => (string) url('Sellersetting/store_mobile'),
             ),
         );

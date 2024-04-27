@@ -265,7 +265,6 @@ class Goodsclass extends BaseModel
         $gc_list_o = $gc_list = $this->getGoodsclassListByParentId($pid);
         // 如果不是自营店铺或者自营店铺未绑定全部商品类目，读取绑定分类
 
-        if (!check_platform_store_bindingall_goodsclass()) {
             $gc_list = array_under_reset($gc_list, 'gc_id');
             $storebindclass_model = model('storebindclass');
             $condition = array();
@@ -287,7 +286,6 @@ class Goodsclass extends BaseModel
             else {
                 return array();
             }
-        }
 
         return $gc_list;
     }

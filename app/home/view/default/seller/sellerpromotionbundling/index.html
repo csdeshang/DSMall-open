@@ -1,8 +1,5 @@
 {extend name="default/base/base_seller" /}
 {block name="seller_btn"}
-{if $isPlatformStore}
-<a class="dssc-btn dssc-btn-green"  href="{:url('Sellerpromotionbundling/bundling_add')}" ><i class="iconfont">&#xe6db;</i>{$Think.lang.bundling_add}</a>
-{else /}
 <?php if (config('ds_config.promotion_bundling_price')!=0 && empty($bundling_quota)) { ?>
 <a href="javascript:void(0)" class="dssc-btn dssc-btn-acidblue" onclick="window.location = '{:url('Sellerpromotionbundling/bundling_quota_add')}';" title="{$Think.lang.bundling_quota_add}"><i class="iconfont">&#xe6a1;</i>{$Think.lang.bundling_quota_add}</a>
 <?php } else if((isset($bundling_surplus) && intval($bundling_surplus) != 0 ) || config('ds_config.promotion_bundling_sum') == 0) { ?>
@@ -15,7 +12,6 @@
 <?php } else if(config('ds_config.promotion_bundling_price')==0){?>
 <a class="dssc-btn dssc-btn-green"  href="{:url('Sellerpromotionbundling/bundling_add')}" style="right:100px"><i class="iconfont">&#xe6db;</i>{$Think.lang.bundling_add}</a>
 <?php } ?>
-{/if}
 
 
 {/block}
@@ -23,7 +19,7 @@
 
 
 
-{if $isPlatformStore || config('ds_config.promotion_bundling_price')==0}
+{if config('ds_config.promotion_bundling_price')==0}
 {if config('ds_config.promotion_bundling_sum') != 0}
 <div class="alert alert-block mt10">
     <ul>

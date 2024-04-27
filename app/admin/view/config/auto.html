@@ -37,13 +37,6 @@
                 </td>
                 <td class="vatop tips">{$Think.lang.code_invalid_refund_tips}</td>
             </tr>
-            <tr class="noborder">
-                <td class="w150"><label for="store_bill_cycle">{$Think.lang.store_bill_cycle}:</label></td>
-                <td class="vatop rowform">
-                    <input id="store_bill_cycle" name="store_bill_cycle" value="{$list_config.store_bill_cycle|default=''}" type="text"> {$Think.lang.ds_day}
-                </td>
-                <td class="vatop tips">{$Think.lang.store_bill_cycle_tips}</td>
-            </tr>
             </tbody>
             <tfoot>
             <tr class="tfoot">
@@ -78,11 +71,6 @@
                     number: true,
                     range : [1,100]
                 },
-                store_bill_cycle: {
-                    required: true,
-                    number: true,
-                    min : 7
-                },
                 
                 
             },
@@ -101,11 +89,6 @@
                     required: '{$Think.lang.code_invalid_refund_required}',
                     number:'{$Think.lang.ds_sort_number}',
                     range:"{$Think.lang.ds_range_1_100}",
-                },
-                store_bill_cycle: {
-                    required: '{$Think.lang.store_bill_cycle_required}',
-                    number:'{$Think.lang.ds_sort_number}',
-                    min:"{$Think.lang.ds_min_error}7",
                 },
             }
         });

@@ -376,7 +376,7 @@ class Vrorder extends BaseModel {
 
             //评价
             case 'evaluation':
-                $state = !$order_info['refund_state'] && !isset($order_info['lock_state']) && $order_info['evaluation_state'] == '0' && $order_info['use_state']  && $order_info['order_state'] == ORDER_STATE_SUCCESS;
+                $state = !$order_info['refund_state'] && !isset($order_info['refund_lock']) && $order_info['evaluation_state'] == '0' && $order_info['use_state']  && $order_info['order_state'] == ORDER_STATE_SUCCESS;
                 break;
 
             //买家退款

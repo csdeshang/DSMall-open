@@ -91,10 +91,6 @@ class Search extends BaseMall {
                 $condition[]=array('goodscommon.areaid_1','=',$area_id);
             }
 
-            $type = intval(input('param.type'));
-            if ($type == 1) {
-                $condition[]=array('goodscommon.is_platform_store','=',1);
-            }
             $gift = intval(input('param.gift'));
             if ($gift == 1) {
                 $condition[]=array('goods.is_have_gift','=',1);

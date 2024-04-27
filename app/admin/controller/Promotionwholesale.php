@@ -61,7 +61,6 @@ class Promotionwholesale extends AdminControl
         // 输出自营店铺IDS
         
         View::assign('filtered', $condition ? 1 : 0); //是否有查询条件
-        View::assign('flippedOwnShopIds', array_flip(model('store')->getOwnShopIds()));
         return View::fetch();
     }
 

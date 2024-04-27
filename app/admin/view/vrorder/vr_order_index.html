@@ -17,7 +17,7 @@
         <div class="ds-search-form">
             <dl>
                 <dt>{$Think.lang.ds_order_sn}</dt>
-                <dd><input class="txt2" type="text" name="order_sn" value="{$Request.param.order_sn}" /></dd>
+                <dd><input class="txt" type="text" name="order_sn" value="{$Request.param.order_sn}" /></dd>
             </dl>
             <dl>
                 <dt>{$Think.lang.ds_store_name}</dt>
@@ -46,16 +46,6 @@
                         <option value="0" {if condition="$Request.param.refund_state eq '0'"}selected{/if}>{$Think.lang.refund_state_0|raw}</option>
                         <option value="1" {if condition="$Request.param.refund_state eq '1'"}selected{/if}>{$Think.lang.refund_state_1|raw}</option>
                         <option value="2" {if condition="$Request.param.refund_state eq '2'"}selected{/if}>{$Think.lang.refund_state_2|raw}</option>
-                    </select>
-                </dd>
-            </dl>
-            <dl>
-                <dt>{$Think.lang.ob_no_state}</dt>
-                <dd>
-                    <select name="ob_no_state" class="querySelect">
-                        <option value="">{$Think.lang.ds_please_choose}</option>
-                        <option value="0" {if condition="$Request.param.ob_no_state eq '0'"}selected{/if}>{$Think.lang.ob_no_state_0}</option>
-                        <option value="1" {if condition="$Request.param.ob_no_state eq '1'"}selected{/if}>{$Think.lang.ob_no_state_1}</option>
                     </select>
                 </dd>
             </dl>
@@ -117,7 +107,6 @@
                 <th class="align-center">{$Think.lang.ds_payment_code}</th>
                 <th class="align-center">{$Think.lang.order_state}</th>
                 <th class="align-center">{$Think.lang.refund_state}</th>
-                <th class="align-center">{$Think.lang.ob_no}</th>
                 <th class="align-center w144">{$Think.lang.ds_handle}</th>
             </tr>
         </thead>
@@ -134,13 +123,6 @@
                 <td>{:get_order_payment_name($order['payment_code'])}</td>
                 <td>{$order.state_desc|raw}</td>
                 <td>{:get_order_refund_state($order['refund_state'])}</td>
-                <td>
-                    {if condition="$order.ob_no>0"}
-                    {$order.ob_no}
-                    {else /}
-                    {$Think.lang.ob_no_state_0}
-                    {/if}
-                </td>
                 <td>
                     
                     <a href="javascript:dsLayerOpen('{:url('Vrorder/show_order',['order_id'=>$order.order_id])}','{$Think.lang.ds_view}-{$order.order_sn}')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_view}</a>

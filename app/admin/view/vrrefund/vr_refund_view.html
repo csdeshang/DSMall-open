@@ -1,64 +1,42 @@
 {include file="public/header" /}
 
 <div class="page">
-  <div class="fixed-empty"></div>
     <table class="ds-default-table">
       <tbody>
-        <tr class="noborder">
-          <td colspan="2" class="required">{$Think.lang.ds_refund_sn}</td>
-        </tr>
-        <tr class="noborder">
-          <td class="vatop rowform">{$refund.refund_sn}</td>
-          <td class="vatop tips"></td>
+        <tr>
+          <td class="w120">{$Think.lang.ds_refund_sn}</td>
+          <td>{$refund.refund_sn}</td>
         </tr>
         <tr>
-          <td colspan="2" class="required">{$Think.lang.ds_goods_name}</td>
-        </tr>
-        <tr class="noborder">
-            <td class="vatop rowform"><a href="{:url('home/goods/index',['goods_id'=>$refund.goods_id])}" target="_blank">{$refund.goods_name}</a></td>
-          <td class="vatop tips"></td>
+          <td class="w120">{$Think.lang.ds_goods_name}</td>
+          <td><a href="{:url('home/goods/index',['goods_id'=>$refund.goods_id])}" target="_blank">{$refund.goods_name}</a></td>
         </tr>
         <tr>
-          <td colspan="2" class="required">{$Think.lang.vrrefund_code_array}</td>
-        </tr>
-        <tr class="noborder">
-          <td class="vatop rowform">
+          <td class="w120">{$Think.lang.vrrefund_code_array}</td>
+          <td>
               {notempty name="code_array"}
               {foreach name="code_array" item="val" key="key" }
               {$val}<br />
               {/foreach}
               {/notempty}
             </td>
-          <td class="vatop tips"></td>
         </tr>
         <tr>
-          <td colspan="2" class="required">{$Think.lang.refund_order_refund}</td>
-        </tr>
-        <tr class="noborder">
-          <td class="vatop rowform">{:ds_price_format($refund.refund_amount)}</td>
-          <td class="vatop tips"></td>
+          <td class="w120">{$Think.lang.refund_order_refund}</td>
+          <td>{:ds_price_format($refund.refund_amount)}</td>
         </tr>
         <tr>
-          <td colspan="2" class="required">{$Think.lang.vrrefund_buyer_message}</td>
-        </tr>
-        <tr class="noborder">
-          <td class="vatop rowform">{$refund.buyer_message}</td>
-          <td class="vatop tips"></td>
+          <td class="w120">{$Think.lang.vrrefund_buyer_message}</td>
+          <td>{$refund.buyer_message}</td>
         </tr>
         <tr>
-          <td colspan="2" class="required">{$Think.lang.vrrefund_admin_state}</td>
-        </tr>
-        <tr class="noborder">
-          <td class="vatop rowform">{$admin_array[$refund['admin_state']]}</td>
-          <td class="vatop tips"></td>
+          <td class="w120">{$Think.lang.vrrefund_admin_state}</td>
+          <td>{$refund.admin_state_desc}</td>
         </tr>
         {if $refund.admin_state > 1}
         <tr>
-          <td colspan="2" class="required">{$Think.lang.refund_message}</td>
-        </tr>
-        <tr class="noborder">
-          <td class="vatop rowform">{$refund.admin_message}</td>
-          <td class="vatop tips"></td>
+          <td class="w120">{$Think.lang.refund_message}</td>
+          <td>{$refund.admin_message}</td>
         </tr>
         {/if}
       </tbody>

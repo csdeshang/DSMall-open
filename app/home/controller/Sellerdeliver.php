@@ -108,7 +108,7 @@ class Sellerdeliver extends BaseSeller {
         $condition = array();
         $condition[] = array('order_id', 'in', $order_id);
         $condition[] = array('store_id', '=', session('store_id'));
-        $condition[] = array('lock_state', '=', 0);
+        $condition[] = array('order_refund_lock_state', '=', 0);
         $condition[] = array('order_state', 'in', array(ORDER_STATE_PAY));
         $order_list = $order_model->getOrderList($condition, '', '*', 'order_id desc', 0, array('order_common'));
         if (request()->isPost()) {
@@ -296,7 +296,7 @@ class Sellerdeliver extends BaseSeller {
         $condition[] = array('order_id', '=', $order_id);
         $condition[] = array('store_id', '=', session('store_id'));
         $order_info = $order_model->getOrderInfo($condition, array('order_common', 'order_goods'));
-        $if_allow_send = intval($order_info['lock_state']) || !in_array($order_info['order_state'], array(ORDER_STATE_PAY, ORDER_STATE_SEND));
+        $if_allow_send = intval($order_info['order_refund_lock_state']) || !in_array($order_info['order_state'], array(ORDER_STATE_PAY, ORDER_STATE_SEND));
         if ($if_allow_send) {
             ds_json_encode(10001, lang('param_error'));
         }
@@ -586,7 +586,7 @@ class Sellerdeliver extends BaseSeller {
         $condition = array();
         $condition[] = array('order_id', '=', $order_id);
         $condition[] = array('store_id', '=', session('store_id'));
-        $condition[] = array('lock_state', '=', 0);
+        $condition[] = array('order_refund_lock_state', '=', 0);
         $order_info = $order_model->getOrderInfo($condition);
 
         //取目前系统最晚收货时间

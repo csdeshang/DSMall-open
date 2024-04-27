@@ -26,7 +26,7 @@ class Pmgdiscount extends BaseModel {
         }
         //判断套餐时间
         $mgdiscountquota_model = model('pmgdiscountquota');
-		if($store['is_platform_store']!=1 && intval(config('ds_config.mgdiscount_price'))!=0){//非自营店且促销套餐价格非零就需要检查是否购买了套餐
+		if(intval(config('ds_config.mgdiscount_price'))!=0){//非自营店且促销套餐价格非零就需要检查是否购买了套餐
         $current_mgdiscount_quota = $mgdiscountquota_model->getMgdiscountquotaCurrent($goods_info['store_id']);
         if(empty($current_mgdiscount_quota) || $current_mgdiscount_quota['mgdiscountquota_endtime']<TIMESTAMP){
             return ;

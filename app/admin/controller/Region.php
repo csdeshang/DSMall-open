@@ -171,7 +171,7 @@ class Region extends AdminControl {
                 $this->error(sprintf(lang('area_deep_error'), MAX_LAYER));
             }
             $data = array(
-                'area_name' => text_filter(input('post.area_name')),
+                'area_name' => input('post.area_name'),
 				'area_initial' => input('post.area_initial'),
                 'area_region' => input('post.area_region'),
                 'area_parent_id' => $area_parent_id,

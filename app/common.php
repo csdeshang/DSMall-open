@@ -26,31 +26,36 @@ function model($name, $layer = 'model') {
 }
 
 /**
+ * 过滤特殊字符
+ * @param type $clean_text
+ * @return type
+ */
+function remove_special_words($clean_text) {
+    //不过滤变量
+    $filter = ['modify_pwd', 'modify_mobile', 'modify_email','modify_paypwd', 'unionpay', 'unionpay_h5',];
+    if(in_array($clean_text, $filter)){
+        return $clean_text;
+    }
+    
+    $farr = [
+            "/select|join|where|drop|like|modify|rename|insert|update|table|database|alter|truncate|union|into|load_file|outfile/is"
+        ];
+    $clean_text = preg_replace($farr, '', $clean_text);
+    return $clean_text;
+}
+
+/**
  * 去除特殊表情符号
  * @param type $string
  * @return type
  */
 function removeEmojis($clean_text) {
-    // Match Emoticons
-    $regexEmoticons = '/[\x{1F600}-\x{1F64F}]/u';
-    $clean_text = preg_replace($regexEmoticons, '', $clean_text);
-
-    // Match Miscellaneous Symbols and Pictographs
-    $regexSymbols = '/[\x{1F300}-\x{1F5FF}]/u';
-    $clean_text = preg_replace($regexSymbols, '', $clean_text);
-
-    // Match Transport And Map Symbols
-    $regexTransport = '/[\x{1F680}-\x{1F6FF}]/u';
-    $clean_text = preg_replace($regexTransport, '', $clean_text);
-
-    // Match Miscellaneous Symbols
-    $regexMisc = '/[\x{2600}-\x{26FF}]/u';
-    $clean_text = preg_replace($regexMisc, '', $clean_text);
-
-    // Match Dingbats
-    $regexDingbats = '/[\x{2700}-\x{27BF}]/u';
-    $clean_text = preg_replace($regexDingbats, '', $clean_text);
-
+    $clean_text = preg_replace_callback(//执行一个正则表达式搜索并且使用一个回调进行替换
+            '/./u',
+            function (array $match) {
+                return strlen($match[0]) >= 4 ? '' : $match[0];
+            },
+            $clean_text);
     return $clean_text;
 }
 
@@ -865,24 +870,7 @@ function get_chat() {
     return Chat::getChatHtml();
 }
 
-/**
- * 验证是否为平台店铺
- *
- * @return boolean
- */
-function check_platform_store() {
-    return session('is_platform_store');
-}
 
-/**
- * 验证是否为平台店铺 并且绑定了全部商品类目
- *
- * @return boolean
- */
-function check_platform_store_bindingall_goodsclass() {
-
-    return check_platform_store() && session('bind_all_gc');
-}
 
 /**
  * 生成20位编号(时间+微秒+随机数+会员ID%1000)，该值会传给第三方支付接口
@@ -1007,32 +995,6 @@ function dsLayerOpenSuccess($msg = '', $url = '') {
     exit;
 }
 
-/**
- * 移除微信昵称中的emoji字符
- * @param type $nickname
- * @return type
- */
-function removeEmoji($nickname) {
-    $clean_text = "";
-    // Match Emoticons
-    $regexEmoticons = '/[\x{1F600}-\x{1F64F}]/u';
-    $clean_text = preg_replace($regexEmoticons, '', $nickname);
-    // Match Miscellaneous Symbols and Pictographs
-    $regexSymbols = '/[\x{1F300}-\x{1F5FF}]/u';
-    $clean_text = preg_replace($regexSymbols, '', $clean_text);
-    // Match Transport And Map Symbols
-    $regexTransport = '/[\x{1F680}-\x{1F6FF}]/u';
-    $clean_text = preg_replace($regexTransport, '', $clean_text);
-    // Match Miscellaneous Symbols
-    $regexMisc = '/[\x{2600}-\x{26FF}]/u';
-    $clean_text = preg_replace($regexMisc, '', $clean_text);
-    // Match Dingbats
-    $regexDingbats = '/[\x{2700}-\x{27BF}]/u';
-    $clean_text = preg_replace($regexDingbats, '', $clean_text);
-    //截取指定长度的昵称
-    $clean_text = ds_substing($clean_text, 0, 20);
-    return trim($clean_text);
-}
 
 /**
  * 截取指定长度的字符
@@ -1171,9 +1133,55 @@ function image_filter($img_url) {
     return ds_callback(true, '', $data);
 }
 
-
-function text_filter($text) {
-    preg_match_all('/[\x{4e00}-\x{9fa5}a-zA-Z0-9]/u',$text,$result);
-    return implode('',$result[0]);
+//根据USER_AGENT 获取系统名称
+function getOSFromUserAgent() {
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    $osPatterns = array(
+        '/windows nt 6.2/i' => 'Windows 8',
+        '/windows nt 6.1/i' => 'Windows 7',
+        '/windows nt 6.0/i' => 'Windows Vista',
+        '/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
+        '/windows nt 5.1/i' => 'Windows XP',
+        '/windows xp/i' => 'Windows XP',
+        '/windows nt 5.0/i' => 'Windows 2000',
+        '/windows me/i' => 'Windows ME',
+        '/win98/i' => 'Windows 98',
+        '/win95/i' => 'Windows 95',
+        '/win16/i' => 'Windows 3.11',
+        '/macintosh|mac os x/i' => 'Mac OS X',
+        '/mac_powerpc/i' => 'Mac OS 9',
+        '/linux/i' => 'Linux',
+        '/unix/i' => 'Unix',
+        '/sunos/i' => 'SunOS',
+        '/bsd/i' => 'FreeBSD',
+        '/ibm/i' => 'IBM OS/2',
+        '/applewebkit/i' => 'Apple WebKit',
+        '/chrome/i' => 'Chrome',
+        '/safari/i' => 'Safari',
+        '/opera/i' => 'Opera',
+        '/opera mobi/i' => 'Opera Mobile',
+        '/opera mini/i' => 'Opera Mini',
+        '/konqueror/i' => 'Konqueror',
+        '/mozilla/i' => 'Mozilla Firefox',
+        '/seamonkey/i' => 'SeaMonkey',
+        '/firefox/i' => 'Mozilla Firefox',
+        '/msie/i' => 'Internet Explorer',
+        '/netscape/i' => 'Netscape',
+        '/maxthon/i' => 'Maxthon',
+        '/tencent traveler/i' => 'Tencent Traveler',
+        '/trident/i' => 'Trident',
+        '/realplayer/i' => 'RealPlayer',
+        '/flashget/i' => 'FlashGet',
+        '/java/i' => 'Java',
+        '/curl/i' => 'cURL',
+        '/wget/i' => 'Wget',
+        '/googlebot/i' => 'Googlebot',
+    );
+    foreach ($osPatterns as $pattern => $os) {
+        if (preg_match($pattern, $userAgent)) {
+            return $os;
+        }
+    }   
+    return '未知系统';
 }
-
+ 

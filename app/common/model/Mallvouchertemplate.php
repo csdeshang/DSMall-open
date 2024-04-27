@@ -27,7 +27,6 @@ class Mallvouchertemplate extends BaseModel
     );
 
 
-    private $templatestate_arr;
 
     /**
      * 构造函数

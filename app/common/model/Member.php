@@ -111,10 +111,10 @@ class Member extends BaseModel
      * @access public
      * @author csdeshang
      * @param type $member_info 会员信息
-     * @param type $reg 规则
+     * @param type $type 类型  login register
      * @return type
      */
-    public function createSession($member_info = array(), $reg = false)
+    public function createSession($member_info = array(), $type = '')
     {
         if (empty($member_info) || !is_array($member_info)) {
             return;
@@ -156,14 +156,14 @@ class Member extends BaseModel
             session('wxunionid', $member_info['member_wxunionid']);
         }
 
-        if (!$reg) {
+        if ($type == 'login') {
             //添加会员积分
             $this->addPoint($member_info);
             //添加会员经验值
             $this->addExppoint($member_info);
         }
 
-        if (!empty($member_info['member_logintime'])) {
+        if (!empty($member_info['member_logintime']) && $type == 'login') {
             $update_info = array(
                 'member_loginnum' => ($member_info['member_loginnum'] + 1),
                 'member_logintime' => TIMESTAMP,
@@ -588,16 +588,10 @@ class Member extends BaseModel
      * @author csdeshang
      * @param type $member_id 会员id
      * @param type $member_name 会员名字
-     * @param type $client 客户端
      * @return type
      */
-    public function getBuyerToken($member_id, $member_name, $client,$openid='') {
+    public function getBuyerToken($member_id, $member_name,$openid='') {
         $mbusertoken_model = model('mbusertoken');
-        //重新登录后以前的令牌失效
-        $condition = array();
-        $condition[] = array('member_id','=',$member_id);
-        $condition[] = array('member_clienttype','=',$client);
-        $mbusertoken_model->delMbusertoken($condition);
         
         //生成新的token
         $mb_user_token_info = array();
@@ -606,7 +600,9 @@ class Member extends BaseModel
         $mb_user_token_info['member_name'] = $member_name;
         $mb_user_token_info['member_token'] = $token;
         $mb_user_token_info['member_logintime'] = TIMESTAMP;
-        $mb_user_token_info['member_clienttype'] = $client;
+        $mb_user_token_info['member_operationtime'] = TIMESTAMP;
+        $mb_user_token_info['member_clienttype'] = request()->header('from-clienttype') != null? request()->header('from-clienttype'):'unknow';
+        $mb_user_token_info['member_devicetype'] = getOSFromUserAgent();
         if(!empty($openid)){
             $mb_user_token_info['member_openid'] = $openid;
         }

@@ -32,12 +32,8 @@ class Sellerpromotionxianshi extends BaseSeller {
         $xianshiquota_model = model('pxianshiquota');
         $pxianshi_model = model('pxianshi');
 
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
             $current_xianshi_quota = $xianshiquota_model->getXianshiquotaCurrent(session('store_id'));
             View::assign('current_xianshi_quota', $current_xianshi_quota);
-        }
 
         $condition = array();
         $condition[] = array('store_id', '=', session('store_id'));
@@ -61,10 +57,6 @@ class Sellerpromotionxianshi extends BaseSeller {
      * 添加秒杀活动
      * */
     public function xianshi_add() {
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
-            View::assign('isPlatformStore', false);
             $xianshiquota_model = model('pxianshiquota');
             $current_xianshi_quota = $xianshiquota_model->getXianshiquotaCurrent(session('store_id'));
             if (empty($current_xianshi_quota)) {
@@ -75,7 +67,6 @@ class Sellerpromotionxianshi extends BaseSeller {
                 }
             }
             View::assign('current_xianshi_quota', $current_xianshi_quota);
-        }
 
         //输出导航
         $this->setSellerCurMenu('Sellerpromotionxianshi');
@@ -102,7 +93,6 @@ class Sellerpromotionxianshi extends BaseSeller {
             ds_json_encode(10001, lang('greater_than_start_time'));
         }
 
-        if (!check_platform_store()) {
             //获取当前套餐
             $xianshiquota_model = model('pxianshiquota');
             $current_xianshi_quota = $xianshiquota_model->getXianshiquotaCurrent(session('store_id'));
@@ -122,7 +112,6 @@ class Sellerpromotionxianshi extends BaseSeller {
             if ($end_time > $quota_end_time) {
                 ds_json_encode(10001, sprintf(lang('xianshi_add_end_time_explain'), date('Y-m-d', $current_xianshi_quota['xianshiquota_endtime'])));
             }
-        }
             if($end_time<TIMESTAMP){
                 ds_json_encode(10001, sprintf(lang('xianshi_add_end_time_explain'), date('Y-m-d')));
             }
@@ -155,11 +144,6 @@ class Sellerpromotionxianshi extends BaseSeller {
      * 编辑秒杀活动
      * */
     public function xianshi_edit() {
-        if (check_platform_store()) {
-            View::assign('isPlatformStore', true);
-        } else {
-            View::assign('isPlatformStore', false);
-        }
         $pxianshi_model = model('pxianshi');
 
         $xianshi_info = $pxianshi_model->getXianshiInfoByID(input('param.xianshi_id'));

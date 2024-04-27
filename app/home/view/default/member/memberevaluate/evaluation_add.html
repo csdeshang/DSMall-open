@@ -61,7 +61,7 @@
                             {/if}
                         </tbody>
                     </table>
-                    {if !$store_info.is_platform_store && $Request.action != 'add_vr'}
+                    {if $Request.action != 'add_vr'}
                     <div class="tabmenu">
                         <ul class="tab">
                             <li class="active"><a href="javascript:void(0);">{$Think.lang.shop_service_score}</a></li>
@@ -69,7 +69,7 @@
                     </div>
                     {/if}
                     <div class="dsm-default-form">
-                        {if !$store_info.is_platform_store && $Request.action != 'add_vr'}
+                        {if $Request.action != 'add_vr'}
                         <dl>
                             <dt>{$Think.lang.member_evaluation_evalstore_type_1}{$Think.lang.ds_colon}</dt>
                             <dd>
@@ -102,12 +102,10 @@
                 </form>
             </div>
             <div class="dsm-flow-item">
-                {if !$store_info.is_platform_store}
                 <div class="dsm-evaluation-store">
                     <div class="title">{$Think.lang.member_evaluation_storeinfotitle}</div>
                     <div class="store-name"> {$store_info.store_name}</div>
                     <div class="store-info">
-                        {if !$store_info.is_platform_store}
                         <dl class="all-rate">
                             <dt>{$Think.lang.comprehensive_score}：</dt>
                             <dd>
@@ -127,7 +125,6 @@
                                 {/foreach}
                             </ul>
                         </div>
-                        {/if}
                         {if $store_info.store_qq || $store_info.store_ww}
                         <dl class="messenger">
                             <dt>{$Think.lang.contact_information}：</dt>
@@ -157,7 +154,6 @@
                         </dl>
                     </div>
                 </div>
-               {/if}
             </div>
         </div>
 

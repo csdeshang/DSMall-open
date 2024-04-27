@@ -252,9 +252,9 @@ class Sellertransport extends BaseSeller {
         $store_id = session('store_id');
 
         if (request()->isPost()) {
-            if (!check_platform_store()) {
+            
                 ds_json_encode(10001, lang('only_for_ownshop'));
-            }
+                
             $county_array = input('post.county'); #获取字符串
             if (!preg_match('/^[\d,]+$/', $county_array)) {
                 $county_array = '';
@@ -305,9 +305,9 @@ class Sellertransport extends BaseSeller {
                 ds_json_encode(10001, lang('ds_common_save_fail'));
             }
         } else {
-            if (!check_platform_store()) {
+            
                 $this->error(lang('only_for_ownshop'));
-            }
+                
             //取出支持货到付款的县ID及上级市ID
             $parea_info = $offpayarea_model->getOffpayareaInfo(array('store_id' => $store_id));
             if (!empty($parea_info['area_id'])) {
@@ -395,11 +395,9 @@ class Sellertransport extends BaseSeller {
                 'name' => 'transport', 'text' => lang('ds_member_path_postage'), 'url' => (string) url('Sellertransport/index')
             ),
         );
-        if (check_platform_store()) {
             $menu_array[] = array(
                 'name' => 'offpay_area', 'text' => lang('offpay_area'), 'url' => (string) url('Sellertransport/offpay_area')
             );
-        }
         return $menu_array;
     }
 

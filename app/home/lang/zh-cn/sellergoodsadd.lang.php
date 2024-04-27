@@ -279,7 +279,6 @@ $lang['store_goods_import_goodsdesc'] = '宝贝描述';
 $lang['store_goods_import_goodspic'] = '新图片';
 $lang['store_goods_import_goodsproperties'] = '销售属性组合';
 $lang['store_goods_import_upload_album'] = '导入相册选择';
-$lang['param_error'] = '参数错误';
 
 /**
  * ajax修改商品标题

@@ -61,12 +61,6 @@ class Vrorder extends AdminControl {
         if(in_array($refund_state,array('0','1','2'))){
             $condition[] = array('refund_state','=',$refund_state);
         }
-        $ob_no_state = input('param.ob_no_state');
-        if($ob_no_state == '0'){
-            $condition[] = array('ob_no','=',0);
-        }elseif($ob_no_state == '1'){
-            $condition[] = array('ob_no','<>',0);
-        }
         
         $query_start_time = input('get.query_start_time');
         $query_end_time = input('get.query_end_time');

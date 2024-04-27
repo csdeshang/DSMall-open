@@ -2,6 +2,7 @@
 
 namespace app\common\logic;
 use think\facade\Db;
+use app\common\model\Storemoneylog;
 
 /**
  * ============================================================================
@@ -103,11 +104,8 @@ class Vrorder
                 throw new \think\Exception('保存失败', 10006);
             }
             //分销佣金取消
-            $condition=array();
-            $condition[]=array('orderinviter_order_id','=',$order_info['order_id']);
-            $condition[]=array('orderinviter_valid','=',0);
-            $condition[]=array('orderinviter_order_type','=',1);
-            Db::name('orderinviter')->where($condition)->update(['orderinviter_valid' => 2]);
+            $orderinviter_model = model('orderinviter');
+            $orderinviter_model->cancelOrderinviterMoney($order_info['order_id'],1);
 
             Db::commit();
             return ds_callback(true, '更新成功');
@@ -302,6 +300,8 @@ class Vrorder
      */
     public function changeOrderStateSuccess($order_id)
     {
+        Db::startTrans();
+        try {
         $vrorder_model = model('vrorder');
         $condition = array();
         $condition[] = array('vr_state','=',0);
@@ -314,12 +314,16 @@ class Vrorder
                                                      'order_state' => ORDER_STATE_SUCCESS, 'finnshed_time' => TIMESTAMP
                                                  ), array('order_id' => $order_id));
             if (!$update) {
-                ds_callback(false, '更新失败');
+                throw new \think\Exception('更新失败', 10006);
             }
         }
-
+        
             
         $order_info = $vrorder_model->getVrorderInfo(array('order_id' => $order_id));
+        
+        //虚拟订单结算
+        $this->balanceVrOrderStateReceive($order_info);
+        
         //添加会员积分
         if (config('ds_config.points_isuse') == 1) {
             model('points')->savePointslog('order', array(
@@ -335,7 +339,95 @@ class Vrorder
             'orderprice' => $order_info['order_amount'], 'order_sn' => $order_info['order_sn'],
             'order_id' => $order_info['order_id']
         ), true);
-
-        return ds_callback(true, '更新成功');
+        
+        Db::commit();
+            return ds_callback(true, '操作成功');
+        } catch (Exception $e) {
+            Db::rollback();
+            return ds_callback(false, $e->getMessage());
+        }
+        
     }
+    
+    
+    //获取订单结算的数据,支付给店铺,平台,佣金,退款等
+    public function getBalanceVrOrderInfo($order_info){
+        $vrorder_info = Db::name('vrorder')->where('order_id', '=', $order_info['order_id'])->field('SUM(order_amount) AS vr_order_amount,SUM(ROUND(order_amount*commis_rate/100,2)) AS commis_totals,SUM(refund_amount) AS vr_refund_amount,SUM(ROUND(refund_amount*commis_rate/100,2)) AS vr_commis_return_totals')->find();
+        
+        //虚拟订单金额
+        $result['order_amount'] = $vrorder_info['vr_order_amount'];
+        
+        //退款金额
+        $result['refund_amount'] = $vrorder_info['vr_refund_amount'];
+        
+        //使用的平台代金券
+//        $result['mall_voucher_totals'] = $ordercommon['mall_voucher_totals'];
+        
+        //平台的佣金
+        $result['commis_totals'] = $vrorder_info['commis_totals'];
+        
+        //获取用户推荐佣金
+        $orderinviter = Db::name('orderinviter')->where('orderinviter_order_id', '=',$order_info['order_id'])->where('orderinviter_order_type', 1)->field('SUM(orderinviter_money) AS vr_inviter_totals')->find();
+        $result['inviter_totals'] = $orderinviter['vr_inviter_totals'];
+        
+        return $result;
+    }
+    
+    //用户确认收货,与店铺进行结算.虚拟订单
+    public function balanceVrOrderStateReceive($order_info) {
+        $result = $this->getBalanceVrOrderInfo($order_info);
+
+        //店铺去除费用后应该获得的资金
+        $store_avaliable_money = $result['order_amount'] - $result['commis_totals'] - $result['inviter_totals'];
+        
+        $storemoneylog_desc = '虚拟订单'.$order_info['order_sn'].'用户确认收货。(订单金额：'.$result['order_amount'].')-(平台佣金'.$result['commis_totals'].')-(分销佣金'.$result['inviter_totals'].')';
+        $storemoneylog_model = model('storemoneylog');
+        //付款给店铺
+        $data = array(
+            'store_id' => $order_info['store_id'],
+            'storemoneylog_type' => Storemoneylog::TYPE_ORDER_SUCCESS,
+            'storemoneylog_state' => Storemoneylog::STATE_VALID,
+            'storemoneylog_add_time' => TIMESTAMP,
+            'store_avaliable_money' => $store_avaliable_money,
+            'storemoneylog_desc' => $storemoneylog_desc,
+        );
+        $storemoneylog_model->changeStoremoney($data);
+        
+        //付款给推荐人分销佣金[虚拟订单]
+        $orderinviter_model = model('orderinviter');
+        $orderinviter_model->giveMoney($order_info['order_id'], 1);
+    }
+    
+    
+    //确认退款,对店铺的扣款
+    public function balanceVrOrderStateRefund($order_info,$refund){
+        
+        //判断订单状态,店铺是否发货,未发货则店铺不需要进行扣款
+        
+        //用户申请的退款金额
+        $refund_amount = $refund['refund_amount'];
+        
+        // 平台的佣金、推荐的分成 不做扣除
+        $store_avaliable_money = $refund_amount;
+        
+        $storemoneylog_desc = '虚拟订单'.$order_info['order_sn'].'退款。';
+        $storemoneylog_model = model('storemoneylog');
+        //付款给店铺
+        $data = array(
+            'store_id' => $order_info['store_id'],
+            'storemoneylog_type' => Storemoneylog::TYPE_ORDER_REFUND,
+            'storemoneylog_state' => Storemoneylog::STATE_VALID,
+            'storemoneylog_add_time' => TIMESTAMP,
+            'store_avaliable_money' => -$store_avaliable_money,
+            'storemoneylog_desc' => $storemoneylog_desc,
+        );
+        $storemoneylog_model->changeStoremoney($data);
+        
+        //产生退款,修改推荐人分销佣金[虚拟订单]
+        $orderinviter_model = model('orderinviter');
+        $orderinviter_model->refundVrorderinviterMoney($order_info, $refund);
+        
+    }
+    
+    
 }

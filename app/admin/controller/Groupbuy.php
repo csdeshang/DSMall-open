@@ -51,11 +51,8 @@ class Groupbuy extends AdminControl {
 
         $this->setAdminCurItem('index');
 
-        // 输出自营店铺IDS
-        View::assign('flippedOwnShopIds', array_flip(model('store')->getOwnShopIds()));
         
         View::assign('filtered', $condition ? 1 : 0); //是否有查询条件
-        View::assign('flippedOwnShopIds', '');
         return View::fetch();
     }
 

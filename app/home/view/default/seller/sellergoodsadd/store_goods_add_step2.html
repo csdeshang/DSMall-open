@@ -932,6 +932,7 @@ $(function(){
             goods_weight : {
                 required    : false,
                 number      : true,
+                max         : 999
             },
             g_marketprice : {
                 number      : true,
@@ -989,6 +990,7 @@ $(function(){
             goods_weight : {
                 required    : '<i class="iconfont">&#xe64c;</i>{$Think.lang.store_goods_index_weight_null}',
                 number      : '<i class="iconfont">&#xe64c;</i>{$Think.lang.store_goods_index_weight_error}',
+                max      : '<i class="iconfont">&#xe64c;</i>最大重量不能超过999公斤',
             },
             g_marketprice : {
                 number      : '<i class="iconfont">&#xe64c;</i>{$Think.lang.prompt_information4}',

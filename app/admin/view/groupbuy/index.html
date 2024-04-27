@@ -85,9 +85,6 @@
                 </p>
                     <p class="goods">{$Think.lang.ds_goods_name}:<a target="_blank" href="{:url('home/Goods/index',['goods_id'=>$val.goods_id])}" title="{$val.goods_name}" target="_blank">{$val.goods_name}</a></p>
                     <p class="store">{$Think.lang.ds_store_name}:<a href="{:url('home/Store/index',['store_id'=>$val.store_id])}" title="{$val.store_name}" target="_blank">{$val.store_name}</a>
-                        {present name="flippedOwnShopIds[$val.store_id]"}
-                        <span class="ownshop">[{$Think.lang.ds_ownshop}]</span>
-                        {/present}
                     </p>
                 </td>
                 <td class="align-center nowarp">{$val.start_time_text}</td>

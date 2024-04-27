@@ -1,6 +1,6 @@
 {extend name="default/base/base_seller" /}
 {block name="seller_btn"}
-{if isset($isPlatformStore) || config('ds_config.mgdiscount_price')==0}
+{if config('ds_config.mgdiscount_price')==0}
 {else /}
 {notempty name="current_mgdiscount_quota"}
 <a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionmgdiscount/mgdiscount_quota_add')}" title=""><i class="iconfont">&#xe6a1;</i>{$Think.lang.set_renewal}</a>
@@ -11,7 +11,7 @@
 {/block}
 
 {block name="seller_main"}
-{if isset($isPlatformStore) || config('ds_config.mgdiscount_price')==0}
+{if config('ds_config.mgdiscount_price')==0}
 <div class="alert alert-block mt10">
     <ul>
         <li>1、{$Think.lang.mgdiscount_explain2}</li>

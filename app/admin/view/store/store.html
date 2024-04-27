@@ -65,7 +65,6 @@
           <th class="align-center w36">{$Think.lang.belongs_level}</th>
           <th class="align-center w36">{$Think.lang.period_to}</th>
           <th class="align-center w36">{$Think.lang.state}</th>
-          <th class="align-center w36">{$Think.lang.store_bill_time}</th>
           <th class="align-center w200">{$Think.lang.ds_handle}</th>
         </tr>
       </thead>
@@ -90,7 +89,6 @@
           <td class="align-center"><?php echo isset($search_grade_list[$v['grade_id']])?$search_grade_list[$v['grade_id']]:'';?></td>
           <td class="nowarp align-center"><?php echo $v['store_endtime']?date('Y-m-d', $v['store_endtime']):lang('no_limit');?></td>
           <td><?php echo $v['store_state']?lang('ds_open'):lang('ds_close');?></td>
-          <td>{$v.store_bill_time|date="Y-m-d"}</td>
           <td>
             <a href="javascript:dsLayerOpen('{:url('Store/store_joinin_detail',['member_id'=>$v.member_id])}','{$Think.lang.ds_view}-{$v.store_name}')" href="" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_view}</a>
             <a href="{:url('Store/store_edit',['store_id'=>$v.store_id])}" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.ds_edit}</a>

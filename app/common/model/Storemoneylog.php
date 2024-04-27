@@ -18,7 +18,8 @@ use think\facade\Db;
  */
 class Storemoneylog extends BaseModel {
 
-    const TYPE_BILL=1;
+    //订单确认收货
+    const TYPE_ORDER_SUCCESS=1;
     const TYPE_WITHDRAW=2;
     const TYPE_ADMIN=3;
     const TYPE_VERIFY=4;
@@ -26,7 +27,10 @@ class Storemoneylog extends BaseModel {
     const TYPE_DEPOSIT_IN=6;
     const TYPE_MEMBER_IN=7;
     const TYPE_MEMBER_OUT=8;
-    
+    //店铺参加营销活动费用
+    const TYPE_STORE_COST=9;
+    const TYPE_ORDER_REFUND=10;
+        
     const STATE_VALID=1;
     const STATE_WAIT=2;
     const STATE_AGREE=3;

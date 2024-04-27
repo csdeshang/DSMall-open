@@ -10,10 +10,6 @@ $lang['refund_message_null'] = '备注信息不能为空';
 $lang['refund_order_add_time'] = '申请时间';
 
 $lang['refund_seller_message'] = '商家备注';
-$lang['refund_state'] = '审核状态';
-$lang['refund_state_confirm'] = '待审核';
-$lang['refund_state_yes'] = '同意';
-$lang['refund_state_no'] = '不同意';
 
 
 $lang['refund_buyer_message'] = '退款原因';

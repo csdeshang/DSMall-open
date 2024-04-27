@@ -43,13 +43,11 @@ class BaseGoods extends BaseStore {
             $store_info['deliver_region_names'] = explode(' ', $store_info['deliver_region'][1]);
         }
             $storejoinin_model=model('storejoinin');
-            if(!$store_info['is_platform_store']){
                 $storejoinin_info=$storejoinin_model->getOneStorejoinin(array('member_id'=>$store_info['member_id']));
                 //营业执照
                 if($storejoinin_info){
                     $store_info['business_licence_number_electronic']=($storejoinin_info['business_licence_number_electronic'] && $storejoinin_info['store_type']==0)?get_store_joinin_imageurl($storejoinin_info['business_licence_number_electronic']):'';
                 }  
-            }
         $this->outputStoreInfo($store_info, $goods_info);
     }
 }

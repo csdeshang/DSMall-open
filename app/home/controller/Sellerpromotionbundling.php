@@ -36,11 +36,7 @@ class Sellerpromotionbundling extends BaseSeller {
         $where[] = array('blquota_endtime', '<', TIMESTAMP);
         $pbundling_model->editBundlingQuotaClose($where);
 
-        $isPlatformStore = check_platform_store() ? true : false;
-        View::assign('isPlatformStore', $isPlatformStore);
-        $hasList = $isPlatformStore;
         $bundling_published = '';
-        if (!$isPlatformStore) {
             // 检查是否已购买套餐
             $where = array();
             $where[] = array('store_id','=',session('store_id'));
@@ -60,7 +56,6 @@ class Sellerpromotionbundling extends BaseSeller {
                 $update = array('bl_state' => $pbundling_model::STATE0);
                 $pbundling_model->editBundling($update, $where);
             }
-        }
 
         if ($hasList) {
             // 查询活动

@@ -382,6 +382,7 @@ function goodsclass_image($gc_image)
  * @return string $order_state 描述输出
  */
 function get_order_state($order_info) {
+    
     switch ($order_info['order_state']) {
         case ORDER_STATE_CANCEL:
             $order_state = lang('order_state_cancel');
@@ -406,7 +407,17 @@ function get_order_state($order_info) {
             break;
         case ORDER_STATE_SUCCESS:
             $order_state = lang('order_state_success');
+            if(isset($order_info['refund_state']) && $order_info['refund_state'] == 2 && $order_info['order_refund_lock_state'] ==0){
+                //全部退款
+                $order_state .= '(退款成功)';
+            }elseif(isset($order_info['refund_state']) && $order_info['refund_state'] == 1 && $order_info['order_refund_lock_state'] ==0){
+                //部分退款
+                $order_state .= '(有商品退款)';
+            }
             break;
+    }
+    if($order_info['order_refund_lock_state']>0){
+        $order_state .= '(退款待处理)';
     }
     return $order_state;
 }
@@ -418,7 +429,7 @@ function get_order_state($order_info) {
  * @return string 描述输出
  */
 function get_order_refund_state($refund_state) {
-    return str_replace(array('0', '1', '2'), array('无退款', '部分退款', '全部退款'), $refund_state);
+    return str_replace(array('0', '1', '2'), array('', '部分退款', '全部退款'), $refund_state);
 }
 
 /**
@@ -441,25 +452,32 @@ function get_order_goodstype($goods_type) {
     return str_replace(array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'), array('', '抢购', '秒杀', '优惠套装', '赠品', '拼团', '会员折扣', '砍价', '批发', '预售'), $goods_type);
 }
 
-/**
- * 取得结算文字输出形式
- *
- * @param array $bill_state
- * @return string 描述输出
- */
-function get_bill_state($bill_state) {
-    return str_replace(array('1', '2', '3', '4'), array('已出账', '商家已确认', '平台已审核', '结算完成'), $bill_state);
-}
 
 /**
  * 取得店铺代金券文字输出
  *
- * @param array $bill_state
+ * @param array $voucher_state
  * @return string 描述输出
  */
 function get_voucher_state($voucher_state) {
     return str_replace(array('1', '2', '3', '4'), array('未用', '已用', '过期', '收回'), $voucher_state);
 }
+
+//实物订单退款退货文字输出
+function get_refundreturn_seller_state($refundreturn_seller_state){
+    return str_replace(array('1', '2', '3'), array('待审核', '同意', '不同意'), $refundreturn_seller_state);
+}
+
+//实物订单管理员审核状态
+function get_refundreturn_admin_state($refundreturn_admin_state){
+    return str_replace(array('1', '2', '3', '4'), array('无', '待平台处理', '已完成', '不同意'), $refundreturn_admin_state);
+}
+
+//虚拟订单退款退货文字输出
+function get_vrrefund_admin_state($admin_state){
+    return str_replace(array('1', '2', '3'), array('待审核', '同意', '不同意'), $admin_state);
+}
+
 
 /**
  * 取得广告图片

@@ -54,7 +54,6 @@ $lang['ds_storeclass'] = '店铺分类';
 $lang['ds_storesnstrace'] = '店铺动态';
 $lang['ds_storehelp'] = '店铺帮助';
 $lang['ds_storejoin'] = '开店首页';
-$lang['ds_ownshop'] = '自营店铺';
 //交易
 $lang['ds_trade'] = '交易';
 $lang['ds_order'] = '实物订单';
@@ -62,13 +61,10 @@ $lang['ds_vrorder'] = '虚拟订单';
 $lang['ds_refund'] = '退款管理';
 $lang['ds_return'] = '退货管理';
 $lang['ds_vrrefund'] = '虚拟订单退款';
-$lang['ds_bill_manage'] = '订单结算';
-$lang['ds_vrbill_manage'] = '虚拟订单结算';
 $lang['ds_consulting'] = '咨询管理';
 $lang['ds_inform'] = '举报管理';
 $lang['ds_evaluate'] = '评价管理';
 $lang['ds_complain'] = '投诉管理';
-$lang['ds_bill'] = '结算管理';
 //网站
 $lang['ds_website'] = '网站';
 $lang['ds_articleclass'] = '文章分类';
@@ -389,6 +385,17 @@ $lang['editable_page_pc'] = 'PC装修';
 $lang['editable_page_h5'] = 'H5装修';
 
 $lang['order_goods_more_than_one'] = '等%d种商品';
+
+
+//退款
+$lang['refund_state'] = '退款状态';
+$lang['refund_state_yes'] = '同意退款';
+$lang['refund_state_no'] = '不同意退款';
+$lang['refund_state_confirm'] = '待审核';
+
+$lang['refund_state_0'] = '无退款';
+$lang['refund_state_1'] = '部分退款';
+$lang['refund_state_2'] = '全部退款';
 
 return $lang;
 ?>

@@ -117,39 +117,5 @@ $lang['exp_xn_add_time'] = '申请时间';
 $lang['exp_xn_refund_amount'] = '退款金额';
 $lang['exp_xn_refund'] = '虚拟';
 
-//订单结算 - 结算
-$lang['exp_js_order_number_bill'] = '订单号账单（月）';
-$lang['exp_js_order_price_from'] = '订单金额';
-$lang['exp_js_order_total_transport'] = '运费';
-$lang['exp_js_os_commis_totals'] = '收取佣金';
-$lang['exp_js_os_order_returntotals'] = '退单金额';
-$lang['exp_js_os_commis_returntotals'] = '退还佣金';
-$lang['exp_js_os_store_costtotals'] = '店铺费用';
-$lang['exp_js_ob_inviter_totals'] = '分销佣金';
-$lang['exp_js_os_result_totals'] = '本期应结';
-$lang['exp_js_os_createdate'] = '创建记录日期';
-$lang['exp_js_list'] = '结算列表';
-
-//商家账单列表
-$lang['exp_zd_bill_ob_no'] = '账单编号';
-$lang['exp_zd_bill_os_startdate'] = '开始日期';
-$lang['exp_zd_bill_os_enddate'] = '结束日期';
-$lang['exp_zd_order_price_from'] = '订单金额';
-$lang['exp_zd_order_total_transport'] = '运费';
-$lang['exp_zd_bill_print_commision'] = '佣金金额';
-$lang['exp_zd_bill_ob_order_return_totals'] = '退款金额';
-$lang['exp_zd_bill_os_commis_returntotals'] = '退还佣金';
-$lang['exp_zd_ob_inviter_totals'] = '分销佣金';
-$lang['exp_zd_bill_ob_vr_order_totals'] = '虚拟订单金额';
-$lang['exp_zd_bill_ob_vr_order_return_totals'] = '虚拟退款金额';
-$lang['exp_zd_bill_ob_vr_commis_totals'] = '虚拟佣金金额';
-$lang['exp_zd_bill_ob_vr_commis_return_totals'] = '虚拟退还佣金';
-$lang['exp_zd_bill_ob_vr_inviter_totals'] = '虚拟分销佣金';
-$lang['exp_zd_bill_os_store_costtotals'] = '店铺费用';
-$lang['exp_zd_bill_os_result_totals'] = '本期应结';
-$lang['exp_zd_bill_out_date'] = '出账日期';
-$lang['exp_zd_bill_state'] = '账单状态';
-$lang['exp_zd_list'] = '结算列表';
-
 return $lang;
 

@@ -7,7 +7,8 @@
         }
 </script>
 <script type="text/javascript" src="//webapi.amap.com/maps?v=2.0&key={$Think.config.ds_config.gaode_ak}"></script>
-<!--{else}-->
+<!--{/if}-->
+<!--{if $Think.config.ds_config.mapak_type eq '2'}-->
 <script type="text/javascript" src="{$Think.HTTP_TYPE}api.map.baidu.com/api?v=2.0&ak={$Think.config.ds_config.baidu_ak}"></script>
 <!--{/if}-->
 <script>
@@ -24,7 +25,7 @@
         if ($("#area_ select:eq(2)").length > 0 && $("#area_ select:eq(2) option:selected").val() != '') {
             var name = $("#area_ select:eq(2) option:selected").text();
         }
-		if({$Think.config.ds_config.mapak_type} == '2' ){
+		if('{$Think.config.ds_config.mapak_type}' === '2' ){
 			if (name != '' && lst_name != name) {
 			    lst_name = name;
 			    map.setCurrentCity(name);
@@ -39,7 +40,7 @@
        
         var lng = '{$store_info.store_longitude}';
         var lat = '{$store_info.store_latitude}';
-		if({$Think.config.ds_config.mapak_type} == '1' ){
+		if('{$Think.config.ds_config.mapak_type}' === '1' ){
 			var map = new AMap.Map("allmap", {
 			    resizeEnable: true,
 				zoom:15
@@ -149,7 +150,8 @@
 					map.add(marker);
 				});
 			}
-		}else{
+		}
+                if('{$Think.config.ds_config.mapak_type}' === '2' ){
 			if (!lng && !lat) {
 				map = new BMap.Map("allmap");
 				var geolocation = new BMap.Geolocation();
@@ -230,17 +232,21 @@
                 <input type="hidden" value="{$store_info.region_id}" name="district_id" id="_area_3">
                 <span></span></dd>
         </dl>
+        
         <dl>
             <dt>{$Think.lang.detailed_address}：</dt>
             <dd><input name="company_address_detail" type="text" value="{$store_info.store_address}" class="w200" id="store_address" {if $Think.config.ds_config.mapak_type eq '2'}onkeyup="local.search($(this).val());"{/if}>
                 <span></span>
+                <!--{if $Think.config.ds_config.mapak_type neq '0'}-->
                 <div>
                     <input name="longitude" id="longitude" value="{$store_info.store_longitude}" type="hidden" />
                     <input name="latitude" id="latitude" value="{$store_info.store_latitude}" type="hidden" />
                     <div id="allmap" style="width:530px;height: 350px;margin-top: 20px"></div>
                 </div>
+                <!--{/if}-->
             </dd>
         </dl>
+        
         <div class="bottom">
             <input type="submit" class="submit" value="{$Think.lang.store_goods_class_submit}" />
         </div>

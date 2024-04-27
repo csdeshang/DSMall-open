@@ -65,7 +65,7 @@ class Connectwx extends BaseMall
             }
             $member_info = $member_model->register($data);
             if (!isset($member_info['error'])) {
-                $member_model->createSession($member_info, true);
+                $member_model->createSession($member_info, 'register');
 //                $headimgurl = $reg_info['headimgurl'];
 //                $avatar = @copy($headimgurl, BASE_UPLOAD_PATH . '/' . ATTACH_AVATAR . "/avatar_" . $member_info['member_id'] . ".jpg");
 //                if ($avatar) {
@@ -89,7 +89,7 @@ class Connectwx extends BaseMall
             } else {
                 $this->error(lang('login_register_bind_fail'));
             }
-            $member_model->createSession($member_info, true);
+            $member_model->createSession($member_info, 'register');
         }
 
 
@@ -111,7 +111,7 @@ class Connectwx extends BaseMall
                     if (!$member['member_state']) {//1为启用 0 为禁用
                         $this->error(lang('login_index_account_stop'));
                     }
-                    $member_model->createSession($member);
+                    $member_model->createSession($member,'login');
 
                     //是否有卖家账户
                     $seller_model = model('seller');
@@ -154,7 +154,7 @@ class Connectwx extends BaseMall
                             if (!$wx_member['member_state']) {//1为启用 0 为禁用
                                 $this->error(lang('login_index_account_stop'));
                             }
-                            $member_model->createSession($wx_member, true); //自动登录
+                            $member_model->createSession($wx_member, 'login'); //自动登录
                             $success_message = lang('login_index_login_success');
                             $this->success($success_message, HOME_SITE_URL);
                         }else{

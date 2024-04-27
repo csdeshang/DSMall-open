@@ -32,6 +32,7 @@ class Store extends AdminControl {
         $store_model = model('store');
 
         $owner_and_name = input('get.owner_and_name');
+        $condition = array();
         if (trim($owner_and_name) != '') {
             $condition[] = array('member_name', 'like', '%' . $owner_and_name . '%');
         }
@@ -61,8 +62,6 @@ class Store extends AdminControl {
                 break;
         }
 
-        // 默认店铺管理不包含自营店铺
-        $condition[] = array('is_platform_store', '=', 0);
 
         //店铺列表
         $store_list = $store_model->getStoreList($condition, 10, 'store_id desc');
@@ -776,38 +775,6 @@ class Store extends AdminControl {
         $this->error(lang('ds_common_op_fail'));
     }
 
-    /*
-      //删除店铺操作，暂时屏蔽
-      public function del() {
-      $store_id = intval(input('param.id'));
-      $store_model = model('store');
-      $storeArray = $store_model->field('is_platform_store,store_name')->find($store_id);
-      if (empty($storeArray)) {
-      ds_json_encode('10001', lang('外驻店铺不存在'));
-      }
-      if ($storeArray['is_platform_store']) {
-      ds_json_encode('10001', lang('不能在此删除自营店铺'));
-      }
-      $condition = array(
-      'store_id' => $store_id,
-      );
-      if (model('goods')->getGoodsCount($condition) > 0){
-      ds_json_encode('10001', lang('已经发布商品的外驻店铺不能被删除'));
-      }
-      // 完全删除店铺
-      $store_model->delStoreEntirely($condition);
-      //删除入驻相关
-      $member_id = intval(input('param.member_id'));
-      $store_joinin = model('storejoinin');
-      $condition = array(
-      'member_id' => $member_id,
-      );
-      $store_joinin->delStorejoinin($condition);
-      $this->log("删除外驻店铺: {$storeArray['store_name']}");
-      ds_json_encode('10000', lang('ds_common_del_succ'));
-      }
-     * 
-     */
 
     //删除店铺操作 
     public function del_join() {
@@ -879,7 +846,9 @@ class Store extends AdminControl {
             if (!$this->checkMemberName($member_name))
                 $this->error(lang('member_name_exist'));
 
-
+            if (!$this->checkSellerName($member_name))
+                $this->error(lang('member_name_exist'));
+            
             try {
                 $memberId = model('member')->addMember(array(
                     'member_name' => $member_name,
@@ -899,7 +868,6 @@ class Store extends AdminControl {
             $saveArray['bind_all_gc'] = 1;
             $saveArray['store_state'] = 1;
             $saveArray['store_addtime'] = TIMESTAMP;
-            $saveArray['is_platform_store'] = 0;
             $saveArray['grade_id'] = 1;
 
             $storeId = $store_model->addStore($saveArray);
@@ -936,8 +904,6 @@ class Store extends AdminControl {
 
             //插入店铺扩展表
             $store_model->addStoreextend(array('store_id' => $storeId));
-            // 删除自营店id缓存
-            model('store')->dropCachedOwnShopIds();
 
             $this->log(lang('add_store') . ": {$saveArray['store_name']}");
             $this->success(lang('add_store_bind_class'), (string) url('Store/store_bind_class', ['store_id' => $storeId]));
@@ -988,9 +954,17 @@ class Store extends AdminControl {
      * 验证店铺名称是否存在
      */
     public function ckeck_store_name() {
+        $store_name = trim(input('get.store_name'));
+        if (empty($store_name)) {
+            echo 'false';
+            exit;
+        }
         $where = array();
-        $where[] = array('store_name', '=', input('param.store_name'));
-        $where[] = array('store_id', '<>', input('param.store_id'));
+        $where[]=array('store_name','=',$store_name);
+        $store_id = input('get.store_id');
+        if (isset($store_id)) {
+            $where[]=array('store_id','<>', $store_id);
+        }
         $store_info = model('store')->getStoreInfo($where);
         if (!empty($store_info['store_name'])) {
             echo 'false';
