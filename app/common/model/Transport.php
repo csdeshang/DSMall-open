@@ -72,14 +72,15 @@ class Transport extends BaseModel {
      * @return boolean
      */
     public function delTansport($transport_id) {
+        
+        Db::startTrans();
         try {
-            Db::startTrans();
             $delete = Db::name('transport')->where('transport_id',$transport_id)->delete();
             if ($delete) {
                 $delete = Db::name('transportextend')->where('transport_id',$transport_id)->delete();
             }
             Db::commit();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Db::rollback();
 
             return false;

@@ -21,7 +21,7 @@
                     <p class="hint">
                         {if $current_pintuan_quota.pintuanquota_starttime > 1}
                         {$Think.lang.pintuan_add_start_time_explain}{$current_pintuan_quota.pintuanquota_starttime|date="Y-m-d H:i:s"}
-                        {/notpresent}
+                        {/if}
                         <br/><span class="red">{$Think.lang.start_time_group_not_modified}</span>
                     </p>
                 </dd>

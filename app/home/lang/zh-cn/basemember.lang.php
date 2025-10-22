@@ -7,7 +7,6 @@ $lang['ds_storevoucher'] = '店铺代金券';
 $lang['ds_mallvoucher'] = '平台代金券';
 $lang['ds_store_inform'] = '被举报禁售';
 $lang['ds_myinform'] = '我的举报';
-$lang['ds_my_flea'] = '我的闲置';
 $lang['ds_current_position'] = '当前位置';
 $lang['ds_member_path_goods_class'] = '商品分类';
 $lang['ds_iwantbuy'] = '我要买';
@@ -238,17 +237,6 @@ $lang['ds_member_path_store_sns'] = '店铺动态';
 $lang['ds_member_path_store_sns_browse'] = '浏览店铺动态';
 $lang['ds_member_path_store_sns_add'] = '发布动态';
 $lang['ds_member_path_store_sns_setting'] = '动态设置';
-/**
- * 闲置
- */
-$lang['ds_member_path_flea'] = '我的闲置';
-$lang['ds_member_path_flea_list'] = '闲置列表';
-$lang['ds_member_path_add_flea_goods'] = '发布闲置';
-$lang['ds_member_path_edit_flea'] = '编辑闲置';
-$lang['ds_member_path_collect_flea'] = '收藏闲置';
-$lang['ds_member_path_edit_flea'] = '编辑闲置';
-$lang['ds_member_path_flea_favorites'] = '闲置收藏';
-$lang['ds_member_path_flea_favorites_list'] = '收藏列表';
 
 /**
  * 店铺审核提示文字

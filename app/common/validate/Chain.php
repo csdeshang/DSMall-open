@@ -3,6 +3,7 @@
 namespace app\common\validate;
 
 use think\Validate;
+
 /**
  * ============================================================================
  * DSO2O多用户商城
@@ -15,40 +16,27 @@ use think\Validate;
  * ============================================================================
  * 验证器
  */
-class  Chain extends Validate {
+class Chain extends Validate {
 
     protected $rule = [
-        'chain_name' => 'require',
+        'chain_name' => 'require|length:3,13|unique:chain',
         'chain_passwd' => 'require',
         'chain_truename' => 'require',
-        'chain_idcard' => 'require',
-        'chain_mobile' => 'require',
-        'chain_addressname' => 'require',
-        'chain_area_3' => 'require',
-        'chain_area_info' => 'require',
-        'chain_address' => 'require',
-        'chain_longitude' => 'require',
-        'chain_latitude' => 'require',
+        'chain_idcard' => 'idCard',
+        'chain_mobile' => 'mobile|unique:chain',
     ];
     protected $message = [
         'chain_name.require' => '账户为必填',
+        'chain_name.length' => '账户长度在3到13位',
+        'chain_name.unique' => '账户已存在',
         'chain_passwd.require' => '密码为必填',
         'chain_truename.require' => '真实姓名为必填',
-        'chain_idcard.require' => '身份证为必填',
-        'chain_mobile.require' => '手机号码为必填',
-        'chain_addressname.require' => '服务站名称为必填',
-        'chain_area_3.require' => '地区必须到3级',
-        'chain_area_info.require' => '地区为必填',
-        'chain_address.require' => '详细地址为必填',
-        'chain_longitude.require' => '请给详细地址定位',
-        'chain_latitude.require' => '请给详细地址定位',
+        'chain_idcard.idCard' => '身份证号码错误',
+        'chain_mobile.mobile' => '手机号码格式错误',
+        'chain_mobile.unique' => '手机号码已存在',
     ];
     protected $scene = [
-        'chain_add' => ['chain_name','chain_passwd','chain_truename','chain_mobile','chain_addressname','chain_area_3','chain_area_info','chain_address','chain_longitude','chain_latitude'],
-        'chain_edit' => ['chain_truename','chain_mobile','chain_addressname','chain_area_3','chain_area_info','chain_address','chain_longitude','chain_latitude'],
-        'chain_apply' => ['chain_name','chain_passwd','chain_truename','chain_idcard','chain_mobile','chain_addressname','chain_area_3','chain_area_info','chain_address',],
-        'chain_apply_again' => ['chain_name','chain_truename','chain_idcard','chain_mobile','chain_addressname','chain_area_3','chain_area_info','chain_address',],
-        'chain_setting' => ['chain_mobile','chain_addressname','chain_area_3','chain_area_info','chain_address',],
+        'model_add' => ['chain_name', 'chain_passwd', 'chain_truename','chain_idcard', 'chain_mobile'],
+        'model_edit' => ['chain_truename','chain_idcard', 'chain_mobile'],
     ];
-
 }

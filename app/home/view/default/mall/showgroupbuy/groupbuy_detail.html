@@ -18,7 +18,7 @@
       <div class="dsg-group">
         
         <div class="dsg-item">
-          <div class="pic"><img src="{:groupbuy_thumb($groupbuy_info['groupbuy_image'],'max')}" alt=""></div>
+          <div class="pic"><img src="{:groupbuy_thumb($groupbuy_info['groupbuy_image'])}" alt=""></div>
           <div class="info" id="main-nav-holder">
             <h2>{$groupbuy_info.groupbuy_name}</h2>
             <h3>{$groupbuy_info.groupbuy_remark}</h3>
@@ -189,7 +189,7 @@
           {foreach name="commended_groupbuy_list" item="hot_groupbuy" }
           <dl {if $hot_groupbuy_count === 1}style="border:none"{/if}{php}$hot_groupbuy_count++;{/php} >
             <dt class="name"><a href="{$hot_groupbuy.groupbuy_url}" target="_blank">{$hot_groupbuy.groupbuy_name}</a></dt>
-            <dd class="pic-thumb"><a href="{$hot_groupbuy.groupbuy_url}" target="_blank"><img src="{:groupbuy_thumb($hot_groupbuy['groupbuy_image1'],'max')}"></a></dd>
+            <dd class="pic-thumb"><a href="{$hot_groupbuy.groupbuy_url}" target="_blank"><img src="{:groupbuy_thumb($hot_groupbuy['groupbuy_image1'])}"></a></dd>
             <dd class="item"><a href="{$hot_groupbuy.groupbuy_url}" target="_blank">{$Think.lang.to_see}</a> <span class="price">{$Think.lang.currency}{$hot_groupbuy.groupbuy_price}</span>  </dd>
           </dl>
           {/foreach}

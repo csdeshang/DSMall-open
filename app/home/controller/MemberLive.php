@@ -347,11 +347,12 @@ class MemberLive extends BaseMember {
                     ));
                     break;
             }
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             ds_json_encode(10001, $e->getMessage());
         }
-        Db::commit();
+
         // 设置GatewayWorker服务的Register服务ip和端口，请根据实际情况改成实际值(ip不能是0.0.0.0)
         try {
             Gateway::$registerAddress = config('ds_config.instant_message_register_url');

@@ -183,7 +183,7 @@ class Storesnstracelog extends BaseModel
                 break;
             case '8':
                 $rs = "<div class=\"fd-media\">
-					<div class=\"goodsimg\"><a target=\"_blank\" href=\"" . (string)url('home/Goods/index', array('goods_id'=>$data['goods_id'])) . "\"><img src=\"" . groupbuy_thumb($data['group_pic'],'small',$data['store_id']) . "\" onload=\"javascript:ResizeImage(this,120,120);\" alt=\"" . $data['group_name'] . "\"></a></div>
+					<div class=\"goodsimg\"><a target=\"_blank\" href=\"" . (string)url('home/Goods/index', array('goods_id'=>$data['goods_id'])) . "\"><img src=\"" . groupbuy_thumb($data['group_pic']) . "\" onload=\"javascript:ResizeImage(this,120,120);\" alt=\"" . $data['group_name'] . "\"></a></div>
     					<div class=\"goodsinfo\">
     					<dl>
         					<dt><i class=\"desc-type desc-type-groupbuy\">" . lang('store_sns_groupbuy') . "</i><a target=\"_blank\" href=\"" . (string)url('home/Goods/index', array('goods_id'=>$data['goods_id'])) . "\">" . $data['group_name'] . "</a></dt>

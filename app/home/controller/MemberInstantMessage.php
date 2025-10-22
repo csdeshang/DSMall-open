@@ -41,11 +41,6 @@ class MemberInstantMessage extends BaseMember {
         $message = input('param.message');
         $message_type = input('param.message_type', 0);
 
-        $res=word_filter($message);
-        if(!$res['code']){
-            ds_json_encode(10001,$res['msg']);
-        }
-        $message=$res['data']['text'];
         $instant_message_data = array(
             'instant_message_from_id' => $this->member_info['member_id'],
             'instant_message_from_type' => 0,
@@ -58,10 +53,8 @@ class MemberInstantMessage extends BaseMember {
             'instant_message_add_time' => TIMESTAMP,
         );
 
-        $instant_message_validate = ds_validate('instant_message');
-        if (!$instant_message_validate->scene('instant_message_save')->check($instant_message_data)) {
-            ds_json_encode(10001, $instant_message_validate->getError());
-        }
+        $this->validate($instant_message_data, 'app\common\validate\InstantMessage.instant_message_save');
+        
         Db::startTrans();
         try {
             $instant_message_data = $instant_message_model->addInstantMessage($instant_message_data);
@@ -69,11 +62,12 @@ class MemberInstantMessage extends BaseMember {
             if (!$res['code']) {
                 throw new \think\Exception($res['msg'], 10006);
             }
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             ds_json_encode(10001, $e->getMessage());
         }
-        Db::commit();
+        
         ds_json_encode(10000, lang('message_send_success'), array('instant_message_data' => $instant_message_data));
     }
 

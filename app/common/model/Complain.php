@@ -5,7 +5,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -97,7 +97,9 @@ class Complain extends BaseModel {
                 $goods_ids[] = $value['order_goods_id']; //订单商品表编号
             }
         }
-        $res = Db::name('ordergoods')->where('rec_id','in',$goods_ids)->select()->toArray();
+        $condition = array();
+        $condition[]=array('rec_id','in', $goods_ids);
+        $res = Db::name('ordergoods')->where($condition)->select()->toArray();
         return ds_change_arraykey($res, 'rec_id');
     }
 
@@ -125,7 +127,9 @@ class Complain extends BaseModel {
      * @return type
      */
     public function getOneComplain($complain_id) {
-        return Db::name('complain')->where('complain_id',intval($complain_id))->find();
+        $condition = array();
+        $condition[] = array('complain_id','=',$complain_id);
+        return Db::name('complain')->where($condition)->find();
     }
 
 

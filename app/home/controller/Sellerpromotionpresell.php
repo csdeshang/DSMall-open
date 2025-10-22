@@ -93,10 +93,7 @@ class Sellerpromotionpresell extends BaseSeller {
                 'presell_end_time' => input('post.end_time'),
                 'presell_shipping_time' => input('post.presell_shipping_time'),
             );
-            $presell_validate = ds_validate('presell');
-            if (!$presell_validate->scene('presell_add')->check($data)) {
-                ds_json_encode(10001, $presell_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Presell.controller_add');
             //获取提交的数据
             $goods_id = $data['goods_id'];
 
@@ -213,10 +210,7 @@ class Sellerpromotionpresell extends BaseSeller {
                 'presell_price' => floatval(input('post.presell_price')),
                 'presell_shipping_time' => input('post.presell_shipping_time'),
             );
-            $presell_validate = ds_validate('presell');
-            if (!$presell_validate->scene('presell_edit')->check($data)) {
-                ds_json_encode(10001, $presell_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Presell.controller_edit');
             //获取提交的数据
             $goods_id = $presell_info['goods_id'];
 
@@ -309,6 +303,10 @@ class Sellerpromotionpresell extends BaseSeller {
         }
         //获取当前价格
         $current_price = intval(config('ds_config.promotion_presell_price'));
+        
+        //先记录店铺记录店铺费用以免扣费不成功
+        $this->recordStorecost($current_price * $presell_quota_quantity, lang('buy_spell_group').' ['.$presell_quota_quantity.'个月 × 单价:'.$current_price.'元]');
+        
         //获取该用户已有套餐
         $presellquota_model = model('presellquota');
         $current_presell_quota = $presellquota_model->getPresellquotaCurrent($this->store_info['store_id']);
@@ -328,9 +326,6 @@ class Sellerpromotionpresell extends BaseSeller {
             $param['presellquota_endtime'] = Db::raw('presellquota_endtime+' . $presell_add_time);
             $presellquota_model->editPresellquota($param, array('presellquota_id' => $current_presell_quota['presellquota_id']));
         }
-
-        //记录店铺费用
-        $this->recordStorecost($current_price * $presell_quota_quantity, lang('buy_spell_group').' ['.$presell_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog(lang('buy') . $presell_quota_quantity . lang('combo_pack') . $current_price . lang('ds_yuan'));
 

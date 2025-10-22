@@ -283,6 +283,9 @@ class Sellerpromotionxianshi extends BaseSeller {
 
         //获取当前价格
         $current_price = intval(config('ds_config.promotion_xianshi_price'));
+        
+        //先记录店铺记录店铺费用以免扣费不成功
+        $this->recordStorecost($current_price * $xianshi_quota_quantity, lang('buy_limited_time_discount').' ['.$xianshi_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         //获取该用户已有套餐
         $xianshiquota_model = model('pxianshiquota');
@@ -303,9 +306,6 @@ class Sellerpromotionxianshi extends BaseSeller {
             $param['xianshiquota_endtime'] = Db::raw('xianshiquota_endtime+' . $xianshi_add_time);
             $xianshiquota_model->editXianshiquota($param, array('xianshiquota_id' => $current_xianshi_quota['xianshiquota_id']));
         }
-
-        //记录店铺费用
-        $this->recordStorecost($current_price * $xianshi_quota_quantity, lang('buy_limited_time_discount').' ['.$xianshi_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog(lang('buy') . $xianshi_quota_quantity . lang('limited_time_discount_package') . $current_price . lang('ds_yuan'));
 

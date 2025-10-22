@@ -51,20 +51,20 @@ class Mallvouchertemplate extends AdminControl {
         if (request()->isPost()) {
             $mallvouchertemplate_model = model('mallvouchertemplate');
             $goodsclass_model = model('goodsclass');
-            
+
             //获取代金券所属分类ID集
             $gc_id = intval(input('post.mallvouchertemplate_gcid'));
 //            if($gc_id == 0){
 //                $this->error(lang('admin_mallvouchertemplate_gc_error'));
 //            }
-            
+
             $gc_ids = ',';
             $goodsclasslist = $goodsclass_model->getChildClass($gc_id);
-            foreach($goodsclasslist as $key => $val){
-               $gc_ids .= $val['gc_id'].',';
-            } 
-            
-            
+            foreach ($goodsclasslist as $key => $val) {
+                $gc_ids .= $val['gc_id'] . ',';
+            }
+
+
             $limit = intval(input('post.mallvouchertemplate_limit')) > 0 ? intval(input('post.mallvouchertemplate_limit')) : 0;
             $price = intval(input('post.mallvouchertemplate_price')) > 0 ? intval(input('post.mallvouchertemplate_price')) : 0;
 
@@ -79,27 +79,28 @@ class Mallvouchertemplate extends AdminControl {
                 'mallvouchertemplate_gcidarr' => $gc_ids,
                 'mallvouchertemplate_points' => input('post.mallvouchertemplate_points'),
                 'mallvouchertemplate_quantity' => intval(input('post.mallvouchertemplate_quantity')),
+                'mallvouchertemplate_giveout' => 0,
+                'mallvouchertemplate_used'=>0,
                 'mallvouchertemplate_eachlimit' => intval(input('post.mallvouchertemplate_eachlimit')),
             ];
             if ($price >= $limit) {
                 $this->error(lang('admin_mallvouchertemplate_limit_error'));
             }
-                $rs = $mallvouchertemplate_model->addmallvouchertemplate($data);
-                if ($rs) {
-                    $this->log(lang('ds_add') . lang('admin_mallvouchertemplate_add') . '[' . $data['mallvouchertemplate_title'] . ']');
-                    $this->success(lang('ds_common_save_succ'), (string) url('mallvouchertemplate/mallvouchertemplatelist'));
-                } else {
-                    $this->error(lang('ds_common_save_fail'), 'mallvouchertemplate/mallvouchertemplatelist');
-                }
+            $rs = $mallvouchertemplate_model->addmallvouchertemplate($data);
+            if ($rs) {
+                $this->log(lang('ds_add') . lang('admin_mallvouchertemplate_add') . '[' . $data['mallvouchertemplate_title'] . ']');
+                $this->success(lang('ds_common_save_succ'), (string) url('mallvouchertemplate/mallvouchertemplatelist'));
+            } else {
+                $this->error(lang('ds_common_save_fail'), 'mallvouchertemplate/mallvouchertemplatelist');
             }
-         else {
+        } else {
             $mallvouchertemplate_info = array(
                 'mallvouchertemplate_startdate' => TIMESTAMP,
-                'mallvouchertemplate_enddate' => TIMESTAMP+3600*24*7,
+                'mallvouchertemplate_enddate' => TIMESTAMP + 3600 * 24 * 7,
                 'mallvouchertemplate_gcid' => '',
                 'mallvouchertemplate_quantity' => '',
-                'mallvouchertemplate_eachlimit'=>''
-            ); 
+                'mallvouchertemplate_eachlimit' => ''
+            );
             $gc_list = model('goodsclass')->getGoodsclassListByParentId(0);
             View::assign('gc_list', $gc_list);
             View::assign('info', $mallvouchertemplate_info);
@@ -108,7 +109,7 @@ class Mallvouchertemplate extends AdminControl {
             return View::fetch();
         }
     }
-    
+
     /*
      * 添加代金券页面
      */
@@ -142,7 +143,7 @@ class Mallvouchertemplate extends AdminControl {
             $limit = intval(input('post.mallvouchertemplate_limit')) > 0 ? intval(input('post.mallvouchertemplate_limit')) : 0;
             $price = intval(input('post.mallvouchertemplate_price')) > 0 ? intval(input('post.mallvouchertemplate_price')) : 0;
     
-            $updata = [
+            $update = [
                 'mallvouchertemplate_price' => $price,
                 'mallvouchertemplate_title' => input('post.mallvouchertemplate_title'),
                 'mallvouchertemplate_gcid' => $gc_id,
@@ -161,10 +162,10 @@ class Mallvouchertemplate extends AdminControl {
             
             $condition   = array();
             $condition[] = array('mallvouchertemplate_id','=',$id);
-            $rs = $mallvouchertemplate_model->editMallvouchertemplate($condition,$updata);
+            $rs = $mallvouchertemplate_model->editMallvouchertemplate($condition,$update);
             
             if ($rs) {
-                $this->log(lang('ds_edit') . lang('admin_mallvouchertemplate_edit') . '[' . $updata['mallvouchertemplate_title'] . ']');
+                $this->log(lang('ds_edit') . lang('admin_mallvouchertemplate_edit') . '[' . $update['mallvouchertemplate_title'] . ']');
                 $this->success(lang('ds_common_save_succ'), (string) url('mallvouchertemplate/mallvouchertemplatelist'));
             } else {
                 $this->error(lang('ds_common_save_fail'), 'mallvouchertemplate/mallvouchertemplatelist');

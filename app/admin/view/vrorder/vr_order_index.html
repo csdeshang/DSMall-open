@@ -69,7 +69,6 @@
                     <select name="payment_code" class="w100">
                         <option value="">{$Think.lang.ds_please_choose}</option>
                         <?php foreach($payment_list as $val) { ?>
-                        <?php if ($val['payment_code'] == 'offline') continue;?>
                         <option {if condition="$Request.param.payment_code eq $val.payment_code"}selected{/if} value="{$val.payment_code}">{$val.payment_name}</option>
                         <?php } ?>
                     </select>

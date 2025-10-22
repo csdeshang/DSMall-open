@@ -6,7 +6,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -157,20 +157,13 @@ class Mallconsult extends AdminControl {
      */
     public function type_add() {
         if (request()->isPost()) {
-            // 验证
-            $data = [
-                'mallconsulttype_name' => input('post.mallconsulttype_name'),
-                'mallconsulttype_sort' => input('post.mallconsulttype_sort')
-            ];
-            $mallconsult_validate = ds_validate('mallconsult');
-            if (!$mallconsult_validate->scene('type_add')->check($data)) {
-                $this->error(lang('ds_common_op_fail') . $mallconsult_validate->getError());
-            }
-
             $insert = array();
             $insert['mallconsulttype_name'] = trim(input('post.mallconsulttype_name'));
             $insert['mallconsulttype_introduce'] = input('post.mallconsulttype_introduce');
             $insert['mallconsulttype_sort'] = intval(input('post.mallconsulttype_sort'));
+            
+            $this->validate($insert, 'app\common\validate\Mallconsulttype.add');
+            
             $result = model('mallconsulttype')->addMallconsulttype($insert);
             if ($result) {
                 $this->log('新增咨询类型', 1);
@@ -193,21 +186,16 @@ class Mallconsult extends AdminControl {
         }
         $mallconsulttype_model = model('mallconsulttype');
         if (request()->isPost()) {
-            // 验证
-            $data = [
-                'mallconsulttype_name' => input('post.mallconsulttype_name'),
-                'mallconsulttype_sort' => input('post.mallconsulttype_sort')
-            ];
-            $mallconsult_validate = ds_validate('mallconsult');
-            if (!$mallconsult_validate->scene('type_edit')->check($data)) {
-                $this->error(lang('ds_common_op_fail') . $mallconsult_validate->getError());
-            }
+            
             $condition = array();
             $condition[] = array('mallconsulttype_id','=',$mallconsulttype_id);
             $update = array();
             $update['mallconsulttype_name'] = trim(input('post.mallconsulttype_name'));
             $update['mallconsulttype_introduce'] = input('post.mallconsulttype_introduce');
             $update['mallconsulttype_sort'] = intval(input('post.mallconsulttype_sort'));
+            
+            $this->validate($update, 'app\common\validate\Mallconsulttype.edit');
+            
             $result = $mallconsulttype_model->editMallconsulttype($condition, $update);
             if ($result>=0) {
                 $this->log('编辑平台客服咨询类型 ID:' . $mallconsulttype_id, 1);

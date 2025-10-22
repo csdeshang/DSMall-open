@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -50,14 +50,16 @@ class Adv extends BaseModel {
      * @return bool 布尔类型的返回结果
      */
     public function delAdv($adv_id) {
-        $adv = Db::name('adv')->where('adv_id',$adv_id)->find();
+        $condition = array();
+        $condition[] = array('adv_id','=',$adv_id);
+        $adv = Db::name('adv')->where($condition)->find();
         if ($adv) {
             // drop cache
             $apId = (int) $adv['ap_id'];
             dkcache("adv/{$apId}");
         }
-        @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_ADV. DIRECTORY_SEPARATOR .$adv['adv_code']);
-        return Db::name('adv')->where('adv_id',$adv_id)->delete();
+        ds_del_pic(ATTACH_ADV,$adv['adv_code']);
+        return Db::name('adv')->where($condition)->delete();
     }
 
     /**
@@ -67,9 +69,10 @@ class Adv extends BaseModel {
      * @return bool 布尔类型的返回结果
      */
     public function delAdvposition($ap_id) {
-        $apId = (int) $ap_id;
-        dkcache("adv/{$apId}");
-        return Db::name('advposition')->where('ap_id', $apId)->delete();
+        dkcache("adv/{$ap_id}");
+        $condition = array();
+        $condition[] = array('ap_id','=',$ap_id);
+        return Db::name('advposition')->where($condition)->delete();
     }
 
     /**
@@ -136,13 +139,13 @@ class Adv extends BaseModel {
      * @return bool
      */
     public function editAdv($adv_id,$data) {
-        $adv_array = Db::name('adv')->where('adv_id', $adv_id)->find();
+        $adv_array = Db::name('adv')->where(array('adv_id'=>$adv_id))->find();
         if ($adv_array) {
             // drop cache
             $apId = (int) $adv_array['ap_id'];
             dkcache("adv/{$apId}");
         }
-        return Db::name('adv')->where('adv_id', $adv_id)->update($data);
+        return Db::name('adv')->where(array('adv_id'=>$adv_id))->update($data);
     }
 
     /**
@@ -153,7 +156,9 @@ class Adv extends BaseModel {
      */
     public function editAdvposition($ap_id,$data) {
         dkcache("adv/{$ap_id}");
-        return Db::name('advposition')->where('ap_id', $ap_id)->update($data);
+        $condition = array();
+        $condition[] = array('ap_id','=',$ap_id);
+        return Db::name('advposition')->where($condition)->update($data);
     }
 
 

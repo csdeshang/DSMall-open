@@ -35,7 +35,7 @@ class Sellerpromotionbundling extends BaseSeller {
         $where[] = array('store_id', '=', session('store_id'));
         $where[] = array('blquota_endtime', '<', TIMESTAMP);
         $pbundling_model->editBundlingQuotaClose($where);
-
+        $hasList = false;
         $bundling_published = '';
             // 检查是否已购买套餐
             $where = array();
@@ -119,6 +119,10 @@ class Sellerpromotionbundling extends BaseSeller {
             if ($quantity <= 0 || $quantity > 12) {
                 ds_json_encode(10001, lang('bundling_quota_price_fail'));
             }
+            
+            // 先记录店铺记录店铺费用以免扣费不成功
+            $this->recordStorecost($price_quantity, '购买优惠套装'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_bundling_price')).'元]');
+                
             // 实例化模型
             $pbundling_model = model('pbundling');
 
@@ -134,9 +138,6 @@ class Sellerpromotionbundling extends BaseSeller {
 
             $return = $pbundling_model->addBundlingQuota($data);
             if ($return) {
-                // 添加店铺费用记录
-                $this->recordStorecost($price_quantity, '购买优惠套装'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_bundling_price')).'元]');
-
                 // 添加任务队列
                 $end_time = TIMESTAMP + 60 * 60 * 24 * 30 * $quantity;
                 $this->addcron(array('cron_exetime' => $end_time, 'cron_value' => serialize(intval(session('store_id'))), 'cron_type' => 'editBundlingQuotaClose'), true);
@@ -167,6 +168,10 @@ class Sellerpromotionbundling extends BaseSeller {
             if ($quantity <= 0 || $quantity > 12) {
                 ds_json_encode(10001, lang('bundling_quota_price_fail'));
             }
+            
+            // 先记录店铺记录店铺费用以免扣费不成功
+            $this->recordStorecost($price_quantity, '购买优惠套装'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_bundling_price')).'元]');
+            
             $where = array();
             $where[] = array('store_id','=',session('store_id'));
             $bundling_quota = $pbundling_model->getBundlingQuotaInfo($where);
@@ -180,9 +185,6 @@ class Sellerpromotionbundling extends BaseSeller {
             $return = $pbundling_model->editBundlingQuotaOpen($update, $where);
 
             if ($return) {
-                // 添加店铺费用记录
-                $this->recordStorecost($price_quantity, '购买优惠套装'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_bundling_price')).'元]');
-
                 // 添加任务队列
                 $this->addcron(array(
                     'cron_exetime' => $update['blquota_endtime'], 'cron_value' => serialize(session('store_id')), 'cron_type' => 'editBundlingQuotaClose'

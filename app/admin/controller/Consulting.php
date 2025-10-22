@@ -6,7 +6,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 咨询管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -93,20 +93,14 @@ class Consulting extends AdminControl {
      */
     public function type_add() {
         if (request()->isPost()) {
-            // 验证
-            $data = [
-                'consulttype_name' => input('post.consulttype_name'),
-                'consulttype_sort' => input('post.consulttype_sort'),
-            ];
-            $consulting_validate = ds_validate('consulting');
-            if (!$consulting_validate->scene('type_add')->check($data)) {
-                $this->error($consulting_validate->getError());
-            }
 
             $insert = array();
             $insert['consulttype_name'] = trim(input('post.consulttype_name'));
             $insert['consulttype_sort'] = intval(input('post.consulttype_sort'));
             $insert['consulttype_introduce'] = input('post.consulttype_introduce');
+            
+            $this->validate($insert, 'app\common\validate\Consulttype.add');
+            
             $result = model('consulttype')->addConsulttype($insert);
             if ($result) {
                 $this->log(lang('add_consulttype'), 1);
@@ -139,22 +133,15 @@ class Consulting extends AdminControl {
             $this->error(lang('param_error'));
         }
         if (request()->isPost()) {
-            // 验证
-            $data = [
-                'consulttype_name' => input('post.consulttype_name'),
-                'consulttype_sort' => input('post.consulttype_sort'),
-            ];
-            $consulting_validate = ds_validate('consulting');
-            if (!$consulting_validate->scene('type_edit')->check($data)) {
-                $this->error($consulting_validate->getError());
-            }
-
             $condition = array();
             $condition[] = array('consulttype_id','=',$consulttype_id);
             $update = array();
             $update['consulttype_name'] = trim(input('post.consulttype_name'));
             $update['consulttype_sort'] = intval(input('post.consulttype_sort'));
             $update['consulttype_introduce'] = input('post.consulttype_introduce');
+            
+            $this->validate($update, 'app\common\validate\Consulttype.edit');
+            
             $result = $consulttype_model->editConsulttype($condition, $update);
             if ($result) {
                 $this->log(lang('edit_consulttype').' ID:' . $consulttype_id, 1);

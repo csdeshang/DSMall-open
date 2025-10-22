@@ -5,7 +5,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 广告管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -62,11 +62,8 @@ class Appadv extends AdminControl {
             $insert_array['ap_isuse'] = intval(input('post.ap_isuse'));
             $insert_array['ap_width'] = intval(input('post.ap_width'));
             $insert_array['ap_height'] = intval(input('post.ap_height'));
-
-            $adv_validate = ds_validate('adv');
-            if (!$adv_validate->scene('app_ap_add')->check($insert_array)) {
-                $this->error($adv_validate->getError());
-            }
+            
+            $this->validate($insert_array, 'app\common\validate\Adv.app_ap_add');
 
             $result = $appadv_model->addAppadvposition($insert_array);
 
@@ -147,15 +144,15 @@ class Appadv extends AdminControl {
             $param['adv_startdate'] = $this->getunixtime(trim(input('post.adv_startdate')));
             $param['adv_enddate'] = $this->getunixtime(trim(input('post.adv_enddate')));
 
+            $this->validate($param, 'app\common\validate\Adv.app_adv_edit');
 
             if (!empty($_FILES['adv_code']['name'])) {
                 //上传文件保存路径
-                $upload_file = BASE_UPLOAD_PATH . '/' . ATTACH_APPADV;
                 $res=ds_upload_pic(ATTACH_APPADV,'adv_code');
                 if($res['code']){
                     //还需删除原来图片
                     if (!empty($adv['adv_code'])) {
-                        @unlink($upload_file . DIRECTORY_SEPARATOR . $adv['adv_code']);
+                        ds_del_pic(ATTACH_APPADV,$adv['adv_code']);
                     }
                     $file_name=$res['data']['file_name'];
                     $param['adv_code'] = $file_name;
@@ -163,11 +160,6 @@ class Appadv extends AdminControl {
                     $this->error($res['msg']);
                 }
                 
-            }
-
-            $adv_validate = ds_validate('adv');
-            if (!$adv_validate->scene('app_adv_edit')->check($param)) {
-                $this->error($adv_validate->getError());
             }
 
             $result = $appadv_model->editAppadv($adv_id,$param);
@@ -269,26 +261,19 @@ class Appadv extends AdminControl {
             $insert_array['adv_enabled'] = input('post.adv_enabled');
             $insert_array['adv_startdate'] = $this->getunixtime(input('post.adv_startdate'));
             $insert_array['adv_enddate'] = $this->getunixtime(input('post.adv_enddate'));
+            
+            $this->validate($insert_array, 'app\common\validate\Adv.app_adv_add');
 
             //上传文件保存路径
             $upload_file = BASE_UPLOAD_PATH . '/' . ATTACH_APPADV;
             if (!empty($_FILES['adv_code']['name'])) {
                 $res=ds_upload_pic(ATTACH_APPADV,'adv_code');
                 if($res['code']){
-                    //还需删除原来图片
-                    if (!empty($adv['adv_code'])) {
-                        @unlink($upload_file . DIRECTORY_SEPARATOR . $adv['adv_code']);
-                    }
                     $file_name=$res['data']['file_name'];
                     $insert_array['adv_code'] = $file_name;
                 }else{
                     $this->error($res['msg']);
                 }
-            }
-
-            $adv_validate = ds_validate('adv');
-            if (!$adv_validate->scene('app_adv_add')->check($insert_array)) {
-                $this->error($adv_validate->getError());
             }
 
             //广告信息入库
@@ -329,10 +314,8 @@ class Appadv extends AdminControl {
             if (input('post.ap_isuse') != '') {
                 $param['ap_isuse'] = intval(input('post.ap_isuse'));
             }
-            $adv_validate = ds_validate('adv');
-            if (!$adv_validate->scene('app_ap_edit')->check($param)) {
-                $this->error($adv_validate->getError());
-            }
+            
+            $this->validate($param, 'app\common\validate\Adv.app_ap_edit');
 
             $result = $appadv_model->editAppadvposition($ap_id,$param);
 

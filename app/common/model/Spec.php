@@ -2,11 +2,11 @@
 
 namespace app\common\model;
 
-
 use think\facade\Db;
+
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -17,8 +17,8 @@ use think\facade\Db;
  * 数据层模型
  */
 class Spec extends BaseModel {
-public $page_info;
 
+    public $page_info;
 
     /**
      * 规格列表
@@ -30,11 +30,11 @@ public $page_info;
      * @return type
      */
     public function getSpecList($condition, $pagesize = '', $order = 'sp_id desc') {
-        if($pagesize){
-            $result= Db::name('spec')->where($condition)->order($order)->paginate(['list_rows'=>$pagesize,'query' => request()->param()],false);
-            $this->page_info=$result;
+        if ($pagesize) {
+            $result = Db::name('spec')->where($condition)->order($order)->paginate(['list_rows' => $pagesize, 'query' => request()->param()], false);
+            $this->page_info = $result;
             return $result->items();
-        }else{
+        } else {
             return Db::name('spec')->where($condition)->order($order)->select()->toArray();
         }
     }
@@ -48,7 +48,7 @@ public $page_info;
      * @return type
      */
     public function getSpecInfo($sp_id, $field = '*') {
-        return Db::name('spec')->where('sp_id',$sp_id)->field($field)->find();
+        return Db::name('spec')->where('sp_id', $sp_id)->field($field)->find();
     }
 
     /**
@@ -122,11 +122,8 @@ public $page_info;
      * @param type $condition 条件
      * @return boolean
      */
-    public function editSpec($update, $condition) {
-        if (empty($update)) {
-            return false;
-        }
-        return Db::name('spec')->where($condition)->update($update);
+    public function editSpec($data, $condition) {
+        return Db::name('spec')->where($condition)->update($data);
     }
 
     /**
@@ -141,7 +138,7 @@ public $page_info;
         $result = Db::name('spec')->insertGetId($data);
         return $result;
     }
- 
+
     /**
      * 删除规格
      * @access public
@@ -152,7 +149,6 @@ public $page_info;
     public function delSpec($condition) {
         return Db::name('spec')->where($condition)->delete();
     }
-
 }
 
 ?>

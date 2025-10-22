@@ -5,7 +5,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -57,7 +57,7 @@ class Cache extends BaseModel {
      */
     private function _goodsclassseo() {
 
-        $list = Db::name('goodsclass')->field('gc_id,gc_title,gc_keywords,gc_description')->where('gc_keywords','<>','')->select()->toArray();
+        $list = Db::name('goodsclass')->field('gc_id,gc_title,gc_keywords,gc_description')->where(array(array('gc_keywords','<>', '')))->select()->toArray();
         if (!is_array($list))
             return null;
         $array = array();

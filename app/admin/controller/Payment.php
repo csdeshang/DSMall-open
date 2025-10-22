@@ -151,7 +151,6 @@ class Payment extends AdminControl {
                         $upload_file = PLUGINS_PATH . '/payments/' . $install_payment['payment_code'] . '/asserts';
                         $file = request()->file('cfg_value2_' . $i);
 
-
                         $file_config = array(
                             'disks' => array(
                                 'local' => array(
@@ -217,7 +216,6 @@ class Payment extends AdminControl {
         );
         return $menu_array;
     }
-
 }
 
 ?>

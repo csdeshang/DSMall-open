@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -62,12 +62,12 @@ class Consulttype extends BaseModel
      * @access public
      * @author csdeshang 
      * @param array $condition 检索条件
-     * @param array $update 更新数据
+     * @param array $data 更新数据
      * @return boolean
      */
-    public function editConsulttype($condition, $update)
+    public function editConsulttype($condition, $data)
     {
-        return Db::name('consulttype')->where($condition)->update($update);
+        return Db::name('consulttype')->where($condition)->update($data);
     }
 
     /**

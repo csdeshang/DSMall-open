@@ -6,7 +6,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 投诉管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -192,13 +192,6 @@ class Complain extends AdminControl
         //获取输入的数据
         $complain_id = intval(input('post.complain_id'));
         $final_handle_message = trim(input('post.final_handle_message'));
-        $data=[
-            'final_handle_message'=>$final_handle_message
-        ];
-        $complain_validate = ds_validate('complain');
-        if (!$complain_validate->scene('complain_close')->check($data)) {
-            $this->error($complain_validate->getError());
-        }
 
         $complain_info = $this->get_complain_info($complain_id);
         $current_state = intval($complain_info['complain_state']);
@@ -209,6 +202,9 @@ class Complain extends AdminControl
             $update_array['final_handle_message'] = $final_handle_message;
             $update_array['final_handle_datetime'] = TIMESTAMP;
             $update_array['final_handle_member_id'] = $this->get_admin_id();
+            
+            $this->validate($update_array, 'app\common\validate\Complain.complain_close');
+            
             $condition = array();
             $condition[] = array('complain_id','=',$complain_id);
             if ($complain_model->editComplain($update_array, $condition)) {
@@ -253,23 +249,15 @@ class Complain extends AdminControl
             //获取提交的内容
             $input['complainsubject_content'] = trim(input('post.complain_subject_content'));
             $input['complainsubject_desc'] = trim(input('post.complain_subject_desc'));
-            //验证提交的内容
-            $data = [
-                'complain_subject_content' => $input['complainsubject_content'],
-                'complain_subject_desc' => $input['complainsubject_desc'],
-            ];
 
-            $complain_validate = ds_validate('complain');
-            if (!$complain_validate->scene('complain_subject_add')->check($data)) {
-                $this->error($complain_validate->getError());
-            } else {
+            $this->validate($input, 'app\common\validate\Complainsubject.add');
+            
                 //验证成功保存
                 $input['complainsubject_state'] = 1;
                 $complainsubject_model = model('complainsubject');
                 $complainsubject_model->addComplainsubject($input);
                 $this->log(lang('complain_subject_add_success') . '[' . input('complain_subject_content') . ']', 1);
                 $this->success(lang('complain_subject_add_success'), 'complain/complain_subject_list');
-            }
         }
     }
 

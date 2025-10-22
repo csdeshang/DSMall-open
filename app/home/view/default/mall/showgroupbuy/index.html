@@ -55,7 +55,7 @@
           <ul>
               {foreach name="groupbuy" item="groupbuy" }
               <li class="{$current}">
-                  <div class="dsg-list-content"> <a title="{$groupbuy.groupbuy_name}" href="{$groupbuy.groupbuy_url}" class="pic-thumb" target="_blank"><img  class="lazyload" data-original="{:groupbuy_thumb($groupbuy['groupbuy_image'],'normal')}" alt=""></a>
+                  <div class="dsg-list-content"> <a title="{$groupbuy.groupbuy_name}" href="{$groupbuy.groupbuy_url}" class="pic-thumb" target="_blank"><img  class="lazyload" data-original="{:groupbuy_thumb($groupbuy['groupbuy_image'])}" alt=""></a>
                       <h3 class="title"><a title="{$groupbuy.groupbuy_name}" href="{$groupbuy.groupbuy_url}" target="_blank">{$groupbuy.groupbuy_name}</a></h3>
                       <?php list($integer_part, $decimal_part) = explode('.', $groupbuy['groupbuy_price']);?>
                       <div class="item-prices"> <span class="price"><i>{$Think.lang.currency}</i>{$integer_part}<em>.{$decimal_part}</em></span>
@@ -77,7 +77,7 @@
         <ul>
         {foreach name="vr_groupbuy" item="groupbuy" }
             <li class="{$current}">
-          <div class="dsg-list-content"> <a title="{$groupbuy.groupbuy_name}" href="{$groupbuy.groupbuy_url}" class="pic-thumb" target="_blank"><img class="lazyload" data-original="{:groupbuy_thumb($groupbuy['groupbuy_image'],'normal')}" alt=""></a>
+          <div class="dsg-list-content"> <a title="{$groupbuy.groupbuy_name}" href="{$groupbuy.groupbuy_url}" class="pic-thumb" target="_blank"><img class="lazyload" data-original="{:groupbuy_thumb($groupbuy['groupbuy_image'])}" alt=""></a>
             <h3 class="title"><a title="{$groupbuy.groupbuy_name}" href="{$groupbuy.groupbuy_url}" target="_blank">{$groupbuy.groupbuy_name}</a></h3>
               <?php list($integer_part, $decimal_part) = explode('.', $groupbuy['groupbuy_price']);?>
               <div class="item-prices"> <span class="price"><i>{$Think.lang.currency}</i>{$integer_part}<em>.{$decimal_part}</em></span>

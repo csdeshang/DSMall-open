@@ -7,7 +7,7 @@ use think\captcha\facade\Captcha;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 登录
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -39,10 +39,8 @@ class Login extends AdminControl {
                 'captcha' => $captcha,
             );
 
-            $login_validate = ds_validate('admin');
-            if (!$login_validate->scene('index')->check($data)) {
-                ds_json_encode(10001,$login_validate->getError());
-            }
+            //验证器
+            $this->validate($data, 'app\common\validate\Admin.index');
 
             if (!captcha_check(input('post.captcha'))) {
                 //验证失败

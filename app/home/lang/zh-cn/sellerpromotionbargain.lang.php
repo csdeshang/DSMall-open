@@ -77,7 +77,7 @@ $lang['click_add_activity_button'] = '1、点击添加活动按钮可以添加�
 $lang['click_delete_button'] = '2、点击砍价详情按钮可以查看砍价活动';
 $lang['overdue_package'] = '套餐过期时间';
 $lang['please_package_first'] = '当前没有可用套餐，请先购买套餐';
-$lang['period_settlement_deduct'] = '相关费用会在店铺的账期结算中扣除';
+$lang['period_settlement_deduct'] = '相关费用会在店铺的资金中扣除';
 
 //bargain_add
 $lang['start_time_group_not_modified'] = '砍价开始时间不可修改';

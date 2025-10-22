@@ -50,7 +50,7 @@ class Payment
             foreach ($order_list as $order_info) {
 
                 $payed_amount = floatval($order_info['rcb_amount']) + floatval($order_info['pd_amount']);
-                if ($order_info['payment_code'] != 'offline' and $order_info['order_state'] > 0) {
+                if ($order_info['order_state'] > 0) {
                     if ($order_info['order_state'] == ORDER_STATE_NEW) {
                     }
                     $pay_amount += floatval($order_info['order_amount']) - $payed_amount;
@@ -163,7 +163,7 @@ class Payment
      */
     public function getPaymentInfo($payment_code)
     {
-        if (in_array($payment_code, array('offline', 'predeposit')) || empty($payment_code)) {
+        if (in_array($payment_code, array('predeposit')) || empty($payment_code)) {
             return ds_callback(false, '系统不支持选定的支付方式');
         }
         $payment_model = model('payment');
@@ -189,14 +189,16 @@ class Payment
     public function updateRealOrder($out_trade_no, $payment_code, $order_list, $trade_no) {
         $post['payment_code'] = $payment_code;
         $post['trade_no'] = $trade_no;
+        
+        Db::startTrans();
         try {
-            Db::startTrans();
             model('order', 'logic')->changeOrderReceivePay($order_list, 'system', '系统', $post);
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             return ds_callback(false, $e->getMessage());
         }
-        Db::commit();
+        
         return ds_callback(true, '操作成功');
     }
     /**
@@ -237,8 +239,9 @@ class Payment
         $update['pdr_trade_sn'] = $trade_no;
 
         $predeposit_model = model('predeposit');
+        
+        Db::startTrans();
         try {
-            Db::startTrans();
             $pdnum = $predeposit_model->getPdRechargeCount(array(
                 'pdr_sn' => $recharge_info['pdr_sn'], 'pdr_payment_state' => 1
             ));

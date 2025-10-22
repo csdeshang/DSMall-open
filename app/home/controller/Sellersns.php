@@ -76,13 +76,12 @@ class Sellersns extends BaseSeller {
         $save_name = session('store_id') . '_' . date('YmdHis',$time) . rand(10000, 99999);
         $file = input('param.id');
         $result = upload_albumpic($upload_path, $file, $save_name);
-        if ($result['code'] == '10000') {
-            $img_path = $result['result'];
+        if ($result['code']) {
+            $img_path = $result['data']['file_name'];
             // 取得图像大小
-            list($width, $height, $type, $attr) = getimagesize($img_path);
-            $img_path = substr(strrchr($img_path, "/"), 1);
+            list($width, $height, $type, $attr) = getimagesize($_FILES[$file]['tmp_name']);
         } else {
-            exit($result['message']);
+            exit($result['msg']);
         }
 
 
@@ -92,7 +91,7 @@ class Sellersns extends BaseSeller {
         $insert_array['apic_tag'] = '';
         $insert_array['aclass_id'] = $class_info['aclass_id'];
         $insert_array['apic_cover'] = $img_path;
-        $insert_array['apic_size'] = intval($_FILES[input('param.id')]['size']);
+        $insert_array['apic_size'] = intval($_FILES[$file]['size']);
         $insert_array['apic_spec'] = $width . 'x' . $height;
         $insert_array['apic_uploadtime'] = $time;
         $insert_array['store_id'] = session('store_id');
@@ -118,10 +117,7 @@ class Sellersns extends BaseSeller {
             'content' => input('param.content'),
             'goods_url' => input('goods_url')
         ];
-        $sellersns_validate = ds_validate('sellersns');
-        if (!$sellersns_validate->scene('store_sns_save')->check($data)) {
-            ds_json_encode(10001, $sellersns_validate->getError());
-        }
+        $this->validate($data, 'app\common\validate\Sellersns.store_sns_save');
 
         $goodsdata = '';
         $content = '';

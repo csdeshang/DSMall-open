@@ -46,9 +46,6 @@ class Pbargainorder extends BaseModel {
      */
     public function getPbargainorderList($condition,$pagesize='') {
         $res = Db::name('pbargainorder')->where($condition)->order('bargainorder_id desc');
-        if($this->lock){
-            $res=$res->lock(true);
-        }
         if($pagesize){
             $res=$res->paginate(['list_rows'=>$pagesize,'query' => request()->param()],false);
             $pbargainorder_list = $res->items();
@@ -66,8 +63,8 @@ class Pbargainorder extends BaseModel {
      * @param type $condition 条件
      * @return type
      */
-    public function getOnePbargainorder($condition,$lock=false) {
-        return Db::name('pbargainorder')->where($condition)->lock($lock)->find();
+    public function getOnePbargainorder($condition) {
+        return Db::name('pbargainorder')->where($condition)->find();
     }
     
     /**

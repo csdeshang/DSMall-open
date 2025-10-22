@@ -38,7 +38,7 @@ class Sellerpromotionbooth extends BaseSeller {
         $where[] = array('store_id', '=', session('store_id'));
         $where[] = array('boothquota_endtime', '<', TIMESTAMP);
         $pbooth_model->editBoothClose($where);
-
+        $hasList = false;
             // 检查是否已购买套餐
             $where = array();
             $where[] = array('store_id', '=', session('store_id'));
@@ -112,6 +112,10 @@ class Sellerpromotionbooth extends BaseSeller {
             if ($quantity <= 0 || $quantity > 12) {
                 ds_json_encode(10001, lang('param_error'));
             }
+            
+            // 先记录店铺记录店铺费用以免扣费不成功
+            $this->recordStorecost($price_quantity, '购买推荐展位'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_booth_price')).'元]');
+                
             // 实例化模型
             $pbooth_model = model('pbooth');
 
@@ -124,9 +128,6 @@ class Sellerpromotionbooth extends BaseSeller {
 
             $return = $pbooth_model->addBoothquota($data);
             if ($return) {
-                // 添加店铺费用记录
-                $this->recordStorecost($price_quantity, '购买推荐展位'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_booth_price')).'元]');
-
                 // 添加任务队列
                 $end_time = TIMESTAMP + 60 * 60 * 24 * 30 * $quantity;
                 $this->addcron(array('cron_exetime' => $end_time, 'cron_value' => serialize(intval(session('store_id'))), 'cron_type' => 'editBoothClose'), true);
@@ -156,6 +157,10 @@ class Sellerpromotionbooth extends BaseSeller {
             if ($quantity <= 0 || $quantity > 12) {
                 ds_json_encode(10001, lang('param_error'));
             }
+            
+            // 先记录店铺记录店铺费用以免扣费不成功
+            $this->recordStorecost($price_quantity, '购买推荐展位'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_booth_price')).'元]');
+                
             $condition = array();
             $condition[] = array('store_id','=',session('store_id'));
             $booth_quota = $pbooth_model->getBoothquotaInfo($condition);
@@ -169,9 +174,6 @@ class Sellerpromotionbooth extends BaseSeller {
             $return = $pbooth_model->editBoothquotaOpen($update, $condition);
 
             if ($return) {
-                // 添加店铺费用记录
-                $this->recordStorecost($price_quantity, '购买推荐展位'.' ['.$quantity.'个月 × 单价:'.intval(config('ds_config.promotion_booth_price')).'元]');
-
                 // 添加任务队列
                 $end_time = TIMESTAMP + 60 * 60 * 24 * 30 * $quantity;
                 $this->addcron(array('cron_exetime' => $end_time, 'cron_value' => serialize(intval(session('store_id'))), 'cron_type' => 'editBoothClose'), true);

@@ -340,6 +340,10 @@ class Sellerpromotionmgdiscount extends BaseSeller {
         }
         //获取当前价格
         $current_price = intval(config('ds_config.mgdiscount_price'));
+        
+        //记录店铺费用
+        $this->recordStorecost($current_price * $mgdiscount_quota_quantity, '购买会员等级折扣'.' ['.$mgdiscount_quota_quantity.'个月 × 单价:'.$current_price.'元]');
+        
         //获取该用户已有套餐
         $mgdiscountquota_model = model('pmgdiscountquota');
         $current_mgdiscount_quota = $mgdiscountquota_model->getMgdiscountquotaCurrent(session('store_id'));
@@ -360,8 +364,6 @@ class Sellerpromotionmgdiscount extends BaseSeller {
             $mgdiscountquota_model->editMgdiscountquota($param, array('mgdiscountquota_id' => $current_mgdiscount_quota['mgdiscountquota_id']));
         }
 
-        //记录店铺费用
-        $this->recordStorecost($current_price * $mgdiscount_quota_quantity, '购买会员等级折扣'.' ['.$mgdiscount_quota_quantity.'个月 × 单价:'.$current_price.'元]');
         $this->recordSellerlog('购买' . $mgdiscount_quota_quantity . '份会员等级折扣套餐，单价' . $current_price . lang('ds_yuan'));
         ds_json_encode(10000, lang('mgdiscount_quota_add_success'));
     }

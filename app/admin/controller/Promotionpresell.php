@@ -73,8 +73,10 @@ class Promotionpresell extends AdminControl {
         if (!in_array($presell_info['presell_state'], array(1, 2))) {//只有未开始、进行中的活动可以取消
             ds_json_encode(10001, lang('presell_cant_cancel'));
         }
+        
+        Db::startTrans();
         try {
-            Db::startTrans();
+
             //取消用户发起的活动
             $condition = array();
             $condition[] = array('goods_type', '=', 10);
@@ -85,7 +87,7 @@ class Promotionpresell extends AdminControl {
                 $logic_order = model('order', 'logic');
                 $condition = array();
                 $condition[] = array('order_id', 'in', $order_ids);
-                $condition[] = array('order_state', 'in', [ORDER_STATE_NEW,ORDER_STATE_DEPOSIT, ORDER_STATE_REST,ORDER_STATE_PAY]);
+                $condition[] = array('order_state', 'in', [ORDER_STATE_NEW, ORDER_STATE_DEPOSIT, ORDER_STATE_REST, ORDER_STATE_PAY]);
                 $order_list = $order_model->getOrderList($condition);
                 if (!empty($order_list)) {
                     foreach ($order_list as $order_info) {
@@ -96,11 +98,11 @@ class Promotionpresell extends AdminControl {
             if (!$presell_model->cancelPresell(array('presell_id' => $presell_id))) {
                 throw new \think\Exception(lang('presell_edit_fail'), 10006);
             }
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             ds_json_encode(10001, $e->getMessage());
         }
-        Db::commit();
 
         $this->log('预售活动取消，商品名称：' . $presell_info['goods_name'] . '活动编号：' . $presell_id, 1);
         ds_json_encode(10000, lang('ds_common_op_succ'));

@@ -18,7 +18,6 @@ $lang['ds_admin'] = '权限设置';
 $lang['ds_express'] = '快递公司';
 $lang['ds_chain'] = '门店管理';
 $lang['ds_region'] = '地区管理';
-$lang['ds_offpayarea'] = '配送地区';
 $lang['ds_db'] = '数据备份';
 $lang['ds_adminlog'] = '操作日志';
 //会员
@@ -155,15 +154,6 @@ $lang['wechat_keywords'] = '关键字回复';
 $lang['wechat_member'] = '绑定列表';
 $lang['wechat_push'] = '消息推送';
 
-//闲置市场
-$lang['flea'] = '闲置';
-$lang['flea_tips'] = '用户发布闲置物品';
-$lang['flea_seo'] = '闲置SEO设置';
-$lang['flea_class'] = '闲置分类管理';
-$lang['flea_class_index'] = '首页分类管理';
-$lang['flea_mes'] = '闲置管理';
-$lang['flea_region'] = '地区管理';
-$lang['flea_adv_manage'] = '闲置幻灯片';
 
 //直播
 $lang['ds_live']='直播';

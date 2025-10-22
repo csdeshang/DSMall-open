@@ -70,24 +70,7 @@ class Pointprod extends AdminControl {
         );
         $upload_model = model('upload');
         if (request()->isPost()) {
-            //验证表单
-            $data = [
-                'goodsname' => input('post.goodsname'), 'goodsprice' => input('post.goodsprice'),
-                'goodspoints' => input('post.goodspoints'), 'goodsserial' => input('post.goodsserial'),
-                'goodsstorage' => input('post.goodsstorage'), 'sort' => input('post.sort'),
-            ];
-            if (input('post.sort') == 1) {
-                $data['limitnum'] = input('postlimitnumsort');
-            }
-            if (input('post.islimittime')) {
-                $data['starttime'] = input('post.starttime');
-                $data['endtime'] = input('post.endtime');
-            }
 
-            $point_validate = ds_validate('point');
-            if (!$point_validate->scene('prod_add')->check($data)) {
-                $this->error($point_validate->getError());
-            }
             $pointprod_model = model('pointprod');
             $goods_array = array();
             $goods_array['pgoods_name'] = trim(input('post.goodsname'));
@@ -97,7 +80,6 @@ class Pointprod extends AdminControl {
             $goods_array['pgoods_points'] = trim(input('post.goodspoints'));
             $goods_array['pgoods_serial'] = trim(input('post.goodsserial'));
             $goods_array['pgoods_storage'] = intval(input('post.goodsstorage'));
-
 
             $goods_array['pgoods_islimit'] = intval(input('post.islimit'));
             if ($goods_array['pgoods_islimit'] == 1) {
@@ -138,19 +120,19 @@ class Pointprod extends AdminControl {
 
             $goods_array['pgoods_limitmgrade'] = intval(input('post.limitgrade'));
 
+            //验证器
+            $this->validate($goods_array, 'app\common\validate\Point.prod_add');
             //添加礼品代表图片
 
             $indeximg_succ = false;
 
             if (!empty($_FILES['goods_images']['name'])) {
 
-                $upload_file = BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_POINTPROD;
                 $res = ds_upload_pic(ATTACH_POINTPROD, 'goods_images');
                 if ($res['code']) {
                     $file_name = $res['data']['file_name'];
                     $indeximg_succ = true;
                     $goods_array['pgoods_image'] = $file_name;
-                    ds_create_thumb($upload_file, $file_name, '60,240', '60,240', '_small,_normal');
                 } else {
                     $this->error($res['msg']);
                 }
@@ -163,7 +145,7 @@ class Pointprod extends AdminControl {
                     $insert_array = array();
                     $insert_array['file_name'] = $file_name;
                     $insert_array['upload_type'] = 5;
-                    $insert_array['file_size'] = (config('ds_config.upload_type')=='alioss')?0:filesize($upload_file . DIRECTORY_SEPARATOR . $file_name);
+                    $insert_array['file_size'] = $_FILES['goods_images']['size'];
                     $insert_array['item_id'] = $state;
                     $insert_array['upload_time'] = TIMESTAMP;
                     $upload_model->addUpload($insert_array);
@@ -225,26 +207,6 @@ class Pointprod extends AdminControl {
             $this->error(lang('admin_pointprod_record_error'), 'pointprod/index');
         }
         if (request()->isPost()) {
-            //验证表单
-            $data = [
-                'goodsname' => input('post.goodsname'), 'goodsprice' => input('post.goodsprice'),
-                'goodspoints' => input('post.goodspoints'), 'goodsserial' => input('post.goodsserial'),
-                'goodsstorage' => input('post.goodsstorage'), 'sort' => input('post.sort'),
-            ];
-
-            if (input('post.islimit') == 1) {
-                $data['limitnum'] = input('post.limitnum');
-            }
-            if (input('post.islimittime')) {
-                $data['starttime'] = input('post.starttime');
-                $data['endtime'] = input('post.endtime');
-            }
-
-            $point_validate = ds_validate('point');
-            if (!$point_validate->scene('prod_edit')->check($data)) {
-                $this->error($point_validate->getError());
-            }
-
             //实例化店铺商品模型
             $pointprod_model = model('pointprod');
 
@@ -294,17 +256,17 @@ class Pointprod extends AdminControl {
             $goods_array['pgoods_sort'] = intval(input('post.sort'));
             $goods_array['pgoods_limitmgrade'] = intval(input('post.limitgrade'));
 
+            //验证器
+            $this->validate($goods_array, 'app\common\validate\Point.prod_edit');
             //添加礼品代表图片
             $indeximg_succ = false;
 
             if (!empty($_FILES['goods_images']['name'])) {
-                $upload_file = BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_POINTPROD;
                 $res = ds_upload_pic(ATTACH_POINTPROD, 'goods_images');
                 if ($res['code']) {
                     $file_name = $res['data']['file_name'];
                     $indeximg_succ = true;
                     $goods_array['pgoods_image'] = $file_name;
-                    ds_create_thumb($upload_file, $file_name, '60,240', '60,240', '_small,_normal');
                 } else {
                     $this->error($res['msg']);
                 }
@@ -321,7 +283,7 @@ class Pointprod extends AdminControl {
                         $upload_idarr = array();
                         foreach ($upload_list as $v) {
                             //批量删除图片
-                            ds_unlink($upload_file, $v['file_name']);
+                            ds_del_pic(ATTACH_POINTPROD, $v['file_name']);
                             $upload_idarr[] = $v['upload_id'];
                         }
                         //删除图片
@@ -332,7 +294,7 @@ class Pointprod extends AdminControl {
                     $insert_array = array();
                     $insert_array['file_name'] = $file_name;
                     $insert_array['upload_type'] = 5;
-                    $insert_array['file_size'] = (config('ds_config.upload_type')=='alioss')?0:filesize($upload_file . DIRECTORY_SEPARATOR . $file_name);
+                    $insert_array['file_size'] = $_FILES['goods_images']['size'];
                     $insert_array['item_id'] = $prod_info['pgoods_id'];
                     $insert_array['upload_time'] = TIMESTAMP;
                     $upload_model->addUpload($insert_array);
@@ -349,7 +311,6 @@ class Pointprod extends AdminControl {
                     $condition[] = array('upload_id', 'in', $file_idstr);
                 }
                 $upload_model->editUpload(array('item_id' => $prod_info['pgoods_id']), $condition);
-
 
                 $this->log(lang('ds_edit') . lang('admin_pointprodp') . '[' . input('post.goodsname') . ']');
                 $this->success(lang('admin_pointprod_edit_success'), 'pointprod/index');
@@ -449,7 +410,7 @@ class Pointprod extends AdminControl {
             $data = array();
             $data['file_id'] = $result;
             $data['file_name'] = $file_name;
-            $data['file_path'] = ds_get_pic( ATTACH_POINTPROD , $file_name);
+            $data['file_path'] = ds_get_pic(ATTACH_POINTPROD, $file_name);
             /**
              * 整理为json格式
              */
@@ -469,7 +430,7 @@ class Pointprod extends AdminControl {
              * 删除图片
              */
             $file_array = $upload_model->getOneUpload(intval(input('param.file_id')));
-            @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_POINTPROD . DIRECTORY_SEPARATOR . $file_array['file_name']);
+            ds_del_pic(ATTACH_POINTPROD, $file_array['file_name']);
             /**
              * 删除信息
              */
@@ -500,5 +461,4 @@ class Pointprod extends AdminControl {
 
         return $menu_array;
     }
-
 }

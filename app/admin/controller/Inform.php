@@ -7,7 +7,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 举报管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -72,7 +72,7 @@ class Inform extends AdminControl {
             $condition[] = array('inform.inform_datetime', '>=', $stime);
         }
         if ($etime > 0) {
-            $etime=$etime+86399;
+            $etime = $etime + 86399;
             $condition[] = array('inform.inform_datetime', '<=', $etime);
         }
         if ($type === 1) {
@@ -145,23 +145,15 @@ class Inform extends AdminControl {
             //获取提交的内容
             $input['informtype_name'] = trim(input('post.informtype_name'));
             $input['informtype_desc'] = trim(input('post.informtype_desc'));
+            //验证成功保存
+            $input['informtype_state'] = 1;
 
-            //验证提交的内容
-            $data = [
-                'informtype_name' => $input['informtype_name'],
-                'informtype_desc' => $input['informtype_desc'],
-            ];
-            $inform_validate = ds_validate('inform');
-            if (!$inform_validate->scene('inform_subject_type_save')->check($data)) {
-                $this->error($inform_validate->getError());
-            } else {
-                //验证成功保存
-                $input['informtype_state'] = 1;
-                $informsubjecttype_model = model('informsubjecttype');
-                $informsubjecttype_model->addInformsubjecttype($input);
-                $this->log(lang('ds_add') . lang('inform_type') . '[' . input('post.informtype_name') . ']', 1);
-                dsLayerOpenSuccess(lang('ds_common_save_succ'));
-            }
+            $this->validate($input, 'app\common\validate\Informsubjecttype.add');
+
+            $informsubjecttype_model = model('informsubjecttype');
+            $informsubjecttype_model->addInformsubjecttype($input);
+            $this->log(lang('ds_add') . lang('inform_type') . '[' . input('post.informtype_name') . ']', 1);
+            dsLayerOpenSuccess(lang('ds_common_save_succ'));
         }
     }
 
@@ -174,7 +166,7 @@ class Inform extends AdminControl {
         if (!request()->isPost()) {
             $informsubjecttype_model = model('informsubjecttype');
             $condition = array();
-            $condition[] = ['informtype_id','=',$informtype_id];
+            $condition[] = ['informtype_id', '=', $informtype_id];
             $informsubjecttype_info = $informsubjecttype_model->getInformsubjecttypeInfo($condition);
             View::assign('informsubjecttype_info', $informsubjecttype_info);
             return View::fetch();
@@ -182,25 +174,17 @@ class Inform extends AdminControl {
 
             //获取提交的内容
             $condition = array();
-            $condition[] = ['informtype_id','=',$informtype_id];
+            $condition[] = ['informtype_id', '=', $informtype_id];
             $input['informtype_name'] = trim(input('post.informtype_name'));
             $input['informtype_desc'] = trim(input('post.informtype_desc'));
+            //验证成功保存
+            $input['informtype_state'] = 1;
 
-            //验证提交的内容
-            $data = [
-                'informtype_name' => $input['informtype_name'],
-                'informtype_desc' => $input['informtype_desc'],
-            ];
-            $inform_validate = ds_validate('inform');
-            if (!$inform_validate->scene('inform_subject_type_save')->check($data)) {
-                $this->error($inform_validate->getError());
-            } else {
-                //验证成功保存
-                $input['informtype_state'] = 1;
-                $informsubjecttype_model = model('informsubjecttype');
-                $informsubjecttype_model->editInformsubjecttype($input,$condition);
-                dsLayerOpenSuccess(lang('ds_common_save_succ'));
-            }
+            $this->validate($input, 'app\common\validate\Informsubjecttype.edit');
+
+            $informsubjecttype_model = model('informsubjecttype');
+            $informsubjecttype_model->editInformsubjecttype($input, $condition);
+            dsLayerOpenSuccess(lang('ds_common_save_succ'));
         }
     }
 
@@ -255,23 +239,14 @@ class Inform extends AdminControl {
             list($input['informsubject_type_id'], $input['informsubject_type_name']) = explode(',', trim(input('post.inform_subject_type')));
             $input['informsubject_content'] = trim(input('post.informsubject_content'));
 
-            //验证提交的内容
-            $data = [
-                'informsubject_type_name' => $input['informsubject_type_name'],
-                'informsubject_content' => $input['informsubject_content'],
-                'informsubject_type_id' => $input['informsubject_type_id']
-            ];
-            $inform_validate = ds_validate('inform');
-            if (!$inform_validate->scene('inform_subject_save')->check($data)) {
-                $this->error($inform_validate->getError());
-            } else {
-                //验证成功保存
-                $input['informsubject_state'] = 1;
-                $informsubject_model = model('informsubject');
-                $informsubject_model->addInformsubject($input);
-                $this->log('添加' . lang('inform_subject') . '[' . $input['informsubject_type_name'] . ']', 1);
-                dsLayerOpenSuccess(lang('ds_common_save_succ'));
-            }
+            $this->validate($input, 'app\common\validate\Informsubject.add');
+
+            //验证成功保存
+            $input['informsubject_state'] = 1;
+            $informsubject_model = model('informsubject');
+            $informsubject_model->addInformsubject($input);
+            $this->log('添加' . lang('inform_subject') . '[' . $input['informsubject_type_name'] . ']', 1);
+            dsLayerOpenSuccess(lang('ds_common_save_succ'));
         }
     }
 
@@ -322,16 +297,12 @@ class Inform extends AdminControl {
         if (empty($inform_id) || empty($inform_handle_type)) {
             $this->error(lang('param_error'));
         }
-
+        
         //验证输入的数据
         $data = [
             "inform_handle_message" => $inform_handle_message,
         ];
-        $inform_validate = ds_validate('inform');
-        if (!$inform_validate->scene('inform_handle')->check($data)) {
-            $this->error($inform_validate->getError());
-        }
-
+        $this->validate($data, 'app\common\validate\Inform.inform_handle');
 
         $inform_model = model('inform');
         $inform_info = $inform_model->getOneInform(array('inform_id' => $inform_id));
@@ -442,5 +413,4 @@ class Inform extends AdminControl {
         );
         return $menu_array;
     }
-
 }

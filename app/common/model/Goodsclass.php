@@ -1,8 +1,8 @@
 <?php
 
 namespace app\common\model;
-use think\facade\Db;
 
+use think\facade\Db;
 
 /**
  * ============================================================================
@@ -16,8 +16,7 @@ use think\facade\Db;
  * ============================================================================
  * 数据层模型
  */
-class Goodsclass extends BaseModel
-{
+class Goodsclass extends BaseModel {
 
     /**
      * 缓存数据
@@ -49,26 +48,25 @@ class Goodsclass extends BaseModel
      *   ),
      * )
      */
-    public function getCache()
-    {
+    public function getCache() {
         if ($this->cachedData) {
             return $this->cachedData;
         }
         $data = rkcache('gc_class');
         if (!$data) {
             $data = array();
-            foreach ((array)$this->getGoodsclassList(array()) as $v) {
+            foreach ((array) $this->getGoodsclassList(array()) as $v) {
                 $id = $v['gc_id'];
                 $pid = $v['gc_parent_id'];
                 $data['data'][$id] = $v;
                 $data['parent'][$id] = $pid;
                 $data['children'][$pid][] = $id;
             }
-            foreach ((array)@$data['children'][0] as $id) {
+            foreach ((array) @$data['children'][0] as $id) {
                 if (!empty($data['children'][$id])) {
-                    foreach ((array)$data['children'][$id] as $cid) {
+                    foreach ((array) $data['children'][$id] as $cid) {
                         if (!empty($data['children'][$cid])) {
-                            foreach ((array)$data['children'][$cid] as $ccid) {
+                            foreach ((array) $data['children'][$cid] as $ccid) {
                                 $data['children2'][$id][] = $ccid;
                             }
                         }
@@ -86,8 +84,7 @@ class Goodsclass extends BaseModel
      * @author csdeshang
      * @return bool
      */
-    public function dropCache()
-    {
+    public function dropCache() {
         $this->cachedData = null;
         $this->gcForCacheModel = null;
 
@@ -103,8 +100,7 @@ class Goodsclass extends BaseModel
      * @param  string $field 字段
      * @return array   返回二位数组
      */
-    public function getGoodsclassList($condition, $field = '*')
-    {
+    public function getGoodsclassList($condition, $field = '*') {
         $result = Db::name('goodsclass')->field($field)->where($condition)->order('gc_parent_id asc,gc_sort asc,gc_id asc')->select()->toArray();
         return $result;
     }
@@ -115,10 +111,9 @@ class Goodsclass extends BaseModel
      * @author csdeshang
      * @return type
      */
-    public function getGoodsclassListAll()
-    {
+    public function getGoodsclassListAll() {
         $data = $this->getCache();
-        return array_values((array)@$data['data']);
+        return array_values((array) @$data['data']);
     }
 
     /**
@@ -127,11 +122,10 @@ class Goodsclass extends BaseModel
      * @author csdeshang
      * @return array
      */
-    public function getGoodsclassIndexedListAll()
-    {
+    public function getGoodsclassIndexedListAll() {
         $data = $this->getCache();
-        if($data){
-            return (array)$data['data'];
+        if ($data) {
+            return (array) $data['data'];
         }
         return '';
     }
@@ -143,18 +137,16 @@ class Goodsclass extends BaseModel
      * @param array $ids 分类id数组
      * @return array
      */
-    public function getGoodsclassListByIds($ids)
-    {
+    public function getGoodsclassListByIds($ids) {
         $data = $this->getCache();
         $ret = array();
-        foreach ((array)$ids as $i) {
+        foreach ((array) $ids as $i) {
             if (isset($data['data'][$i]) && $data['data'][$i]) {
                 $ret[] = $data['data'][$i];
             }
         }
         return $ret;
     }
-
 
     /**
      * 从缓存获取分类 通过上级分类id
@@ -163,12 +155,11 @@ class Goodsclass extends BaseModel
      * @param type $pid 上级分类id 若传0则返回1级分类
      * @return type
      */
-    public function getGoodsclassListByParentId($pid)
-    {
+    public function getGoodsclassListByParentId($pid) {
         $data = $this->getCache();
         $ret = array();
         if (!empty($data['children'][$pid])) {
-            foreach ((array)$data['children'][$pid] as $i) {
+            foreach ((array) $data['children'][$pid] as $i) {
                 if ($data['data'][$i]) {
                     $ret[] = $data['data'][$i];
                 }
@@ -185,8 +176,7 @@ class Goodsclass extends BaseModel
      * @param type $id 分类id
      * @return type
      */
-    public function getGoodsclassInfoById($id)
-    {
+    public function getGoodsclassInfoById($id) {
         $data = $this->getCache();
         return @$data['data'][$id];
     }
@@ -197,40 +187,37 @@ class Goodsclass extends BaseModel
      * @author csdeshang
      * @return type
      */
-    public function getGoodsclassForCacheModel()
-    {
+    public function getGoodsclassForCacheModel() {
 
         if ($this->gcForCacheModel)
             return $this->gcForCacheModel;
 
         $data = $this->getCache();
-        $r = isset($data['data'])?$data['data']:'';
-        $p = isset($data['parent'])?$data['parent']:'';
-        $c = isset($data['children'])?$data['children']:'';
+        $r = isset($data['data']) ? $data['data'] : '';
+        $p = isset($data['parent']) ? $data['parent'] : '';
+        $c = isset($data['children']) ? $data['children'] : '';
         $c2 = empty($data['children2']) ? '' : $data['children2'];
-       if(!empty($r)) {
-           $r = (array)$r;
-           foreach ($r as $k => & $v) {
-               if ((string)$p[$k] == '0') {
-                   $v['depth'] = 1;
-                   if (!empty($data['children'][$k])) {
-                       $v['child'] = implode(',', $c[$k]);
-                   }
-                   if (!empty($data['children2'][$k])) {
-                       $v['childchild'] = implode(',', $c2[$k]);
-                   }
-               }
-               else if (isset($p[$p[$k]]) && (string)$p[$p[$k]] == '0') {
-                   $v['depth'] = 2;
-                   if (isset($data['children'][$k])) {
-                       $v['child'] = implode(',', $c[$k]);
-                   }
-               }
-               else if (isset($p[$p[$k]]) && isset($p[$p[$p[$k]]]) && (string)$p[$p[$p[$k]]] == '0') {
-                   $v['depth'] = 3;
-               }
-           }
-       }
+        if (!empty($r)) {
+            $r = (array) $r;
+            foreach ($r as $k => & $v) {
+                if ((string) $p[$k] == '0') {
+                    $v['depth'] = 1;
+                    if (!empty($data['children'][$k])) {
+                        $v['child'] = implode(',', $c[$k]);
+                    }
+                    if (!empty($data['children2'][$k])) {
+                        $v['childchild'] = implode(',', $c2[$k]);
+                    }
+                } else if (isset($p[$p[$k]]) && (string) $p[$p[$k]] == '0') {
+                    $v['depth'] = 2;
+                    if (isset($data['children'][$k])) {
+                        $v['child'] = implode(',', $c[$k]);
+                    }
+                } else if (isset($p[$p[$k]]) && isset($p[$p[$p[$k]]]) && (string) $p[$p[$p[$k]]] == '0') {
+                    $v['depth'] = 3;
+                }
+            }
+        }
 
         return $this->gcForCacheModel = $r;
     }
@@ -243,8 +230,7 @@ class Goodsclass extends BaseModel
      * @param type $condition 条件
      * @return bool
      */
-    public function editGoodsclass($data = array(), $condition = array())
-    {
+    public function editGoodsclass($data = array(), $condition = array()) {
         // 删除缓存
         $this->dropCache();
         return Db::name('goodsclass')->where($condition)->update($data);
@@ -259,33 +245,31 @@ class Goodsclass extends BaseModel
      * @param   number $deep 深度
      * @return  array   二维数组
      */
-    public function getGoodsclass($store_id, $pid = 0, $deep = 1)
-    {
+    public function getGoodsclass($store_id, $pid = 0, $deep = 1) {
         // 读取商品分类
         $gc_list_o = $gc_list = $this->getGoodsclassListByParentId($pid);
         // 如果不是自营店铺或者自营店铺未绑定全部商品类目，读取绑定分类
 
-            $gc_list = array_under_reset($gc_list, 'gc_id');
-            $storebindclass_model = model('storebindclass');
-            $condition = array();
-            $condition[] = array('store_id','=',$store_id);
-            $condition[] = array('storebindclass_state','in',array(1, 2));
-            $gcid_array = $storebindclass_model->getStorebindclassList($condition, '', "class_{$deep} asc", "distinct class_{$deep}");
+        $gc_list = array_under_reset($gc_list, 'gc_id');
+        $storebindclass_model = model('storebindclass');
+        $condition = array();
+        $condition[] = array('store_id', '=', $store_id);
+        $condition[] = array('storebindclass_state', 'in', array(1, 2));
+        $gcid_array = $storebindclass_model->getStorebindclassList($condition, '', "class_{$deep} asc", "distinct class_{$deep}");
 
-            if (!empty($gcid_array)) {
-                $tmp_gc_list = array();
-                foreach ($gcid_array as $value) {
-                    if ($value["class_{$deep}"] == 0)
-                        return $gc_list_o;
-                    if (isset($gc_list[$value["class_{$deep}"]])) {
-                        $tmp_gc_list[] = $gc_list[$value["class_{$deep}"]];
-                    }
+        if (!empty($gcid_array)) {
+            $tmp_gc_list = array();
+            foreach ($gcid_array as $value) {
+                if ($value["class_{$deep}"] == 0)
+                    return $gc_list_o;
+                if (isset($gc_list[$value["class_{$deep}"]])) {
+                    $tmp_gc_list[] = $gc_list[$value["class_{$deep}"]];
                 }
-                $gc_list = $tmp_gc_list;
             }
-            else {
-                return array();
-            }
+            $gc_list = $tmp_gc_list;
+        } else {
+            return array();
+        }
 
         return $gc_list;
     }
@@ -297,8 +281,7 @@ class Goodsclass extends BaseModel
      * @param array $condition 条件
      * @return boolean
      */
-    public function delGoodsclass($condition)
-    {
+    public function delGoodsclass($condition) {
         // 删除缓存
         $this->dropCache();
         return Db::name('goodsclass')->where($condition)->delete();
@@ -311,8 +294,7 @@ class Goodsclass extends BaseModel
      * @param array $gcids 分类ID
      * @return boolean
      */
-    public function delGoodsclassByGcIdString($gcids)
-    {
+    public function delGoodsclassByGcIdString($gcids) {
         $gcids = explode(',', $gcids);
         if (empty($gcids)) {
             return false;
@@ -325,15 +307,15 @@ class Goodsclass extends BaseModel
             $gcid_array = array_merge($gcid_array, array($gc_id), $child, $childchild);
         }
         // 删除商品分类
-        $this->delGoodsclass(array(array('gc_id','in', $gcid_array)));
+        $this->delGoodsclass(array(array('gc_id', 'in', $gcid_array)));
         // 删除常用商品分类
-        model('goodsclassstaple')->delGoodsclassstaple(array(array('gc_id_1|gc_id_2|gc_id_3','in', $gcid_array)));
+        model('goodsclassstaple')->delGoodsclassstaple(array(array('gc_id_1|gc_id_2|gc_id_3', 'in', $gcid_array)));
         // 删除分类tag表
-        model('goodsclasstag')->delGoodsclasstag(array(array('gc_id_1|gc_id_2|gc_id_3','in', $gcid_array)));
+        model('goodsclasstag')->delGoodsclasstag(array(array('gc_id_1|gc_id_2|gc_id_3', 'in', $gcid_array)));
         // 删除店铺绑定分类
-        model('storebindclass')->delStorebindclass(array(array('class_1|class_2|class_3','in', $gcid_array)));
+        model('storebindclass')->delStorebindclass(array(array('class_1|class_2|class_3', 'in', $gcid_array)));
         // 商品下架
-        model('goods')->editProducesLockUp(array('goods_stateremark' => '商品分类被删除，需要重新选择分类'), array(array('gc_id','in', $gcid_array)));
+        model('goods')->editProducesLockUp(array('goods_stateremark' => '商品分类被删除，需要重新选择分类'), array(array('gc_id', 'in', $gcid_array)));
         return true;
     }
 
@@ -344,8 +326,7 @@ class Goodsclass extends BaseModel
      * @param  number $update_all 更新
      * @return array   数组
      */
-    public function get_all_category($update_all = 0)
-    {
+    public function get_all_category($update_all = 0) {
         // 不存在时更新或者强制更新时执行
         if ($update_all == 1 || !($gc_list = rkcache('all_categories'))) {
             $class_list = $this->getTreeClassList(3);
@@ -354,20 +335,20 @@ class Goodsclass extends BaseModel
             if (is_array($class_list) && !empty($class_list)) {
                 //遍历一级商品分类
                 foreach ($class_list as $k => $v) {
-                    if ($v[ 'deep' ] == 1) {
-                        $nav_info = $this->_getGoodsclassnavById($v['gc_id']);//一级分类推荐品牌
+                    if ($v['deep'] == 1) {
+                        $nav_info = $this->_getGoodsclassnavById($v['gc_id']); //一级分类推荐品牌
                         $gc_list[$v['gc_id']] = array_merge($v, $nav_info);
-                        unset($class_list[ $k ]);
+                        unset($class_list[$k]);
                     }
                 }
                 $class_list = array_values($class_list);
                 //遍历二级商品分类
                 foreach ($class_list as $k => $v) {
                     foreach ($gc_list as $ck => $cv) {
-                        if ($v[ 'deep' ] == 2 && $cv[ 'gc_id' ] == $v[ 'gc_parent_id' ]) {
-                            $gc_list[$cv['gc_id']][ 'class2' ][$v['gc_id']] = $v;
+                        if ($v['deep'] == 2 && $cv['gc_id'] == $v['gc_parent_id']) {
+                            $gc_list[$cv['gc_id']]['class2'][$v['gc_id']] = $v;
                             $type_ids[] = $cv['type_id'];
-                            unset($class_list[ $k ]);
+                            unset($class_list[$k]);
                         }
                     }
                 }
@@ -375,11 +356,11 @@ class Goodsclass extends BaseModel
                 //遍历三级商品分类
                 foreach ($class_list as $k => $v) {
                     foreach ($gc_list as $ck => $cv) {
-                        if (!empty($cv[ 'class2' ])) {
-                            foreach ($cv[ 'class2' ] as $third_k => $third_v) {
-                                if ($v[ 'deep' ] == 3 && $third_v[ 'gc_id' ] == $v[ 'gc_parent_id' ]) {
-                                    $gc_list[$cv['gc_id']][ 'class2' ][$third_v['gc_id']][ 'class3' ][] = $v;
-                                    unset($class_list[ $k ]);
+                        if (!empty($cv['class2'])) {
+                            foreach ($cv['class2'] as $third_k => $third_v) {
+                                if ($v['deep'] == 3 && $third_v['gc_id'] == $v['gc_parent_id']) {
+                                    $gc_list[$cv['gc_id']]['class2'][$third_v['gc_id']]['class3'][] = $v;
+                                    unset($class_list[$k]);
                                 }
                             }
                         }
@@ -410,16 +391,15 @@ class Goodsclass extends BaseModel
      * @param   array $type_ids 类型
      * @return  array   数组
      */
-    public function get_type_brands($type_ids = array())
-    {
+    public function get_type_brands($type_ids = array()) {
         $brands = array(); //品牌
         $type_brands = array(); //类型关联品牌
         if (is_array($type_ids) && !empty($type_ids)) {
             $type_ids = array_unique($type_ids);
-            $type_list = Db::name('typebrand')->where('type_id','in', $type_ids)->limit(10000)->select()->toArray();
+            $type_list = Db::name('typebrand')->where('type_id', 'in', $type_ids)->limit(10000)->select()->toArray();
             if (is_array($type_list) && !empty($type_list)) {
-                $brand_mod=model('brand');
-                $brand_list = $brand_mod->getBrandList(array('brand_apply' => 1),'brand_id,brand_name,brand_pic',10000);
+                $brand_mod = model('brand');
+                $brand_list = $brand_mod->getBrandList(array('brand_apply' => 1), 'brand_id,brand_name,brand_pic', 10000);
                 if (is_array($brand_list) && !empty($brand_list)) {
                     foreach ($brand_list as $key => $value) {
                         $brand_id = $value['brand_id'];
@@ -429,7 +409,7 @@ class Goodsclass extends BaseModel
                     foreach ($type_list as $key => $value) {
                         $type_id = $value['type_id'];
                         $brand_id = $value['brand_id'];
-                        if(isset($brands[$brand_id])){
+                        if (isset($brands[$brand_id])) {
                             $brand = $brands[$brand_id];
                             if (is_array($brand) && !empty($brand)) {
                                 $type_brands[$type_id][$brand_id] = $brand;
@@ -441,6 +421,7 @@ class Goodsclass extends BaseModel
         }
         return $type_brands;
     }
+
     /**
      * 获取商品分类导航
      * @access public
@@ -448,8 +429,7 @@ class Goodsclass extends BaseModel
      * @param int $gc_id 商品分类id
      * @return type
      */
-    private function _getGoodsclassnavById($gc_id)
-    {
+    private function _getGoodsclassnavById($gc_id) {
         $classnav_model = model('goodsclassnav');
         $brand_model = model('brand');
 
@@ -459,29 +439,26 @@ class Goodsclass extends BaseModel
         }
 
         if (!empty($nav_info['goodscn_pic'])) {
-            $nav_info['goodscn_pic'] = ds_get_pic( ATTACH_GOODS_CLASS , $nav_info['goodscn_pic']);
-        }
-        else {
+            $nav_info['goodscn_pic'] = ds_get_pic(ATTACH_GOODS_CLASS, $nav_info['goodscn_pic']);
+        } else {
             unset($nav_info['goodscn_pic']);
         }
         if (!empty($nav_info['goodscn_adv1'])) {
-            $nav_info['goodscn_adv1'] = ds_get_pic( ATTACH_GOODS_CLASS , $nav_info['goodscn_adv1']);
-        }
-        else {
+            $nav_info['goodscn_adv1'] = ds_get_pic(ATTACH_GOODS_CLASS, $nav_info['goodscn_adv1']);
+        } else {
             unset($nav_info['goodscn_adv1']);
         }
         if (!empty($nav_info['goodscn_adv2'])) {
-            $nav_info['goodscn_adv2'] = ds_get_pic( ATTACH_GOODS_CLASS , $nav_info['goodscn_adv2']);
-        }
-        else {
+            $nav_info['goodscn_adv2'] = ds_get_pic(ATTACH_GOODS_CLASS, $nav_info['goodscn_adv2']);
+        } else {
             unset($nav_info['goodscn_adv2']);
         }
         if ($nav_info['goodscn_brandids'] != '') {
-            $nav_info['cn_brands'] = $brand_model->getBrandList(array(array('brand_id','in', $nav_info['goodscn_brandids'])));
+            $nav_info['cn_brands'] = $brand_model->getBrandList(array(array('brand_id', 'in', $nav_info['goodscn_brandids'])));
             unset($nav_info['goodscn_brandids']);
         }
         if ($nav_info['goodscn_classids'] != '') {
-            $nav_info['cn_classs'] = $this->getGoodsclassList(array(array('gc_id','in', $nav_info['goodscn_classids'])));
+            $nav_info['cn_classs'] = $this->getGoodsclassList(array(array('gc_id', 'in', $nav_info['goodscn_classids'])));
             unset($nav_info['goodscn_classids']);
         }
         if ($nav_info['goodscn_alias'] != '') {
@@ -498,8 +475,7 @@ class Goodsclass extends BaseModel
      * @param array $data 参数数据
      * @return boolean
      */
-    public function addGoodsclass($data)
-    {
+    public function addGoodsclass($data) {
         // 删除缓存
         $this->dropCache();
         return Db::name('goodsclass')->insertGetId($data);
@@ -513,8 +489,7 @@ class Goodsclass extends BaseModel
      * @param array $condition 检索条件
      * @return array 数组类型的返回结果
      */
-    public function getTreeClassList($show_deep = '3', $condition = array())
-    {
+    public function getTreeClassList($show_deep = '3', $condition = array()) {
         $class_list = $this->getGoodsclassList($condition);
         $goods_class = array(); //分类数组
         if (is_array($class_list) && !empty($class_list)) {
@@ -524,13 +499,11 @@ class Goodsclass extends BaseModel
                     if ($val['gc_parent_id'] == 0) {
                         $val['deep'] = 1;
                         $goods_class[] = $val;
-                    }
-                    else {
+                    } else {
                         break; //父类编号不为0时退出循环
                     }
                 }
-            }
-            else {//显示第二和三级时用递归
+            } else {//显示第二和三级时用递归
                 $goods_class = $this->_getTreeClassList($show_deep, $class_list);
             }
         }
@@ -548,8 +521,7 @@ class Goodsclass extends BaseModel
      * @param int $i 上次循环编号
      * @return array $show_class 返回数组形式的查询结果
      */
-    private function _getTreeClassList($show_deep, $class_list, $deep = 1, $parent_id = 0, $i = 0)
-    {
+    private function _getTreeClassList($show_deep, $class_list, $deep = 1, $parent_id = 0, $i = 0) {
         static $show_class = array(); //树状的平行数组
         if (is_array($class_list) && !empty($class_list)) {
             $size = count($class_list);
@@ -581,8 +553,7 @@ class Goodsclass extends BaseModel
      * @param int $parent_id 父ID 可以单一可以为数组
      * @return array 返回数组形式的查询结果
      */
-    public function getChildClass($parent_id)
-    {
+    public function getChildClass($parent_id) {
         static $_cache;
         if ($_cache !== null)
             return $_cache;
@@ -601,8 +572,7 @@ class Goodsclass extends BaseModel
                 }
             }
             $return = $result;
-        }
-        else {
+        } else {
             $return = false;
         }
         return $_cache = $return;
@@ -616,8 +586,7 @@ class Goodsclass extends BaseModel
      * @param int $sign 1、0 1为最后一级不加超链接，0为加超链接
      * @return array $nav_link 返回数组形式类别导航连接
      */
-    public function getGoodsclassnav($id = 0, $sign = 1)
-    {
+    public function getGoodsclassnav($id = 0, $sign = 1) {
         if (intval($id) > 0) {
             $data = $this->getGoodsclassIndexedListAll();
             // 当前分类不加超链接
@@ -627,12 +596,11 @@ class Goodsclass extends BaseModel
                         'title' => $data[$id]['gc_name']
                     );
                 }
-            }
-            else {
+            } else {
                 if (isset($data[$id])) {
                     $nav_link [] = array(
                         'title' => isset($data[$id]['gc_name']) ? $data[$id]['gc_name'] : '..',
-                        'link' => (string)url('/home/Search/index', ['cate_id' => $data[$id]['gc_id']]),
+                        'link' => (string) url('/home/Search/index', ['cate_id' => $data[$id]['gc_id']]),
                     );
                 }
             }
@@ -643,22 +611,21 @@ class Goodsclass extends BaseModel
                         break;
                     }
                     $id = $data[$id]['gc_parent_id'];
-                    if(!isset($data[$id])){
-                      break;
+                    if (!isset($data[$id])) {
+                        break;
                     }
                     $nav_link[] = array(
                         'title' => $data[$id]['gc_name'],
-                        'link' => (string)url('/home/Search/index', ['cate_id' => $data[$id]['gc_id']])
+                        'link' => (string) url('/home/Search/index', ['cate_id' => $data[$id]['gc_id']])
                     );
                 }
             }
-        }
-        else {
+        } else {
             // 加上 首页 商品分类导航
             $nav_link[] = array('title' => lang('goods_class_index_search_results'));
         }
         // 首页导航
-        $nav_link[] = array('title' => lang('homepage'), 'link' => (string)url('home/Index/index'));
+        $nav_link[] = array('title' => lang('homepage'), 'link' => (string) url('home/Index/index'));
 
         krsort($nav_link);
         return $nav_link;
@@ -671,8 +638,7 @@ class Goodsclass extends BaseModel
      * @param type $id 分类ID
      * @return type
      */
-    public function getChildClassByFirstId($id)
-    {
+    public function getChildClassByFirstId($id) {
         $data = $this->getCache();
         $result = array();
         if (!empty($data['children2'][$id])) {
@@ -692,8 +658,7 @@ class Goodsclass extends BaseModel
      * @param int $id 父类ID/子类ID
      * @return array 
      */
-    public function getGoodsclassLineForTag($id = 0)
-    {
+    public function getGoodsclassLineForTag($id = 0) {
         if (intval($id) > 0) {
             $gc_line = array();
             /**
@@ -703,8 +668,8 @@ class Goodsclass extends BaseModel
             $gc_line['gc_id'] = $class['gc_id'];
             $gc_line['type_id'] = $class['type_id'];
             $gc_line['gc_virtual'] = $class['gc_virtual'];
-            $gc_line['gctag_name']='>';
-            $gc_line['gctag_value']=',';
+            $gc_line['gctag_name'] = '>';
+            $gc_line['gctag_value'] = ',';
             /**
              * 是否是子类
              */
@@ -718,8 +683,7 @@ class Goodsclass extends BaseModel
                 }
                 if (!isset($gc_line['gc_id_1'])) {
                     $gc_line['gc_id_1'] = $parent_1['gc_id'];
-                }
-                else {
+                } else {
                     $gc_line['gc_id_2'] = $parent_1['gc_id'];
                 }
                 $gc_line['gctag_name'] .= trim($parent_1['gc_name']) . ' >';
@@ -727,11 +691,9 @@ class Goodsclass extends BaseModel
             }
             if (!isset($gc_line['gc_id_1'])) {
                 $gc_line['gc_id_1'] = $class['gc_id'];
-            }
-            else if (!isset($gc_line['gc_id_2'])) {
+            } else if (!isset($gc_line['gc_id_2'])) {
                 $gc_line['gc_id_2'] = $class['gc_id'];
-            }
-            else {
+            } else {
                 $gc_line['gc_id_3'] = $class['gc_id'];
             }
             $gc_line['gctag_name'] .= trim($class['gc_name']) . ' >';
@@ -749,8 +711,7 @@ class Goodsclass extends BaseModel
      * @param type $gc_id 商品分类ID
      * @return boolean
      */
-    public function getKeyWords($gc_id = null)
-    {
+    public function getKeyWords($gc_id = null) {
         if (empty($gc_id))
             return false;
         $keywrods = rkcache('goodsclassseo', true);
@@ -790,18 +751,16 @@ class Goodsclass extends BaseModel
      * @param int $show_depth 需要展示分类深度
      * @return array 返回分类数组和选择分类id数组
      */
-    public function getGoodsclassCache($choose_gcid, $show_depth = 3)
-    {
+    public function getGoodsclassCache($choose_gcid, $show_depth = 3) {
         $gc_list = $this->getGoodsclassForCacheModel();
         //获取需要展示的分类数组
         $show_gc_list = array();
-        if(!empty($gc_list)) {
-            foreach ((array)$gc_list as $k => $v) {
-                if(isset($v['depth'])){
+        if (!empty($gc_list)) {
+            foreach ((array) $gc_list as $k => $v) {
+                if (isset($v['depth'])) {
                     if ($v['depth'] < $show_depth) {
                         $show_gc_list[$v['gc_id']] = $v;
-                    }
-                    elseif ($v['depth'] == $show_depth) {
+                    } elseif ($v['depth'] == $show_depth) {
                         unset($v['child'], $v['childchild']);
                         $show_gc_list[$v['gc_id']] = $v;
                     }
@@ -811,7 +770,7 @@ class Goodsclass extends BaseModel
         $choose_gcidarr = array();
         if ($choose_gcid > 0) {
             //遍历出选择商品分类的上下级ID
-            if(isset($gc_list[$choose_gcid])){
+            if (isset($gc_list[$choose_gcid])) {
                 $gc_depth = $gc_list[$choose_gcid]['depth'];
                 $parentid = $choose_gcid;
                 for ($i = $gc_depth - 1; $i >= 0; $i--) {

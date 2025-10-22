@@ -1,20 +1,36 @@
+## 相关产品
+
+### DSPlatform系统
+DSPlatform系统是一个集成的解决方案，基于Thinkphp8 + Vue3 + Element Plus + Uniapp 开发，系统支持多种商业模式，包括传统商城购物、外卖配送、上门服务、上门家政、短视频带货等，满足不同行业的业务需求。无论是电商平台、本地生活服务、家政服务还是内容电商，都能快速构建完整的业务体系。
+- [DSPlatform帮助手册](http://help.dsplatform.csdeshang.com/) http://help.dsplatform.csdeshang.com/
+- [DSPlatform系统](https://gitee.com/csdeshang/DSPlatform_open) https://gitee.com/csdeshang/DSPlatform_open
+
+### DSMall商城系统
+DSMall商城系统是基于ThinkPhp6.0和Uniapp开发的一套完善的B2B2C（多店铺商城）电商系统。它能够快速积累客户和会员数据，进行智能转化，提升销售和会员维护效率。主要功能包括拼团、砍价、秒杀、优惠券、积分、分销、刮刮卡等，适合企业进行二次开发。
+
+### DSO2O外卖系统
+DSO2O外卖系统专为餐饮行业设计，基于ThinkPhp6.0和Uniapp开发，支持线上点餐和线下配送。系统提供用户友好的界面，方便顾客快速下单，同时支持商家管理订单和配送。该系统还集成了实时数据分析功能，帮助商家优化运营策略。
+
+---
+
+
 ## DSMall介绍
+以下是对当前代码的详细介绍：
+
 DSMall商城系统是基于ThinkPhp6.0+Uniapp开发的一套完善的B2B2C(多店铺商城)电商系统，DSMall商城系统能够快速积累客户、会员数据分析、智能转化客户、 有效提高销售、会员维护、网络营销的一款企业级应用，功能包含拼团、砍价、秒杀、优惠券、积分、分销、刮刮卡等功能，更适合企业二次开发
 
 
-## 导航栏目
- [帮助手册](http://www.csdeshang.com/home/help/index/id/99.html)
- | [功能清单](http://www.csdeshang.com/home/dsmall/feature.html)
- | [官网地址](http://www.csdeshang.com)
- | [TP6开发手册](https://www.kancloud.cn/manual/thinkphp6_0/1037479)
- | [Vue.js手册](https://cn.vuejs.org/)
+## DSMall导航栏目
+- [帮助手册](http://doc.csdeshang.com) http://doc.csdeshang.com
+- [功能清单](http://www.csdeshang.com/home/dsmall/feature.html) http://www.csdeshang.com/home/dsmall/feature.html
+- [官网地址](http://www.csdeshang.com) http://www.csdeshang.com
 
 
 ## QQ交流群
-DSMall开源商城官方群:10235778  <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=c75ccf9e6f21a2a3eea7914be3131bc4a7a00abe08cd3aa57532349292e84ffe"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="DSMall开源商城官方群" title="DSMall开源商城官方群"></a>
+DSMall开源商城官方群:10235778  
 
 
-## 演示Demo
+## DSMall演示Demo
 | 演示角色  | 演示地址                                | 账号 | 账号 |
 |-------|-------------------------------------|----|----|
 | 后台PC端 | https://uniapp.api.dsmall.csdeshang.com/admin/ |  dsmall  |  123456  |
@@ -25,7 +41,7 @@ DSMall开源商城官方群:10235778  <a target="_blank" href="//shang.qq.com/wp
 | 门店手机端 | https://uniapp.chain.dsmall.csdeshang.com |  seller  |  123456  |
 
 
-## 技术评价
+## DSMall技术评价
 1. B/S架构
 2. MVC编码架构，采用Thinkphp6.0框架
 3. 支持Compser
@@ -84,6 +100,33 @@ apidoc -i app/api/controller -o public/apidoc/
 
 
 ## 更新日志
+
+#### V7.1.9
+1. 去除 百度敏感词过滤接口
+2. 优化 赠送活动
+3. 优化 推荐组合
+
+#### V7.1.8
+1. 优化 手机聊天记录
+2. 优化 店铺名称修改
+3. 新增 店铺设备管理
+
+#### V7.1.7
+1. 优化 验证器
+2. 新增 订单商品原价
+
+#### V7.1.6
+1. 优化 注册协议
+2. 优化 屏蔽高危字符
+3. 优化 优化验证器
+4. 新增 订单表新增原价字段
+
+#### V7.1.5
+免费版更新
+1. 修复 规格小问题
+2. 修复 订单日志加入退款信息
+3. 优化 抛出异常
+4. 新增 用户资金记录新增总余额
 
 #### V7.1.0
 免费版更新

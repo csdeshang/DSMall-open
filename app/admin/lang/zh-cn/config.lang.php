@@ -20,11 +20,6 @@ $lang['fixed_suspension_url_notice']= '首页悬浮图片地址 例如：https:/
 
 $lang['web_set'] = '站点设置';
 $lang['dis_dump'] = '防灌水设置';
-$lang['word_filter_set'] = '敏感图文过滤设置';
-$lang['word_filter_open'] = '是否开启敏感图文过滤';
-$lang['word_filter_appid'] = '百度应用API Key';
-$lang['word_filter_secret'] = '百度应用Secret Key';
-$lang['word_filter_appid_tips'] = '<a href="https://ai.baidu.com/censoring" target="_blank">申请密钥</a>';
 $lang['im_set'] = 'IM设置';
 $lang['auto_set'] = '自动执行时间设置';
 
@@ -114,16 +109,11 @@ $lang['sina_wb_akey'] = '应用标识';
 $lang['sina_wb_skey'] = '应用密钥';
 $lang['sina_settings'] = '微博同步登录';
 
-$lang['weixin_isuse'] = '是否启用微信扫码登录功能';
-$lang['weixin_appid'] = '应用标识(appid)';
-$lang['weixin_secret'] = '应用密钥';
 
 $lang['points_isuse'] = '积分';
 $lang['points_isuse_open'] = '开启';
 $lang['points_isuse_close'] = '关闭';
 
-$lang['flea_isuse'] = '开启闲置';
-$lang['flea_isuse_notice'] = '开启闲置市场，会员可以通过发布自己的闲置商品';
 $lang['is_goods_verify'] = '商品发布审核';
 $lang['goods_verify_notice'] = '店铺发布的商品是否需要通过平台的审核后才能上架';
 

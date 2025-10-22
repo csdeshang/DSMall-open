@@ -110,18 +110,11 @@ class Promotionbooth extends AdminControl {
         $config_model = model('config');
 
         if (request()->isPost()) {
-            // 验证
-            $data = [
-                'promotion_booth_price' => input('post.promotion_booth_price'),
-                'promotion_booth_goods_sum' => input('post.promotion_booth_goods_sum'),
-            ];
-            $promotionbooth_validate = ds_validate('promotionbooth');
-            if (!$promotionbooth_validate->scene('booth_setting')->check($data)){
-                $this->error($promotionbooth_validate->getError());
-            }
-
+            $data = array();
             $data['promotion_booth_price'] = intval(input('post.promotion_booth_price'));
             $data['promotion_booth_goods_sum'] = intval(input('post.promotion_booth_goods_sum'));
+            
+            $this->validate($data, 'app\common\validate\Config.promotion_booth_setting');
 
             $return = $config_model->editConfig($data);
             if ($return) {

@@ -33,8 +33,6 @@ class BaseHome extends BaseController
         $action=request()->action();
         if(!config('ds_config.site_state') && 
                 (!($controller=='Index' && $action=='josn_class') && 
-                !($controller=='Index' && $action=='flea_area') && 
-                !($controller=='Index' && $action=='josn_flea_class') && 
                 !($controller=='Index' && $action=='json_area') && 
                 !($controller=='Index' && $action=='json_area_show') && 
                 !($controller=='Index' && $action=='getweekofmonth') && 

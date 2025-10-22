@@ -399,10 +399,7 @@ class Sellergoodsonline extends BaseSeller {
         $update_common['transport_title'] = input('post.transport_title');
         $update_common['goods_freight'] = floatval(input('post.g_freight'));
 
-        $sellergoodsonline_validate = ds_validate('sellergoodsonline');
-        if (!$sellergoodsonline_validate->scene('edit_save_goods')->check($update_common)) {
-            ds_json_encode('10001', $sellergoodsonline_validate->getError());
-        }
+        $this->validate($update_common, 'app\common\validate\Goodscommon.edit');
 
         //查询店铺商品分类
         $goods_stcids_arr = array();
@@ -759,11 +756,12 @@ class Sellergoodsonline extends BaseSeller {
             }
 
             $return = $goods_model->editGoodsCommon($update_common, array('goods_commonid' => $common_id, 'store_id' => session('store_id')));
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             ds_json_encode(10001, $e->getMessage());
         }
-        Db::commit();
+        
         ds_json_encode(10000, lang('ds_common_op_succ'));
     }
 
@@ -1055,11 +1053,12 @@ class Sellergoodsonline extends BaseSeller {
                 if(!empty($min_item)){
                     $goods_model->editGoodsCommon(array('goods_discount' => $min_item['goods_marketprice']>0?intval($min_item['goods_price'] / $min_item['goods_marketprice'] * 100):0, 'goods_marketprice' => $min_item['goods_marketprice'], 'goods_price' => $min_item['goods_price']), array('goods_commonid' => $common_id, 'store_id' => session('store_id')));
                 }
+                Db::commit();
             } catch (\Exception $e) {
                 Db::rollback();
                 ds_json_encode(10001, $e->getMessage());
             }
-            Db::commit();
+            
             ds_json_encode(10000, lang('ds_common_op_succ'));
         } else {
             View::assign('goodscommon_info', $goodscommon_info);

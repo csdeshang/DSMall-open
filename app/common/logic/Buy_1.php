@@ -410,7 +410,7 @@ class Buy_1 {
         $pbargain_model = model('pbargain');
         $pbargainorder_model = model('pbargainorder');
         //是否正在进行的砍价活动
-        $pbargainorder_info = $pbargainorder_model->getOnePbargainorder(array('bargainorder_id' => $extra['bargainorder_id'], 'bargainorder_state' => 2), true);
+        $pbargainorder_info = $pbargainorder_model->getOnePbargainorder(array('bargainorder_id' => $extra['bargainorder_id'], 'bargainorder_state' => 2));
         if (!$pbargainorder_info) {
             return;
         }
@@ -546,23 +546,6 @@ class Buy_1 {
         }
     }
 
-    /**
-     * 输出有货到付款时，在线支付和货到付款及每种支付下商品数量和详细列表
-     * @param $buy_list 商品列表
-     * @return 返回 以支付方式为下标分组的商品列表
-     */
-    public function getOfflineGoodsPay($buy_list) {
-        //以支付方式为下标，存放购买商品
-        $buy_goods_list = array();
-        $offline_pay = model('payment')->getPaymentOpenInfo(array(array('payment_code', '=', 'offline')));
-        if ($offline_pay) {
-            //下单里包括平台自营商品并且平台已开启货到付款，则显示货到付款项及对应商品数量,取出支持货到付款的店铺ID组成的数组，目前就一个，DEFAULT_PLATFORM_STORE_ID
-            foreach ($buy_list as $value) {
-                $buy_goods_list['online'][] = $value;
-            }
-        }
-        return $buy_goods_list;
-    }
 
     /**
      * 计算每个店铺(所有店铺级优惠活动)总共优惠多少金额
@@ -791,6 +774,7 @@ class Buy_1 {
                     $new_data['goods_id'] = $goods_info['goods_id'];
                     $new_data['goods_name'] = $goods_info['goods_name'];
                     $new_data['goods_price'] = 0;
+                    $new_data['goods_original_price'] = 0;
                     $new_data['goods_image'] = $goods_info['goods_image'];
                     $new_data['bl_id'] = 0;
                     $new_data['state'] = true;
@@ -853,11 +837,6 @@ class Buy_1 {
         $predeposit_model = model('predeposit');
         $canPay=false;
         foreach ($order_list as $key => $order_info) {
-
-            //货到付款的订单跳过
-            if ($order_info['payment_code'] == 'offline')
-                continue;
-
 
             if (!isset($order_info['rcb_amount'])) {
                 $order_list[$key]['rcb_amount'] = $order_info['rcb_amount'] = 0;
@@ -925,9 +904,6 @@ class Buy_1 {
         $canPay=false;
         foreach ($order_list as $key => $order_info) {
 
-            //货到付款的订单、已经充值卡支付的订单跳过
-            if ($order_info['payment_code'] == 'offline')
-                continue;
             if ($order_info['order_state'] == ORDER_STATE_PAY)
                 continue;
 
@@ -1118,23 +1094,14 @@ class Buy_1 {
     /**
      * 计算本次下单中每个店铺订单是货到付款还是线上支付,店铺ID=>付款方式[online在线支付offline货到付款]
      * @param array $store_id_array 店铺ID数组
-     * @param boolean $if_offpay 是否支持货到付款 true/false
      * @param string $pay_name 付款方式 online/offline
      * @return array
      */
-    public function getStorePayTypeList($store_id_array, $if_offpay, $pay_name) {
+    public function getStorePayTypeList($store_id_array, $pay_name) {
         $store_pay_type_list = array();
         if ($pay_name == 'online') {
             foreach ($store_id_array as $store_id) {
                 $store_pay_type_list[$store_id] = 'online';
-            }
-        } else {
-            $offline_pay = model('payment')->getPaymentOpenInfo(array(array('payment_code', '=', 'offline')));
-            if ($offline_pay) {
-                //下单里包括平台自营商品并且平台已开启货到付款
-                foreach ($store_id_array as $store_id) {
-                    $store_pay_type_list[$store_id] = 'offline';
-                }
             }
         }
         return $store_pay_type_list;

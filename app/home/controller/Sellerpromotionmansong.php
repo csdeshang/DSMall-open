@@ -267,6 +267,9 @@ class Sellerpromotionmansong extends BaseSeller {
         //获取当前价格
         $current_price = intval(config('ds_config.promotion_mansong_price'));
 
+        //先记录店铺记录店铺费用以免扣费不成功
+        $this->recordStorecost($current_price * $mansong_quota_quantity, '购买满即送'.' ['.$mansong_quota_quantity.'个月 × 单价:'.$current_price.'元]');
+        
         //获取该用户已有套餐
         $mansongquota_model = model('pmansongquota');
         $current_mansong_quota = $mansongquota_model->getMansongquotaCurrent(session('store_id'));
@@ -286,9 +289,6 @@ class Sellerpromotionmansong extends BaseSeller {
             $param['mansongquota_endtime'] = Db::raw('mansongquota_endtime+' . $mansong_add_time);
             $mansongquota_model->editMansongquota($param, array('mansongquota_id' => $current_mansong_quota['mansongquota_id']));
         }
-
-        //记录店铺费用
-        $this->recordStorecost($current_price * $mansong_quota_quantity, '购买满即送'.' ['.$mansong_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog('购买' . $mansong_quota_quantity . '份满即送套餐，单价' . $current_price . lang('ds_yuan'));
 

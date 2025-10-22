@@ -21,11 +21,9 @@ class Connectapi{
                 return array('state' => 0, 'msg' => '系统没有开启手机注册功能');
             }
             $member_model = model('member');
-            $member_name = 'phone_' . random(10);
-            $member = $member_model->getMemberInfo(array('member_name' => $member_name)); //检查重名
-            if (!empty($member)) {
-                return array('state' => 0, 'msg' => '用户名已被注册');
-            }
+            //生成一个未使用的用户名
+            $member_name = $member_model->getRandMembername('phone_');
+            
             $member = $member_model->getMemberInfo(array('member_mobile' => $phone)); //检查手机号是否已被注册
             if (!empty($member)) {
                 return array('state' => 0, 'msg' => '手机号已被注册');
@@ -117,7 +115,7 @@ class Connectapi{
      * @return type
      */
     public function wx_register($reg_info, $reg_type) {
-        $reg_info['nickname'] = isset($reg_info['nickname']) ? $reg_info['nickname'] : '';
+        $reg_info['nickname'] = isset($reg_info['nickname']) ? $reg_info['nickname'] : get_rand_nickname();
         $reg_info['nickname'] = removeEmojis($reg_info['nickname']);
         
         $member = array();
@@ -129,8 +127,19 @@ class Connectapi{
                 return $exist_member;
             }
             $member['member_wxunionid'] = $reg_info['member_wxunionid'];
-            $member['member_wxopenid'] = $reg_info['member_wxopenid'];
-            $member['member_wxinfo'] = serialize($reg_info);
+            if(isset($reg_info['member_pc_wxopenid'])){
+                $member['member_pc_wxopenid'] = $reg_info['member_pc_wxopenid'];
+            }
+            if(isset($reg_info['member_h5_wxopenid'])){
+                $member['member_h5_wxopenid'] = $reg_info['member_h5_wxopenid'];
+            }
+            if(isset($reg_info['member_mini_wxopenid'])){
+                $member['member_mini_wxopenid'] = $reg_info['member_mini_wxopenid'];
+            }
+            if(isset($reg_info['member_app_wxopenid'])){
+                $member['member_app_wxopenid'] = $reg_info['member_app_wxopenid'];
+            }
+            $member['member_wxnickname'] = $reg_info['nickname'];
         }elseif ($reg_type == 'qq' && !empty($reg_info['member_qqopenid'])) {
             //如果用户存在.
             $exist_member = $member_model->getMemberInfo(array('member_qqopenid' => $reg_info['member_qqopenid']));
@@ -170,28 +179,13 @@ class Connectapi{
           $reg_info['nickname'] = $reg_info['nickname'] . $rand;
           $member_name = $reg_info['nickname'];
          */
-        $member_name = $reg_type . '_' . random(10);
-        $member_info = $member_model->getMemberInfo(array('member_name' => $member_name));
         
-        if (empty($member_info)) {
+        $member_name = $member_model->getRandMembername($reg_type . '_');
+        
             $member['member_name'] = $member_name;
             $insert_id = $member_model->addMember($member);
             $member_info = $member_model->getMemberInfo(array('member_name' => $member_name));
-        } else {
-            for ($i = 1; $i < 999; $i++) {
-                /*
-                  $rand += $i;
-                  $member_name = $reg_info['nickname'] . $rand;
-                 */
-                $member_name = $reg_type . '_' . random(10);
-                $member_info = $member_model->getMemberInfo(array('member_name' => $member_name));
-                if (empty($member_info)) {//查询为空表示当前会员名可用
-                    $member['member_name'] = $member_name;
-                    $insert_id = $member_model->addMember($member);
-                    break;
-                }
-            }
-        }
+            
         if ($insert_id) {
             $member_model->addMemberAfter($insert_id,$member_info);
             if (0 && isset($reg_info['headimgurl'])) {#提高体验暂时不对图片进行处理

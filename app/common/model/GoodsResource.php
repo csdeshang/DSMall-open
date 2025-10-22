@@ -87,7 +87,7 @@ class GoodsResource extends BaseModel {
         $image_more = Db::name('goods_resource')->where($condition)->field('file_name')->select()->toArray();
         if (is_array($image_more) && !empty($image_more)) {
             foreach ($image_more as $v) {
-                @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_GOODS_RESOURCE . DIRECTORY_SEPARATOR . $store_id . DIRECTORY_SEPARATOR . $v['file_name']);
+                ds_del_pic(ATTACH_GOODS_RESOURCE.'/'.$store_id, $v['file_name']);
             }
         }
         $state = Db::name('goods_resource')->where($condition)->delete();

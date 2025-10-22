@@ -51,10 +51,6 @@ class SellerService extends BaseSeller {
             }
             $data = $this->post_data();
             $data['store_id'] = session('store_id');
-            $store_service_validate = ds_validate('store_service');
-            if (!$store_service_validate->scene('add')->check($data)) {
-                ds_json_encode(10001, $store_service_validate->getError());
-            }
             $result = $store_service_model->addStoreService($data);
             if ($result) {
                 $this->recordSellerlog(lang('ds_new') . lang('seller_service') . '[' . $data['store_service_title'] . ']', 1);
@@ -82,10 +78,6 @@ class SellerService extends BaseSeller {
             return View::fetch($this->template_dir . 'form');
         } else {
             $data = $this->post_data();
-            $store_service_validate = ds_validate('store_service');
-            if (!$store_service_validate->scene('edit')->check($data)) {
-                ds_json_encode(10001, $store_service_validate->getError());
-            }
             $result = $store_service_model->editStoreService($data, array('store_service_id' => $id, 'store_id' => session('store_id')));
             if ($result) {
                 $this->recordSellerlog(lang('ds_edit') . lang('seller_service') . '[' . $store_service_info['store_service_title'] . ']', 1);

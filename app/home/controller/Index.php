@@ -277,58 +277,6 @@ class Index extends BaseMall {
         echo input('param.callback') . '(' . json_encode($array) . ')';
     }
 
-    //闲置物品地区json输出
-    public function flea_area() {
-        if (isset($_GET['check']) && intval($_GET['check']) > 0) {
-            $_GET['area_id'] = $_GET['region_id'];
-        }
-        if (intval($_GET['area_id']) == 0) {
-            return;
-        }
-        $fleaarea_model = model('fleaarea');
-        $area_array = $fleaarea_model->getFleaareaList(array('fleaarea_parent_id' => intval($_GET['area_id'])));
-        $array = array();
-        if (is_array($area_array) and count($area_array) > 0) {
-            foreach ($area_array as $val) {
-                $array[$val['fleaarea_id']] = array(
-                    'fleaarea_id' => $val['fleaarea_id'],
-                    'fleaarea_name' => htmlspecialchars($val['fleaarea_name']),
-                    'fleaarea_parent_id' => $val['fleaarea_parent_id'], 'fleaarea_sort' => $val['fleaarea_sort']
-                );
-            }
-        }
-        if (isset($_GET['check']) && intval($_GET['check']) > 0) {//判断当前地区是否为最后一级
-            if (!empty($array) && is_array($array)) {
-                echo 'false';
-            } else {
-                echo 'true';
-            }
-        } else {
-            echo json_encode($array);
-        }
-    }
-
-    //json输出闲置物品分类
-    public function josn_flea_class() {
-        /**
-         * 实例化商品分类模型
-         */
-        $fleaclass_model = model('fleaclass');
-        $goods_class = $fleaclass_model->getFleaclassList(array('fleaclass_parent_id' => intval(input('get.gc_id'))));
-        $array = array();
-        if (is_array($goods_class) and count($goods_class) > 0) {
-            foreach ($goods_class as $val) {
-                $array[$val['fleaclass_id']] = array(
-                    'fleaclass_id' => $val['fleaclass_id'], 'fleaclass_name' => htmlspecialchars($val['fleaclass_name']),
-                    'fleaclass_parent_id' => $val['fleaclass_parent_id'], 'fleaclass_sort' => $val['fleaclass_sort']
-                );
-            }
-        }
-        /**
-         * 转码
-         */
-        echo json_encode($array);
-    }
 
     /**
      * json输出地址数组 public/static/plugins/area_datas.js

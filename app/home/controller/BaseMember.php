@@ -194,9 +194,6 @@ class BaseMember extends BaseHome {
                 );
             }
         }
-        if(config('ds_config.flea_isuse')){
-            $menu_list['info']['submenu'][]=array('name' => 'member_flea', 'text' => lang('ds_member_path_flea'), 'url' => (string)url('Memberflea/index'),);
-        }
         return $menu_list;
     }
 }

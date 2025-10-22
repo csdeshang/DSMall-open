@@ -54,12 +54,8 @@ class Storeclass extends AdminControl {
             $insert_array['storeclass_name'] = input('post.storeclass_name');
             $insert_array['storeclass_bail'] = intval(input('post.storeclass_bail'));
             $insert_array['storeclass_sort'] = intval(input('post.storeclass_sort'));
-
-            $storeclass_validate = ds_validate('storeclass');
-            if (!$storeclass_validate->scene('store_class_add')->check($insert_array)){
-                $this->error($storeclass_validate->getError());
-            }
-
+            
+            $this->validate($insert_array, 'app\common\validate\Storeclass.add');
 
             $result = $storeclass_model->addStoreclass($insert_array);
             if ($result) {
@@ -91,11 +87,8 @@ class Storeclass extends AdminControl {
             $update_array['storeclass_name'] = input('post.storeclass_name');
             $update_array['storeclass_bail'] = intval(input('post.storeclass_bail'));
             $update_array['storeclass_sort'] = intval(input('post.storeclass_sort'));
-
-            $storeclass_validate = ds_validate('storeclass');
-            if (!$storeclass_validate->scene('store_class_edit')->check($update_array)){
-                $this->error($storeclass_validate->getError());
-            }
+            
+            $this->validate($update_array, 'app\common\validate\Storeclass.edit');
 
             $result = $storeclass_model->editStoreclass($update_array, array('storeclass_id' => intval(input('param.storeclass_id'))));
             if ($result>=0) {

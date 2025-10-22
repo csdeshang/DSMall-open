@@ -613,26 +613,13 @@ class Sellerdeliver extends BaseSeller {
 
     /**
      * 从第三方取快递信息
-     *
      */
     public function get_express() {
         $result = model('express')->queryExpress(input('param.express_code'), input('param.shipping_code'), input('param.phone'));
-
-        if ($result['Success'] != true) {
-            exit(json_encode(false));
-        }
-        $content['Traces'] = array_reverse($result['Traces']);
         $output = array();
-        if (is_array($content['Traces'])) {
-            foreach ($content['Traces'] as $k => $v) {
-                if ($v['AcceptTime'] == '') {
-                    continue;
-                }
-                $output[] = '<li>' . $v['AcceptTime'] . '&nbsp;&nbsp;' . $v['AcceptStation'] . '</li>';
-            }
+        foreach($result as $k => $v){
+            $output[] = '<li>' . $v['trace_time'] . '&nbsp;&nbsp;' . $v['trace_desc'] . '</li>';
         }
-        if ($output == '')
-            exit(json_encode(false));
         echo json_encode($output);
     }
 

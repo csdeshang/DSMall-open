@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -36,7 +36,9 @@ class Document extends BaseModel {
      * @return array
      */
     public function getOneDocumentById($id) {
-        return Db::name('document')->where('document_id',$id)->find();
+        $condition = array();
+        $condition[] = array('document_id','=',$id);
+        return Db::name('document')->where($condition)->find();
     }
 
     /**
@@ -47,7 +49,9 @@ class Document extends BaseModel {
      * @return type
      */
     public function getOneDocumentByCode($code) {
-        return Db::name('document')->where('document_code',$code)->find();
+        $condition = array();
+        $condition[] = array('document_code','=',$code);
+        return Db::name('document')->where($condition)->find();
     }
 
     /**
@@ -57,8 +61,8 @@ class Document extends BaseModel {
      * @param array $data 更新数据
      * @return bool
      */
-    public function editDocument($data) {
-        return Db::name('document')->where('document_id',$data['document_id'])->update($data);
+    public function editDocument($data,$condition) {
+        return Db::name('document')->where($condition)->update($data);
     }
 }
 

@@ -50,8 +50,8 @@ class Sellerdeliverset extends BaseSeller {
      */
     public function daddress_add() {
         $address_id = intval(input('param.address_id'));
+        $daddress_mod = model('daddress');
         if ($address_id > 0) {
-            $daddress_mod = model('daddress');
             //编辑
             if (!request()->isPost()) {
                 $address_info = $daddress_mod->getAddressInfo(array('daddress_id' => $address_id, 'store_id' => session('store_id')));
@@ -67,12 +67,9 @@ class Sellerdeliverset extends BaseSeller {
                     'daddress_telphone' => input('post.telphone'),
                     'daddress_company' => input('post.company'),
                 );
-                //验证数据  BEGIN
-                $sellerdeliverset_validate = ds_validate('sellerdeliverset');
-                if (!$sellerdeliverset_validate->scene('daddress_add')->check($data)) {
-                    ds_json_encode(10001, $sellerdeliverset_validate->getError());
-                }
-                //验证数据  END
+                
+                $this->validate($data, 'app\common\validate\Daddress.edit');
+                
                 $result = $daddress_mod->editDaddress($data, array('daddress_id' => $address_id, 'store_id' => session('store_id')));
                 if ($result) {
                     ds_json_encode(10000, lang('ds_common_op_succ'));
@@ -100,13 +97,10 @@ class Sellerdeliverset extends BaseSeller {
                     'daddress_telphone' => input('post.telphone'),
                     'daddress_company' => input('post.company'),
                 );
-                //验证数据  BEGIN
-                $sellerdeliverset_validate = ds_validate('sellerdeliverset');
-                if (!$sellerdeliverset_validate->scene('daddress_add')->check($data)) {
-                    ds_json_encode(10001, $sellerdeliverset_validate->getError());
-                }
-                //验证数据  END
-                $result = Db::name('daddress')->insertGetId($data);
+                
+                $this->validate($data, 'app\common\validate\Daddress.add');
+                
+                $result = $daddress_mod->addDaddress($data);
                 if ($result) {
                     ds_json_encode(10000, lang('ds_common_op_succ'));
                 } else {
@@ -302,10 +296,9 @@ class Sellerdeliverset extends BaseSeller {
                 'expresscf_kdn_config_month_code' => input('post.expresscf_kdn_config_month_code'),
                 'expresscf_kdn_config_pay_type' => input('post.expresscf_kdn_config_pay_type'),
             );
-            $expresscf_kdn_config_validate = ds_validate('expresscf_kdn_config');
-            if (!$expresscf_kdn_config_validate->scene('expresscf_kdn_config_add')->check($data)) {
-                ds_json_encode(10000, $expresscf_kdn_config_validate->getError());
-            }
+            
+            $this->validate($data, 'app\common\validate\ExpresscfKdnConfig.add');
+            
             $expresscf_kdn_config_model = model('expresscf_kdn_config');
             $condition = array();
             $condition[] = array('store_id', '=', session('store_id'));
@@ -364,10 +357,9 @@ class Sellerdeliverset extends BaseSeller {
                 'expresscf_kdn_config_month_code' => input('post.expresscf_kdn_config_month_code'),
                 'expresscf_kdn_config_pay_type' => input('post.expresscf_kdn_config_pay_type'),
             );
-            $expresscf_kdn_config_validate = ds_validate('expresscf_kdn_config');
-            if (!$expresscf_kdn_config_validate->scene('expresscf_kdn_config_edit')->check($data)) {
-                ds_json_encode(10000, $expresscf_kdn_config_validate->getError());
-            }
+            
+            $this->validate($data, 'app\common\validate\ExpresscfKdnConfig.edit');
+
             $flag = $expresscf_kdn_config_model->editExpresscfKdnConfig($data, $condition);
             if (!$flag) {
                 ds_json_encode(10000, lang('ds_common_op_fail'));
@@ -433,14 +425,6 @@ class Sellerdeliverset extends BaseSeller {
             $this->setSellerCurItem('print_set');
             return View::fetch($this->template_dir . 'print_set');
         } else {
-            $data = array(
-                'store_printexplain' => input('store_printexplain')
-            );
-
-            $sellerdeliverset_validate = ds_validate('sellerdeliverset');
-            if (!$sellerdeliverset_validate->scene('print_set')->check($data)) {
-                $this->error($sellerdeliverset_validate->getError());
-            }
             $update_arr = array();
             //上传认证文件
             if ($_FILES['store_seal']['name'] != '') {
@@ -451,7 +435,7 @@ class Sellerdeliverset extends BaseSeller {
                     $update_arr['store_seal'] = $file_name;
                     //删除旧认证图片
                     if (!empty($store_info['store_seal'])) {
-                        @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_STORE . DIRECTORY_SEPARATOR . $store_info['store_seal']);
+                        ds_del_pic(ATTACH_STORE,$store_info['store_seal']);
                     }
                 } else {
                     $this->error($res['msg']);

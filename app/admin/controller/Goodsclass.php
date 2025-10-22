@@ -103,6 +103,9 @@ class Goodsclass extends AdminControl {
             $insert_array['commis_rate'] = intval(input('post.commis_rate'));
             $insert_array['gc_sort'] = intval(input('post.gc_sort'));
             $insert_array['gc_virtual'] = intval(input('post.gc_virtual'));
+            
+            $this->validate($insert_array, 'app\common\validate\Goodsclass.add');
+            
             if (!empty($_FILES['pic']['name'])) {//上传图片
                 $res = ds_upload_pic(ATTACH_COMMON, 'pic');
                 if ($res['code']) {
@@ -112,11 +115,7 @@ class Goodsclass extends AdminControl {
                     $this->error($res['msg']);
                 }
             }
-            $goods_validate = ds_validate('goods');
-            if (!$goods_validate->scene('goods_class_add')->check($insert_array)) {
-                $this->error($goods_validate->getError());
-            }
-
+            
             $result = $goodsclass_model->addGoodsclass($insert_array);
             if ($result) {
                 $this->log(lang('ds_add') . lang('goods_class_index_class') . '[' . input('post.gc_name') . ']', 1);
@@ -184,6 +183,8 @@ class Goodsclass extends AdminControl {
             $update_array['gc_sort'] = intval(input('post.gc_sort'));
             $update_array['gc_virtual'] = intval(input('post.gc_virtual'));
             $update_array['gc_parent_id'] = intval(input('post.gc_parent_id'));
+            
+            $this->validate($update_array, 'app\common\validate\Goodsclass.edit');
 
             if (!empty($_FILES['pic']['name'])) {//上传图片
                 $res = ds_upload_pic(ATTACH_COMMON, 'pic');
@@ -193,11 +194,6 @@ class Goodsclass extends AdminControl {
                 } else {
                     $this->error($res['msg']);
                 }
-            }
-
-            $goods_validate = ds_validate('goods');
-            if (!$goods_validate->scene('goods_class_edit')->check($update_array)) {
-                $this->error($goods_validate->getError());
             }
 
             $parent_class = $goodsclass_model->getGoodsclassInfoById($update_array['gc_parent_id']);
@@ -483,7 +479,7 @@ class Goodsclass extends AdminControl {
             $update['goodscn_adv1_link'] = input('post.goodscn_adv1_link');
             $update['goodscn_adv2_link'] = input('post.goodscn_adv2_link');
             if (!empty($_FILES['pic']['name'])) {//上传图片
-                @unlink(BASE_UPLOAD_PATH . '/' . ATTACH_GOODS_CLASS . '/' . $nav_info['goodscn_pic']);
+                ds_del_pic(ATTACH_GOODS_CLASS,$nav_info['goodscn_pic']);
                 $file_name = date('YmdHis') . rand(10000, 99999) . '.png';
 
                 $res = ds_upload_pic(ATTACH_GOODS_CLASS, 'pic', $file_name);
@@ -495,7 +491,7 @@ class Goodsclass extends AdminControl {
                 }
             }
             if (!empty($_FILES['adv1']['name'])) {//上传广告图片
-                @unlink(BASE_UPLOAD_PATH . '/' . ATTACH_GOODS_CLASS . '/' . $nav_info['goodscn_adv1']);
+                ds_del_pic(ATTACH_GOODS_CLASS,$nav_info['goodscn_adv1']);
                 $file_name = date('YmdHis') . rand(10000, 99999) . '.png';
 
                 $res = ds_upload_pic(ATTACH_GOODS_CLASS, 'adv1', $file_name);
@@ -507,7 +503,7 @@ class Goodsclass extends AdminControl {
                 }
             }
             if (!empty($_FILES['adv2']['name'])) {//上传广告图片
-                @unlink(BASE_UPLOAD_PATH . '/' . ATTACH_GOODS_CLASS . '/' . $nav_info['goodscn_adv2']);
+                ds_del_pic(ATTACH_GOODS_CLASS,$nav_info['goodscn_adv2']);
                 $file_name = date('YmdHis') . rand(10000, 99999) . '.png';
 
                 $res = ds_upload_pic(ATTACH_GOODS_CLASS, 'adv2', $file_name);

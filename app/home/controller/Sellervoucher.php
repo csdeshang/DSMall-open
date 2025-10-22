@@ -123,6 +123,9 @@ class Sellervoucher extends BaseSeller {
             //获取当前价格
             $current_price = intval(config('ds_config.promotion_voucher_price'));
 
+            //先记录店铺记录店铺费用以免扣费不成功
+            $this->recordStorecost($current_price * $quota_quantity, lang('buy_voucher_package').' ['.$quota_quantity.'个月 × 单价:'.$current_price.'元]');
+            
             $voucher_model = model('voucher');
 
             //获取该用户已有套餐
@@ -144,9 +147,6 @@ class Sellervoucher extends BaseSeller {
                 $param['voucherquota_endtime'] = Db::raw('voucherquota_endtime+' . $quota_add_time);
                 $reault = Db::name('voucherquota')->where(array('voucherquota_id' => $current_quota['voucherquota_id']))->update($param);
             }
-
-            //记录店铺费用
-            $this->recordStorecost($current_price * $quota_quantity, lang('buy_voucher_package').' ['.$quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
             $this->recordSellerlog(lang('buy') . $quota_quantity . lang('voucher_plan') . $current_price . lang('ds_yuan'));
 
@@ -193,19 +193,7 @@ class Sellervoucher extends BaseSeller {
             $this->error(lang('voucher_template_pricelisterror'), 'Sellervoucher/templatelist');
         }
         if (request()->isPost()) {
-            //验证提交的内容面额不能大于限额
-            $data = [
-                'txt_template_title' => input('post.txt_template_title'),
-                'txt_template_total' => input('post.txt_template_total'),
-                'select_template_price' => input('post.select_template_price'),
-                'txt_template_limit' => input('post.txt_template_limit'),
-                'txt_template_describe' => input('post.txt_template_describe'),
-            ];
 
-            $sellervoucher_validate = ds_validate('sellervoucher');
-            if (!$sellervoucher_validate->scene('templateadd')->check($data)) {
-                $this->error($sellervoucher_validate->getError());
-            }
             //金额验证
             $price = intval(input('post.select_template_price')) > 0 ? intval(input('post.select_template_price')) : 0;
             foreach ($pricelist as $k => $v) {
@@ -249,6 +237,10 @@ class Sellervoucher extends BaseSeller {
             $insert_arr['vouchertemplate_points'] = $chooseprice['voucherprice_defaultpoints'];
             $insert_arr['vouchertemplate_eachlimit'] = intval(input('post.eachlimit')) > 0 ? intval(input('post.eachlimit')) : 0;
             $insert_arr['vouchertemplate_if_private'] = intval(input('post.vouchertemplate_if_private'));
+            
+            //验证器
+            $this->validate($insert_arr, 'app\common\validate\Vouchertemplate.add');
+
             //自定义图片
             if (!empty($_FILES['customimg']['name'])) {
 
@@ -340,18 +332,6 @@ class Sellervoucher extends BaseSeller {
             $this->error(lang('voucher_template_pricelisterror'), 'Sellervoucher/templatelist');
         }
         if (request()->isPost()) {
-            //验证提交的内容面额不能大于限额
-            $data = [
-                'txt_template_title' => input('post.txt_template_title'),
-                'txt_template_total' => input('post.txt_template_total'),
-                'select_template_price' => input('post.select_template_price'),
-                'txt_template_limit' => input('post.txt_template_limit'),
-                'txt_template_describe' => input('post.txt_template_describe'),
-            ];
-            $sellervoucher_validate = ds_validate('sellervoucher');
-            if (!$sellervoucher_validate->scene('templateedit')->check($data)) {
-                $this->error($sellervoucher_validate->getError());
-            }
             //金额验证
             $price = intval(input('post.select_template_price')) > 0 ? intval(input('post.select_template_price')) : 0;
             foreach ($pricelist as $k => $v) {
@@ -386,6 +366,9 @@ class Sellervoucher extends BaseSeller {
             $update_arr['vouchertemplate_points'] = $chooseprice['voucherprice_defaultpoints'];
             $update_arr['vouchertemplate_eachlimit'] = intval(input('post.eachlimit')) > 0 ? intval(input('post.eachlimit')) : 0;
             $update_arr['vouchertemplate_if_private'] = intval(input('post.vouchertemplate_if_private'));
+            
+            $this->validate($update_arr, 'app\common\validate\Vouchertemplate.edit');
+            
             //自定义图片
             if (!empty($_FILES['customimg']['name'])) {
                 $file_name = session('store_id') . '_' . date('YmdHis') . rand(10000, 99999).'.png';
@@ -394,7 +377,7 @@ class Sellervoucher extends BaseSeller {
                     $file_name=$res['data']['file_name'];
                     //删除原图
                     if (!empty($t_info['vouchertemplate_customimg'])) {//如果模板存在，则删除原模板图片
-                        @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_VOUCHER . DIRECTORY_SEPARATOR . session('store_id') . DIRECTORY_SEPARATOR . $t_info['vouchertemplate_customimg']);
+                        ds_del_pic(ATTACH_VOUCHER . '/' . session('store_id'),$t_info['vouchertemplate_customimg']);
                     }
                     $update_arr['vouchertemplate_customimg'] = $file_name;
                 }else{
@@ -454,7 +437,7 @@ class Sellervoucher extends BaseSeller {
         if ($rs) {
             //删除自定义的图片
             if (trim($t_info['vouchertemplate_customimg'])) {
-                @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_VOUCHER . DIRECTORY_SEPARATOR . session('store_id') . DIRECTORY_SEPARATOR . $t_info['vouchertemplate_customimg']);
+                ds_del_pic(ATTACH_VOUCHER . '/' . session('store_id'),$t_info['vouchertemplate_customimg']);
             }
             ds_json_encode(10000, lang('ds_common_del_succ'));
         } else {

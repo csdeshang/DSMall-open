@@ -6,7 +6,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 文章分类管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -71,22 +71,14 @@ class Articleclass extends AdminControl {
     public function article_class_add() {
         $articleclass_model = model('articleclass');
         if (request()->isPost()) {
-            /**
-             * 验证
-             */
-            $data = [
-                'ac_name' => input('param.ac_name'),
-                'ac_sort' => input('param.ac_sort')
-            ];
-            $article_validate = ds_validate('article');
-            if (!$article_validate->scene('article_class_add')->check($data)) {
-                $this->error($article_validate->getError());
-            } else {
+
 
                 $insert_array = array();
                 $insert_array['ac_name'] = trim(input('param.ac_name'));
                 $insert_array['ac_parent_id'] = intval(input('param.ac_parent_id'));
                 $insert_array['ac_sort'] = trim(input('param.ac_sort'));
+                
+                $this->validate($insert_array, 'app\common\validate\Articleclass.add');
 
                 $result = $articleclass_model->addArticleclass($insert_array);
                 if ($result) {
@@ -95,7 +87,6 @@ class Articleclass extends AdminControl {
                 } else {
                     $this->error(lang('article_class_add_fail'));
                 }
-            }
         } else {
             /**
              * 父类列表，只取到第三级
@@ -121,21 +112,12 @@ class Articleclass extends AdminControl {
         $ac_id = intval(input('param.ac_id'));
         
         if (request()->isPost()) {
-            /**
-             * 验证
-             */
-            $data = [
-                'ac_name' => input('param.ac_name'),
-                'ac_sort' => input('param.ac_sort')
-            ];
-            $article_validate = ds_validate('article');
-            if (!$article_validate->scene('article_class_edit')->check($data)) {
-                $this->error($article_validate->getError());
-            } else {
-
+            
                 $update_array = array();
                 $update_array['ac_name'] = trim(input('post.ac_name'));
                 $update_array['ac_sort'] = trim(input('post.ac_sort'));
+                
+                $this->validate($update_array, 'app\common\validate\Articleclass.edit');
 
                 $result = $articleclass_model->editArticleclass($update_array,$ac_id);
                 if ($result>=0) {
@@ -144,7 +126,6 @@ class Articleclass extends AdminControl {
                 } else {
                     $this->error(lang('ds_common_op_fail'));
                 }
-            }
         } else {
             $class_array = $articleclass_model->getOneArticleclass($ac_id);
             if (empty($class_array)) {
@@ -169,10 +150,10 @@ class Articleclass extends AdminControl {
         }
         
 
-            $del_array = $articleclass_model->getChildClass($ac_id_array);
+        $del_array = $articleclass_model->getChildClass($ac_id_array);
         if (is_array($del_array)) {
             foreach ($del_array as $k => $v) {
-                $articleclass_model->delArticleclass($v['ac_id']);
+                $articleclass_model->delArticleclass(intval($v['ac_id']));
             }
         }
         $this->log(lang('ds_add') . lang('article_class_index_class') . '[ID:' . $ac_id . ']', 1);

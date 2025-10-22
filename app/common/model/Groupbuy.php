@@ -555,20 +555,11 @@ class Groupbuy extends BaseModel
                 // 更新商品抢购缓存
                 $this->_dGoodsGroupbuyCache($value['goods_commonid']);
 
-                list($base_name, $ext) = explode('.', $value['groupbuy_image']);
-                list($store_id) = explode('_', $base_name);
-                $path = BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_GROUPBUY . DIRECTORY_SEPARATOR . $store_id . DIRECTORY_SEPARATOR;
-                @unlink($path . $base_name . '.' . $ext);
-                @unlink($path . $base_name . '_small.' . $ext);
-                @unlink($path . $base_name . '_normal.' . $ext);
-                @unlink($path . $base_name . '_big.' . $ext);
+                //删除图片
+                ds_del_pic(ATTACH_GROUPBUY.'/'.$value['store_id'], $value['groupbuy_image']);
 
                 if (!empty($value['groupbuy_image1'])) {
-                    list($base_name, $ext) = explode('.', $value['groupbuy_image1']);
-                    @unlink($path . $base_name . '.' . $ext);
-                    @unlink($path . $base_name . '_small.' . $ext);
-                    @unlink($path . $base_name . '_normal.' . $ext);
-                    @unlink($path . $base_name . '_big.' . $ext);
+                    ds_del_pic(ATTACH_GROUPBUY.'/'.$value['store_id'], $value['groupbuy_image1']);
                 }
             }
         }

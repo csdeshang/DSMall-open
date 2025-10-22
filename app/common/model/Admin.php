@@ -1,12 +1,12 @@
 <?php
 
 namespace app\common\model;
-use think\facade\Db;
 
+use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -19,6 +19,7 @@ use think\facade\Db;
 class Admin extends BaseModel {
 
     public $page_info;
+
     /**
      * 管理员列表
      * @author csdeshang
@@ -26,12 +27,12 @@ class Admin extends BaseModel {
      * @param array $pagesize 分页信息
      * @return array 数组类型的返回结果
      */
-    public function getAdminList($condition,$pagesize) {
-        if($pagesize){
-            $result = Db::name('admin')->alias('a')->join('gadmin g', 'g.gid = a.admin_gid', 'LEFT')->paginate(['list_rows'=>$pagesize,'query' => request()->param()],false);
-            $this->page_info=$result;
+    public function getAdminList($condition, $pagesize) {
+        if ($pagesize) {
+            $result = Db::name('admin')->alias('a')->join('gadmin g', 'g.gid = a.admin_gid', 'LEFT')->paginate(['list_rows' => $pagesize, 'query' => request()->param()], false);
+            $this->page_info = $result;
             return $result->items();
-        }else{
+        } else {
             $result = Db::name('admin')->alias('a')->join('gadmin g', 'g.gid = a.admin_gid', 'LEFT')->select()->toArray();
             return $result;
         }
@@ -68,9 +69,6 @@ class Admin extends BaseModel {
      * @return bool 布尔类型的返回结果
      */
     public function addAdmin($data) {
-        if (empty($data)) {
-            return false;
-        }
         return Db::name('admin')->insertGetId($data);
     }
 
@@ -81,11 +79,10 @@ class Admin extends BaseModel {
      * @param int $admin_id 管理员id
      * @return bool 布尔类型的返回结果
      */
-    public function editAdmin($data,$admin_id) {
-        if (empty($data)) {
-            return false;
-        }
-        return Db::name('admin')->where('admin_id',$admin_id)->update($data);
+    public function editAdmin($data, $admin_id) {
+        $condition = array();
+        $condition[] = array('admin_id', '=', $admin_id);
+        return Db::name('admin')->where($condition)->update($data);
     }
 
     /**
@@ -97,51 +94,49 @@ class Admin extends BaseModel {
     public function delAdmin($condition) {
         return Db::name('admin')->where($condition)->delete();
     }
-    
-    
-    
-    
+
     /**
      * 获取单个权限组
      * @author csdeshang
      * @param array $condition  条件
      * @return array 一维数组
      */
-    public function getOneGadmin($condition){
+    public function getOneGadmin($condition) {
         $gadmin = Db::name('gadmin')->where($condition)->find();
         return $gadmin;
-        
     }
+
     /**
      * 获取权限组列表
      * @author csdeshang
      * @param type $field
      * @return array 
      */
-    public function getGadminList($field='*'){
+    public function getGadminList($field = '*') {
         $gadmin_list = Db::name('gadmin')->field($field)->select()->toArray();
         return $gadmin_list;
     }
+
     /**
      * 增加权限组
      * @author csdeshang
      * @param array $data 参数内容
      * @return bool
      */
-    public function addGadmin($data){
+    public function addGadmin($data) {
         return Db::name('gadmin')->insertGetId($data);
     }
-    
+
     /**
      * 删除权限组
      * @author csdeshang
      * @param array $condition 删除条件
      * @return bool
      */
-    public function delGadmin($condition){
+    public function delGadmin($condition) {
         return Db::name('gadmin')->where($condition)->delete();
     }
-    
+
     /**
      * 编辑权限组
      * @author csdeshang
@@ -149,7 +144,7 @@ class Admin extends BaseModel {
      * @param array $data 更新数据
      * @return bool
      */
-    public function editGadmin($condition,$data){
+    public function editGadmin($condition, $data) {
         return Db::name('gadmin')->where($condition)->update($data);
     }
 }

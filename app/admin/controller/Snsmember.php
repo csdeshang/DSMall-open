@@ -7,7 +7,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -42,44 +42,36 @@ class Snsmember extends AdminControl {
      */
     public function tag_add() {
         if (request()->isPost()) {
-            /**
-             * 验证
-             */
-            $data = [
-                'membertag_name' => input('post.membertag_name'), 'membertag_sort' => input('post.membertag_sort'),
-            ];
 
-            $snsmember_validate = ds_validate('snsmember');
-            if (!$snsmember_validate->scene('tag_add')->check($data)) {
-                $this->error($snsmember_validate->getError());
-            } else {
-                /**
-                 * 上传图片
-                 */
-                $img = '';
-                if (!empty($_FILES['membertag_img']['name'])) {
-                    $res = ds_upload_pic(ATTACH_PATH . '/membertag', 'membertag_img');
-                    if ($res['code']) {
-                        $img = $res['data']['file_name'];
-                    } else {
-                        $this->error($res['msg']);
-                    }
-                }
-                $insert = array(
-                    'mtag_name' => input('post.membertag_name'),
-                    'mtag_sort' => intval(input('post.membertag_sort')),
-                    'mtag_recommend' => intval(input('post.membertag_recommend')),
-                    'mtag_desc' => trim(input('post.membertag_desc')),
-                    'mtag_img' => $img
-                );
-                $snsmember_model = model('snsmember');
-                $result = $snsmember_model->addSnsmembertag($insert);
-                if ($result) {
-                    $this->log(lang('ds_add') . lang('sns_member_tag') . '[' . input('post.membertag_name') . ']', 1);
-                    dsLayerOpenSuccess(lang('ds_common_op_succ'));
+            $insert = array(
+                'mtag_name' => input('post.membertag_name'),
+                'mtag_sort' => intval(input('post.membertag_sort')),
+                'mtag_recommend' => intval(input('post.membertag_recommend')),
+                'mtag_desc' => trim(input('post.membertag_desc')),
+            );
+            $this->validate($insert, 'app\common\validate\Snsmember.tag_add');
+
+            /**
+             * 上传图片
+             */
+            $img = '';
+            if (!empty($_FILES['membertag_img']['name'])) {
+                $res = ds_upload_pic(ATTACH_PATH . '/membertag', 'membertag_img');
+                if ($res['code']) {
+                    $img = $res['data']['file_name'];
                 } else {
-                    $this->error(lang('ds_common_op_fail'));
+                    $this->error($res['msg']);
                 }
+            }
+            $insert['mtag_img'] = $img;
+
+            $snsmember_model = model('snsmember');
+            $result = $snsmember_model->addSnsmembertag($insert);
+            if ($result) {
+                $this->log(lang('ds_add') . lang('sns_member_tag') . '[' . input('post.membertag_name') . ']', 1);
+                dsLayerOpenSuccess(lang('ds_common_op_succ'));
+            } else {
+                $this->error(lang('ds_common_op_fail'));
             }
         } else {
             return View::fetch();
@@ -92,45 +84,38 @@ class Snsmember extends AdminControl {
     public function tag_edit() {
         // 实例化模型
         if (request()->isPost()) {
+
+            $update = array();
+            $update['mtag_id'] = intval(input('post.id'));
+            $update['mtag_name'] = trim(input('post.membertag_name'));
+            $update['mtag_sort'] = intval(input('post.membertag_sort'));
+            $update['mtag_recommend'] = intval(input('post.membertag_recommend'));
+            $update['mtag_desc'] = trim(input('post.membertag_desc'));
+
+            $this->validate($update, 'app\common\validate\Snsmember.tag_edit');
+
             /**
-             * 验证
+             * 上传图片
              */
-            $data = [
-                'membertag_name' => input('post.membertag_name'), 'membertag_sort' => input('post.membertag_sort'),
-            ];
-            $snsmember_validate = ds_validate('snsmember');
-            if (!$snsmember_validate->scene('tag_edit')->check($data)) {
-                $this->error($snsmember_validate->getError());
-            } else {
-                /**
-                 * 上传图片
-                 */
-
-                $input = '';
-                if (!empty($_FILES['membertag_img']['name'])) {
-                    $res = ds_upload_pic(ATTACH_PATH . '/membertag', 'membertag_img');
-                    if ($res['code']) {
-                        $input = $res['data']['file_name'];
-                    } else {
-                        $this->error($res['msg']);
-                    }
-                }
-                $update = array();
-                $update['mtag_id'] = intval(input('post.id'));
-                $update['mtag_name'] = trim(input('post.membertag_name'));
-                $update['mtag_sort'] = intval(input('post.membertag_sort'));
-                $update['mtag_recommend'] = intval(input('post.membertag_recommend'));
-                $update['mtag_desc'] = trim(input('post.membertag_desc'));
-                $update['mtag_img'] = $input;
-
-                $snsmember_model = model('snsmember');
-                $result = $snsmember_model->editSnsmembertag($update);
-                if ($result >= 0) {
-                    $this->log(lang('ds_edit') . lang('sns_member_tag') . '[' . input('post.membertag_name') . ']', 1);
-                    dsLayerOpenSuccess(lang('ds_common_op_succ'));
+            $input = '';
+            if (!empty($_FILES['membertag_img']['name'])) {
+                $res = ds_upload_pic(ATTACH_PATH . '/membertag', 'membertag_img');
+                if ($res['code']) {
+                    $input = $res['data']['file_name'];
                 } else {
-                    $this->error(lang('ds_common_op_fail'));
+                    $this->error($res['msg']);
                 }
+            }
+
+            $update['mtag_img'] = $input;
+
+            $snsmember_model = model('snsmember');
+            $result = $snsmember_model->editSnsmembertag($update);
+            if ($result >= 0) {
+                $this->log(lang('ds_edit') . lang('sns_member_tag') . '[' . input('post.membertag_name') . ']', 1);
+                dsLayerOpenSuccess(lang('ds_common_op_succ'));
+            } else {
+                $this->error(lang('ds_common_op_fail'));
             }
         } else {
             // 验证
@@ -262,5 +247,4 @@ class Snsmember extends AdminControl {
         }
         return $menu_array;
     }
-
 }

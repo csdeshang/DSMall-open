@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -166,7 +166,7 @@ class Wechat extends BaseModel {
      * @return type
      */
     public function getWxmemberList() {
-        $info = Db::name('member')->where('member_wxinfo', 'not null')->where('member_wxopenid', '<>', '')->where('member_wxunionid', '<>', '')->field('member_name,member_addtime,member_wxunionid,member_wxopenid,member_wxinfo,member_id')->paginate(['list_rows' => 8, 'query' => request()->param()], false);
+        $info = Db::name('member')->where('member_h5_wxopenid', '<>', '')->where('member_wxunionid', '<>', '')->field('member_name,member_addtime,member_wxunionid,member_h5_wxopenid,member_id')->paginate(['list_rows' => 8, 'query' => request()->param()], false);
         $this->page_info = $info;
         return $info->items();
     }
@@ -426,7 +426,6 @@ class Wechat extends BaseModel {
             'media' => $cfile,
         );
 
-
         $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token=' . $accessToken . '&type=' . $type;
         $oCurl = curl_init();
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -446,8 +445,8 @@ class Wechat extends BaseModel {
             return ds_callback(true, '', $res['media_id']);
         }
     }
-    
-    function addMaterial($template){
+
+    function addMaterial($template) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
@@ -457,26 +456,26 @@ class Wechat extends BaseModel {
         $dataRes = http_request($post_url, 'POST', $json_template);
         $dataRes = json_decode($dataRes, true);
         if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
-            return ds_callback(true,'',$dataRes['media_id']);
+            return ds_callback(true, '', $dataRes['media_id']);
         } else {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function uploadMaterialImage($file,$media_type=1){
+
+    function uploadMaterialImage($file, $media_type = 1) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
         // 创建一个 CURLFile 对象
-        $cfile = curl_file_create($file['tmp_name'],$file['type'],$file['name']);
+        $cfile = curl_file_create($file['tmp_name'], $file['type'], $file['name']);
 
-        switch($media_type){
+        switch ($media_type) {
             case 1:
                 $param = array(
                     'media' => $cfile,
                 );
-                $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=' . $accessToken.'&type=image';
+                $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=' . $accessToken . '&type=image';
                 break;
             case 2:
                 $param = array(
@@ -505,8 +504,7 @@ class Wechat extends BaseModel {
         }
     }
 
-
-    function editMaterial($template){
+    function editMaterial($template) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
@@ -521,41 +519,41 @@ class Wechat extends BaseModel {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function getMaterialInfo($media_id){
+
+    function getMaterialInfo($media_id) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
-        $template=array(
-            'media_id'=>$media_id
+        $template = array(
+            'media_id' => $media_id
         );
         $json_template = json_encode($template);
         $post_url = "https://api.weixin.qq.com/cgi-bin/draft/get?access_token=" . $accessToken;
         $dataRes = http_request($post_url, 'POST', $json_template);
         $dataRes = json_decode($dataRes, true);
-            if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
-                return ds_callback(true,'',$dataRes);
-            } else {
-                return ds_callback(false, $dataRes['errmsg']);
-            }
+        if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
+            return ds_callback(true, '', $dataRes);
+        } else {
+            return ds_callback(false, $dataRes['errmsg']);
+        }
     }
 
-    function getImage($media_id){
+    function getImage($media_id) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
-        $template=array(
-            'media_id'=>$media_id
+        $template = array(
+            'media_id' => $media_id
         );
         $json_template = json_encode($template);
         $post_url = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=" . $accessToken;
         $dataRes = http_request($post_url, 'POST', $json_template);
         return $dataRes;
     }
-    
-    function getMaterialList($template){
+
+    function getMaterialList($template) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
@@ -565,19 +563,19 @@ class Wechat extends BaseModel {
         $dataRes = http_request($post_url, 'POST', $json_template);
         $dataRes = json_decode($dataRes, true);
         if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
-            return ds_callback(true,'',$dataRes);
+            return ds_callback(true, '', $dataRes);
         } else {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function delMaterial($media_id){
+
+    function delMaterial($media_id) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
-        $template=array(
-            'media_id'=>$media_id
+        $template = array(
+            'media_id' => $media_id
         );
         $json_template = json_encode($template);
         $post_url = "https://api.weixin.qq.com/cgi-bin/draft/delete?access_token=" . $accessToken;
@@ -589,14 +587,14 @@ class Wechat extends BaseModel {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function submitFreepublish($media_id){
+
+    function submitFreepublish($media_id) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
-        $template=array(
-            'media_id'=>$media_id
+        $template = array(
+            'media_id' => $media_id
         );
         $json_template = json_encode($template);
         $post_url = "https://api.weixin.qq.com/cgi-bin/freepublish/submit?access_token=" . $accessToken;
@@ -608,27 +606,27 @@ class Wechat extends BaseModel {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function delFreepublish($template){
+
+    function delFreepublish($template) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
-        $template=array(
-            'article_id'=>$article_id
+        $template = array(
+            'article_id' => $article_id
         );
         $json_template = json_encode($template);
         $post_url = "https://api.weixin.qq.com/cgi-bin/freepublish/delete?access_token=" . $accessToken;
         $dataRes = http_request($post_url, 'POST', $json_template);
         $dataRes = json_decode($dataRes, true);
         if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
-            return ds_callback(true,'',$dataRes);
+            return ds_callback(true, '', $dataRes);
         } else {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function getFreepublishList($template){
+
+    function getFreepublishList($template) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
@@ -638,28 +636,28 @@ class Wechat extends BaseModel {
         $dataRes = http_request($post_url, 'POST', $json_template);
         $dataRes = json_decode($dataRes, true);
         if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
-            return ds_callback(true,'',$dataRes);
+            return ds_callback(true, '', $dataRes);
         } else {
             return ds_callback(false, $dataRes['errmsg']);
         }
     }
-    
-    function getFreepublishInfo($article_id){
+
+    function getFreepublishInfo($article_id) {
         $accessToken = $this->getAccessToken();
         if ($this->error_code) {
             return ds_callback(false, $this->error_message);
         }
-        $template=array(
-            'article_id'=>$article_id
+        $template = array(
+            'article_id' => $article_id
         );
         $json_template = json_encode($template);
         $post_url = "https://api.weixin.qq.com/cgi-bin/freepublish/getarticle?access_token=" . $accessToken;
         $dataRes = http_request($post_url, 'POST', $json_template);
         $dataRes = json_decode($dataRes, true);
-            if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
-                return ds_callback(true,'',$dataRes);
-            } else {
-                return ds_callback(false, $dataRes['errmsg']);
-            }
+        if (!isset($dataRes['errcode']) || !$dataRes['errcode']) {
+            return ds_callback(true, '', $dataRes);
+        } else {
+            return ds_callback(false, $dataRes['errmsg']);
+        }
     }
 }

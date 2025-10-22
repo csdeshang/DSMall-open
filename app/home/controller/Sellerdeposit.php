@@ -71,13 +71,13 @@ class Sellerdeposit extends BaseSeller {
     public function recharge_add() {
         $storedepositlog_model = model('storedepositlog');
         if (request()->isPost()) {
-            $money = abs(floatval(input('post.pdc_amount')));
-            if (!$money) {
-                ds_json_encode(10001, lang('param_error'));
-            }
+            $pdc_amount = abs(floatval(input('post.pdc_amount')));
+            
+            $this->validate(array('pdc_amount'=>$pdc_amount), 'app\common\validate\Singlefield.pdc_amount');
+            
+            
+            Db::startTrans();
             try {
-                Db::startTrans();
-
                 $data = array(
                     'store_id' => $this->store_info['store_id'],
                     'store_name' => $this->store_info['store_name'],
@@ -85,11 +85,9 @@ class Sellerdeposit extends BaseSeller {
                     'storedepositlog_state' => Storedepositlog::STATE_VALID,
                     'storedepositlog_add_time' => TIMESTAMP,
                 );
-                $data['store_avaliable_deposit'] = $money;
-
+                $data['storedepositlog_avaliable_deposit'] = $pdc_amount;
 
                 $data['storedepositlog_desc'] = lang('sellerdeposit_recharge_deposit');
-
 
                 $storedepositlog_model->changeStoredeposit($data);
                 //从店铺资金中扣除
@@ -100,7 +98,7 @@ class Sellerdeposit extends BaseSeller {
                     'storemoneylog_type' => Storemoneylog::TYPE_DEPOSIT_IN,
                     'storemoneylog_state' => Storemoneylog::STATE_VALID,
                     'storemoneylog_add_time' => TIMESTAMP,
-                    'store_avaliable_money' => -$money,
+                    'storemoneylog_avaliable_money' => -$pdc_amount,
                     'storemoneylog_desc' => $data['storedepositlog_desc'],
                 );
                 $storemoneylog_model->changeStoremoney($data2);
@@ -126,10 +124,7 @@ class Sellerdeposit extends BaseSeller {
             $data = [
                 'pdc_amount' => floatval(input('post.pdc_amount')),
             ];
-            $sellerdeposit_validate = ds_validate('sellerdeposit');
-            if (!$sellerdeposit_validate->scene('withdraw_add')->check($data)) {
-                ds_json_encode(10001, $sellerdeposit_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Sellerdeposit.withdraw_add');
 
             $pdc_amount = $data['pdc_amount'];
             $storedepositlog_model = model('storedepositlog');
@@ -141,13 +136,14 @@ class Sellerdeposit extends BaseSeller {
                 'storedepositlog_state' => Storedepositlog::STATE_WAIT,
                 'storedepositlog_add_time' => TIMESTAMP,
             );
-            $data['store_avaliable_deposit'] = -$pdc_amount;
-            $data['store_freeze_deposit'] = $pdc_amount;
+            $data['storedepositlog_avaliable_deposit'] = -$pdc_amount;
+            $data['storedepositlog_freeze_deposit'] = $pdc_amount;
 
 
             $data['storedepositlog_desc'] = lang('sellerdeposit_apply_withdraw') . lang('sellerdeposit_avaliable_money');
+            
+            Db::startTrans();
             try {
-                Db::startTrans();
                 $storedepositlog_model->changeStoredeposit($data);
                 Db::commit();
                 $this->recordSellerlog(lang('sellerdeposit_apply_withdraw'));

@@ -156,12 +156,9 @@ class Buyvirtual {
         $goods_model = model('goods');
         $input['voucher'] = isset($post['voucher']) ? $post['voucher'] : '';
         $input['mallvoucher'] = isset($post['mallvoucher'])?$post['mallvoucher']:'';
+        
+        Db::startTrans();
         try {
-
-
-            //开始事务
-            Db::startTrans();
-
             //生成订单
             $order_info = $this->_createOrder($input, $goods_info, $member_info);
             //生成推广记录
@@ -174,8 +171,7 @@ class Buyvirtual {
             }
             //提交事务
             Db::commit();
-        } catch (Exception $e) {
-
+        } catch (\Exception $e) {
             //回滚事务
             Db::rollback();
             return ds_callback(false, $e->getMessage());
@@ -540,221 +536,6 @@ class Buyvirtual {
      * 充值卡支付
      * 如果充值卡足够就单独支付了该订单，如果不足就暂时冻结，等API支付成功了再彻底扣除
      */
-    private function _rcbPay($order_info, $input, $buyer_info) {
-        $available_rcb_amount = floatval($buyer_info['available_rc_balance']);
-
-        if ($available_rcb_amount <= 0)
-            return;
-        if(!isset($order_info['rcb_amount'])){
-            $order_info['rcb_amount']=0;
-        }
-            
-        if(!isset($order_info['pd_amount'])){
-            $order_info['pd_amount']=0;
-        }
-            
-        $vrorder_model = model('vrorder');
-        $predeposit_model = model('predeposit');
-
-        $order_amount = floatval($order_info['order_amount']);
-        $data_pd = array();
-        $data_pd['member_id'] = $buyer_info['member_id'];
-        $data_pd['member_name'] = $buyer_info['member_name'];
-        $data_pd['amount'] = $order_amount;
-        $data_pd['order_sn'] = $order_info['order_sn'];
-
-        if ($available_rcb_amount >= $order_amount) {
-
-            // 预存款立即支付，订单支付完成
-            $predeposit_model->changeRcb('order_pay', $data_pd);
-            $available_rcb_amount -= $order_amount;
-
-            // 订单状态 置为已支付
-            $data_order = array();
-            $order_info['order_state'] = $data_order['order_state'] = ORDER_STATE_PAY;
-            $data_order['payment_time'] = TIMESTAMP;
-            $data_order['payment_code'] = 'predeposit';
-            $data_order['rcb_amount'] = $order_info['order_amount'];
-            $result = $vrorder_model->editVrorder($data_order, array('order_id' => $order_info['order_id']));
-            if (!$result) {
-                throw new \think\Exception('订单更新失败', 10006);
-            }
-            if ($order_info['order_promotion_type'] != 2) {
-                //发放兑换码
-                $insert = $vrorder_model->addVrorderCode($order_info);
-                //发送兑换码到手机
-                $param = array('order_id' => $order_info['order_id'], 'buyer_id' => $order_info['buyer_id'], 'buyer_phone' => $order_info['buyer_phone']);
-                $vrorder_model->sendVrCode($param);
-                // 支付成功发送店铺消息
-                $param = array();
-                $param['code'] = 'new_order';
-                $param['store_id'] = $order_info['store_id'];
-                $param['ali_param'] = array(
-                    'order_sn' => $order_info['order_sn']
-                );
-                $param['ten_param'] = array(
-                    $order_info['order_sn']
-                );
-                $param['param'] = $param['ali_param'];
-                $param['weixin_param'] = array(
-                    'url' => config('ds_config.h5_store_site_url') . '/pages/seller/vrorder/OrderDetail?order_id=' . $order_info['order_id'],
-                    'data' => array(
-                        "keyword1" => array(
-                            "value" => $order_info['order_sn'],
-                            "color" => "#333"
-                        ),
-                        "keyword2" => array(
-                            "value" => $order_info['goods_name'],
-                            "color" => "#333"
-                        ),
-                        "keyword3" => array(
-                            "value" => $order_info['order_amount'],
-                            "color" => "#333"
-                        ),
-                        "keyword4" => array(
-                            "value" => date('Y-m-d H:i', $order_info['add_time']),
-                            "color" => "#333"
-                        )
-                    ),
-                );
-                model('cron')->addCron(array('cron_exetime'=>TIMESTAMP,'cron_type'=>'sendStoremsg','cron_value'=>serialize($param)));
-                if (!$insert) {
-                    throw new \think\Exception('兑换码发送失败', 10006);
-                }
-            }
-        } else {
-
-            //暂冻结预存款,后面还需要 API彻底完成支付
-            $data_pd['amount'] = $available_rcb_amount;
-            $predeposit_model->changeRcb('order_freeze', $data_pd);
-            //预存款支付金额保存到订单
-            $data_order = array();
-            $order_info['rcb_amount'] = $data_order['rcb_amount'] = $available_rcb_amount;
-            $result = $vrorder_model->editVrorder($data_order, array('order_id' => $order_info['order_id']));
-            if (!$result) {
-                throw new \think\Exception('订单更新失败', 10006);
-            }
-        }
-        return $order_info;
-    }
-
-    /**
-     * 预存款支付
-     * 如果预存款足够就单独支付了该订单，如果不足就暂时冻结，等API支付成功了再彻底扣除
-     */
-    private function _pdPay($order_info, $input, $buyer_info) {
-        if ($order_info['order_state'] == ORDER_STATE_PAY)
-            return;
-
-        $available_pd_amount = floatval($buyer_info['available_predeposit']);
-        if ($available_pd_amount <= 0)
-            return;
-        if(!isset($order_info['rcb_amount'])){
-            $order_info['rcb_amount']=0;
-        }
-            
-        if(!isset($order_info['pd_amount'])){
-            $order_info['pd_amount']=0;
-        }
-        $vrorder_model = model('vrorder');
-        $predeposit_model = model('predeposit');
-
-        //充值卡支付金额
-        $rcb_amount = isset($order_info['rcb_amount']) ? floatval($order_info['rcb_amount']) : 0;
-
-        $order_amount = floatval($order_info['order_amount']) - $rcb_amount;
-        $data_pd = array();
-        $data_pd['member_id'] = $buyer_info['member_id'];
-        $data_pd['member_name'] = $buyer_info['member_name'];
-        $data_pd['amount'] = $order_amount;
-        $data_pd['order_sn'] = $order_info['order_sn'];
-
-        if ($available_pd_amount >= $order_amount) {
-
-            //预存款立即支付，订单支付完成
-            $predeposit_model->changePd('order_pay', $data_pd);
-            $available_pd_amount -= $order_amount;
-
-            //下单，支付被冻结的充值卡
-            $pd_amount = $rcb_amount;
-            if ($pd_amount > 0) {
-                $data_pd = array();
-                $data_pd['member_id'] = $buyer_info['member_id'];
-                $data_pd['member_name'] = $buyer_info['member_name'];
-                $data_pd['amount'] = $pd_amount;
-                $data_pd['order_sn'] = $order_info['order_sn'];
-                $predeposit_model->changeRcb('order_comb_pay', $data_pd);
-            }
-
-            // 订单状态 置为已支付
-            $data_order = array();
-            $data_order['order_state'] = ORDER_STATE_PAY;
-            $data_order['payment_time'] = TIMESTAMP;
-            $data_order['payment_code'] = 'predeposit';
-            $data_order['pd_amount'] = $order_amount;
-            $result = $vrorder_model->editVrorder($data_order, array('order_id' => $order_info['order_id']));
-            if (!$result) {
-                throw new \think\Exception('订单更新失败', 10006);
-            }
-            if ($order_info['order_promotion_type'] != 2) {
-                //发放兑换码
-                $vrorder_model->addVrorderCode($order_info);
-                //发送兑换码到手机
-                $param = array('order_id' => $order_info['order_id'], 'buyer_id' => $order_info['buyer_id'], 'buyer_phone' => $order_info['buyer_phone']);
-                $vrorder_model->sendVrCode($param);
-                // 支付成功发送店铺消息
-                $param = array();
-                $param['code'] = 'new_order';
-                $param['store_id'] = $order_info['store_id'];
-                $param['ali_param'] = array(
-                    'order_sn' => $order_info['order_sn']
-                );
-                $param['ten_param'] = array(
-                    $order_info['order_sn']
-                );
-                $param['param'] = $param['ali_param'];
-                $param['weixin_param'] = array(
-                    'url' => config('ds_config.h5_store_site_url') . '/pages/seller/vrorder/OrderDetail?order_id=' . $order_info['order_id'],
-                    'data' => array(
-                        "keyword1" => array(
-                            "value" => $order_info['order_sn'],
-                            "color" => "#333"
-                        ),
-                        "keyword2" => array(
-                            "value" => $order_info['goods_name'],
-                            "color" => "#333"
-                        ),
-                        "keyword3" => array(
-                            "value" => $order_info['order_amount'],
-                            "color" => "#333"
-                        ),
-                        "keyword4" => array(
-                            "value" => date('Y-m-d H:i', $order_info['add_time']),
-                            "color" => "#333"
-                        )
-                    ),
-                );
-                model('cron')->addCron(array('cron_exetime'=>TIMESTAMP,'cron_type'=>'sendStoremsg','cron_value'=>serialize($param)));
-            }
-        } else {
-
-            //暂冻结预存款,后面还需要 API彻底完成支付
-            $data_pd['amount'] = $available_pd_amount;
-            $predeposit_model->changePd('order_freeze', $data_pd);
-            //预存款支付金额保存到订单
-            $data_order = array();
-            $data_order['pd_amount'] = $available_pd_amount;
-            $result = $vrorder_model->editVrorder($data_order, array('order_id' => $order_info['order_id']));
-            if (!$result) {
-                throw new \think\Exception('订单更新失败', 10006);
-            }
-        }
-    }
-
-    /**
-     * 充值卡支付
-     * 如果充值卡足够就单独支付了该订单，如果不足就暂时冻结，等API支付成功了再彻底扣除
-     */
     public function rcbPay($order_info, $input, $buyer_info) {
         $available_rcb_amount = floatval($buyer_info['available_rc_balance']);
 
@@ -792,6 +573,16 @@ class Buyvirtual {
             $data_order['payment_code'] = 'predeposit';
             $data_order['rcb_amount'] = round($order_info['rcb_amount'] + $order_amount, 2);
             $result = $vrorder_model->editVrorder($data_order, array('order_id' => $order_info['order_id']));
+            
+            //添加订单日志
+            $data = array();
+            $data['order_id'] = $order_info['order_id'];
+            $data['log_role'] = 'buyer';
+            $data['log_user'] = '';
+            $data['log_msg'] = '使用充值卡支付';
+            model('orderlog')->addVrOrderlog($data);
+            
+            
             if (!$result) {
                 throw new \think\Exception('订单更新失败', 10006);
             }
@@ -881,6 +672,15 @@ class Buyvirtual {
             $order_info['payment_code'] = $data_order['payment_code'] = 'predeposit';
             $order_info['pd_amount'] = $data_order['pd_amount'] = round($order_info['pd_amount'] + $order_amount, 2);
             $result = $vrorder_model->editVrorder($data_order, array('order_id' => $order_info['order_id']));
+            
+            //添加订单日志
+            $data = array();
+            $data['order_id'] = $order_info['order_id'];
+            $data['log_role'] = 'buyer';
+            $data['log_user'] = '';
+            $data['log_msg'] = '使用预存款支付';
+            model('orderlog')->addVrOrderlog($data);
+            
             if (!$result) {
                 throw new \think\Exception('订单更新失败', 10006);
             }

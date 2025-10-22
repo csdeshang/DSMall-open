@@ -95,7 +95,7 @@ $lang['notice_package_renewal2']				= '个优惠套装。';
 $lang['notice_package_renewal3']				= '套餐过期时间';
 $lang['notice_package_renewal4']				= '你还没有购买套餐或套餐已经过期，请购买或续费套餐。';
 $lang['notice_package_renewal5']				= '1、点击购买套餐或续费套餐可以购买或续费套餐';
-$lang['notice_package_renewal6']				= '相关费用会在店铺的账期结算中扣除';
+$lang['notice_package_renewal6']				= '相关费用会在店铺的资金中扣除';
 $lang['notice_package_renewal7']				= '3、您最多可以发布';
 
 return $lang;

@@ -111,20 +111,12 @@ class Promotionbundling extends AdminControl
         $config_model = model('config');
 
         if (request()->isPost()) {
-            // 验证
-            $data = [
-                'promotion_bundling_price' => input('post.promotion_bundling_price'),
-                'promotion_bundling_sum' => input('post.promotion_bundling_sum'),
-                'promotion_bundling_goods_sum' => input('post.promotion_bundling_goods_sum')
-            ];
-            $promotionbundling_validate = ds_validate('promotionbundling');
-            if (!$promotionbundling_validate->scene('bundling_setting')->check($data)){
-                $this->error($promotionbundling_validate->getError());
-            }
-
+            $data = array();
             $data['promotion_bundling_price'] = intval(input('post.promotion_bundling_price'));
             $data['promotion_bundling_sum'] = intval(input('post.promotion_bundling_sum'));
             $data['promotion_bundling_goods_sum'] = intval(input('post.promotion_bundling_goods_sum'));
+            
+            $this->validate($data, 'app\common\validate\Config.promotion_bundling_setting');
 
             $return = $config_model->editConfig($data);
             if ($return) {

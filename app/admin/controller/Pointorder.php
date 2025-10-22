@@ -103,14 +103,6 @@ class Pointorder extends AdminControl {
             $this->error(lang('admin_pointorderd_record_error'),(string)url('Pointorder/pointorder_list'));
         }
         if (request()->isPost()) {
-            $data = [
-                'shippingcode' => input('post.shippingcode')
-            ];
-            $point_validate = ds_validate('point');
-            if (!$point_validate->scene('order_ship')->check($data)) {
-                $this->error($point_validate->getError());
-            }
-
             //发货
             $data = $pointorder_model->shippingPointorder($order_id, input('post.'), $order_info);
             if ($data['state']) {

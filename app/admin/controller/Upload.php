@@ -7,7 +7,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 上传
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -103,12 +103,8 @@ class Upload extends AdminControl {
                 $update_array['default_user_portrait'] = $upload['default_user_portrait'];
             }
 
-            if (!empty($update_array)) {
-                $result = $config_model->editConfig($update_array);
-            } else {
-                $result = true;
-            }
-            if ($result === true) {
+            $result = $config_model->editConfig($update_array);
+            if ($result) {
                 $this->log(lang('ds_edit') . lang('default_thumb'), 1);
                 $this->success(lang('ds_common_save_succ'));
             } else {
@@ -143,12 +139,11 @@ class Upload extends AdminControl {
             array(
                 'name' => 'default_thumb', 'text' => lang('default_thumb'), 'url' => (string) url('Upload/default_thumb')
             ), array(
-                'name' => 'upload_type', 'text' => lang('upload_set'), 'url' => (string) url('Upload/upload_type')
+                'name' => 'upload_type', 'text' => lang('ds_upload_set'), 'url' => (string) url('Upload/upload_type')
             )
         );
         return $menu_array;
     }
-
 }
 
 ?>

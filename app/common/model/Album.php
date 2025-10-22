@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -72,8 +72,10 @@ class Album extends BaseModel {
      * @param int id 相册id
      * @return array 一维数组
      */
-    public function getAlbumclassCount($id) {
-        return Db::name('albumclass')->where('store_id',$id)->count();
+    public function getAlbumclassCount($store_id) {
+        $condition = array();
+        $condition[] = array('store_id','=',$store_id);
+        return Db::name('albumclass')->where($condition)->count();
     }
 
     /**
@@ -176,12 +178,14 @@ class Album extends BaseModel {
      * @return bool
      */
     public function delAlbum($id) {
-        $id = intval($id);
-        Db::name('albumclass')->where('store_id', $id)->delete();
-        $pic_list = $this->getAlbumpicList(array("store_id" => $id), '', 'apic_cover,store_id,apic_uploadtime');
+        $condition = array();
+        $condition[] = array('store_id','=',$id);
+        
+        Db::name('albumclass')->where($condition)->delete();
+        $pic_list = $this->getAlbumpicList($condition, '', 'apic_cover,store_id,apic_uploadtime');
         
         $res=del_albumpic($pic_list);
-        Db::name('albumpic')->where('store_id', $id)->delete();
+        Db::name('albumpic')->where($condition)->delete();
     }
 
     /**

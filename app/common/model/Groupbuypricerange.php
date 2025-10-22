@@ -49,8 +49,10 @@ class Groupbuypricerange extends BaseModel
      * @param int $id 主键编号
      * @return array 数组类型的返回结果
      */
-    public function getOneGroupbuypricerange($id) {
-        $result = Db::name('groupbuypricerange')->where('gprange_id',intval($id))->find();
+    public function getOneGroupbuypricerange($gprange_id) {
+        $condition = array();
+        $condition[] = array('gprange_id','=',$gprange_id);
+        $result = Db::name('groupbuypricerange')->where($condition)->find();
         return $result;
     }
 

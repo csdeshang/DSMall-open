@@ -230,7 +230,7 @@ class Wholesale extends BaseModel {
 
         $condition[] = array('wholesale_state','=',self::WHOLESALE_STATE_NORMAL);
 
-        $updata = array();
+        $update = array();
         $update['wholesale_state'] = self::WHOLESALE_STATE_CLOSE;
         $result = $this->editWholesale($update, $condition);
         if ($result) {

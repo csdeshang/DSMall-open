@@ -77,9 +77,16 @@ class Memberaddress extends BaseMember {
             return View::fetch($this->template_dir . 'form');
         } else {
             $address_is_default = input('post.is_default') == 1 ? 1 : 0;
+            
+            //验证器在model中,需要判断必填
+            $address_realname = input('post.true_name');
+            if (empty($address_realname)) {
+                ds_json_encode(10001, lang('param_error'));
+            }
+
             $data = array(
                 'member_id' => session('member_id'),
-                'address_realname' => input('post.true_name'),
+                'address_realname' => $address_realname,
                 'area_id' => input('post.area_id'),
                 'city_id' => input('post.city_id'),
                 'address_detail' => input('post.address'),
@@ -90,16 +97,8 @@ class Memberaddress extends BaseMember {
                 'address_is_default' => $address_is_default,
                 'area_info' => input('post.area_info'),
             );
-            $memberaddress_validate = ds_validate('memberaddress');
-            if (!$memberaddress_validate->scene('add')->check($data)) {
-                ds_json_encode(10001,$memberaddress_validate->getError());
-            }
 
-            //当默认地址为1时,把当前用户的地址设置为非默认地址
-            if ($address_is_default == 1) {
-                model('address')->editAddress(array('address_is_default' => 0), array('member_id' => session('member_id')));
-            }
-            
+
             $address_model=model('address');
             $result = $address_model->addAddress($data);
             if ($result) {
@@ -134,8 +133,16 @@ class Memberaddress extends BaseMember {
             return View::fetch($this->template_dir . 'form');
         } else {
             $address_is_default = input('post.is_default') == 1 ? 1 : 0;
+            
+            //验证器在model中,需要判断必填
+            $address_realname = input('post.true_name');
+            if (empty($address_realname)) {
+                ds_json_encode(10001, lang('param_error'));
+            }
+
             $data = array(
-                'address_realname' => input('post.true_name'),
+                'member_id' => session('member_id'),
+                'address_realname' => $address_realname,
                 'area_id' => input('post.area_id'),
                 'city_id' => input('post.city_id'),
                 'address_detail' => input('post.address'),
@@ -146,15 +153,6 @@ class Memberaddress extends BaseMember {
                 'address_is_default' => $address_is_default,
                 'area_info' => input('post.area_info'),
             );
-            $memberaddress_validate = ds_validate('memberaddress');
-            if (!$memberaddress_validate->scene('edit')->check($data)) {
-                ds_json_encode(10001,$memberaddress_validate->getError());
-            }
-
-            //当默认地址为1时,把当前用户的地址设置为非默认地址
-            if ($address_is_default == 1) {
-                model('address')->editAddress(array('address_is_default' => 0), array('member_id' => session('member_id')));
-            }
 
             $result = $address_model->editAddress($data,array('member_id' => session('member_id'), 'address_id' => $address_id));
             if ($result) {
@@ -191,9 +189,16 @@ class Memberaddress extends BaseMember {
             if (empty($info)) {
                 ds_json_encode(10001,lang('pick_up_point_exist'));
             }
+            
+            //验证器在model中,需要判断必填
+            $address_realname = input('param.true_name');
+            if (empty($address_realname)) {
+                ds_json_encode(10001, lang('param_error'));
+            }
+
             $data = array();
             $data['member_id'] = session('member_id');
-            $data['address_realname'] = input('param.true_name');
+            $data['address_realname'] = $address_realname;
             $data['area_id'] = $info['chain_area_3'];
             $data['city_id'] = $info['chain_area_2'];
             $data['area_info'] = $info['chain_area_info'];

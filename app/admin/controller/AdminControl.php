@@ -697,42 +697,6 @@ class AdminControl extends BaseController {
                     ),
                 ),
             ),
-            'flea' => array(
-                'name' => 'flea',
-                'text' => lang('flea'),
-                'show' => FALSE,
-                'children' => array(
-                    'flea_mes' => array(
-                        'text' => lang('flea_mes'),
-                        'args' => 'flea,Flea,flea',
-                    ),
-                    'flea_index' => array(
-                        'ico'=>'&#xe6e0;',
-                        'text' => lang('flea_seo'),
-                        'args' => 'index,Fleaseo,flea',
-                    ),
-                     'flea_class' => array(
-                         'ico'=>'&#xe652;',
-                         'text' => lang('flea_class'),
-                         'args' => 'flea_class,Fleaclass,flea',
-                     ),
-                    'flea_class_index' => array(
-                        'ico'=>'&#xe652;',
-                        'text' => lang('flea_class_index'),
-                        'args' => 'flea_class_index,Fleaclassindex,flea',
-                    ),
-                    'flea_region' => array(
-                        'ico'=>'&#xe720;',
-                        'text' => lang('flea_region'),
-                        'args' => 'flea_region,Flearegion,flea',
-                    ),
-                    'flea_adv_manage' => array(
-                        'ico'=>'&#xe72a;',
-                        'text' => lang('flea_adv_manage'),
-                        'args' => 'adv_manage,Fleaseo,flea',
-                    ),
-                ),
-            ),
             'live' => array(
                 'name' => 'live',
                 'text' => lang('ds_live'),
@@ -834,7 +798,7 @@ class AdminControl extends BaseController {
                     array('name' => lang('ds_feedback'), 'action' => null, 'controller' => 'Feedback'),
             )),
             array('name' => lang('ds_operation'), 'child' => array(
-                    array('name' => lang('ds_operation_set'), 'action' => null, 'controller' => 'Operation|Promotionwholesale|Promotionxianshi|Promotionmansong|Promotionbundling|Promotionbooth|Groupbuy|Vrgroupbuy|Voucher|Promotionmgdiscount|Promotionpintuan|Promotionbargain|Activity|EditablePage|Inviter|Bonus|Marketmanage|Pointprod|Pointorder|Rechargecard|Flea|Fleaseo|Fleaclass|Fleaclassindex|Flearegion|Fleaseo|Promotionpresell'),
+                    array('name' => lang('ds_operation_set'), 'action' => null, 'controller' => 'Operation|Promotionwholesale|Promotionxianshi|Promotionmansong|Promotionbundling|Promotionbooth|Groupbuy|Vrgroupbuy|Voucher|Promotionmgdiscount|Promotionpintuan|Promotionbargain|Activity|EditablePage|Inviter|Bonus|Marketmanage|Pointprod|Pointorder|Rechargecard|Promotionpresell'),
                 )),
             array('name' => lang('ds_stat'), 'child' => array(
                     array('name' => lang('ds_statgeneral'), 'action' => null, 'controller' => 'Statgeneral'),

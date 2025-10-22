@@ -360,6 +360,9 @@ if($action == 'db') {
             //更新安装时间
             $setup_date = date("Y-m-d H:i:s",time());
             mysqli_query($link,"update {$db['prefix']}config set value = '{$setup_date}' where code = 'setup_date'");
+            //更新系统唯一标识 32位
+            $site_uniqid = md5(bin2hex(random_bytes(64)));
+            mysqli_query($link,"update {$db['prefix']}config set value = '{$site_uniqid}' where code = 'site_uniqid'");
 
             //添加用户管理员
             $password = md5($user['password']);
@@ -376,11 +379,10 @@ if($action == 'db') {
 
             // 创建店铺
             mysqli_query($link,"INSERT INTO {$db['prefix']}member (`member_id`,`member_name`,`member_password`,`member_nickname`,`member_email`,`member_addtime`,`member_logintime`,`member_old_logintime`) VALUES ('1', '{$member_name}','". md5($member_password) ."', '德尚网络_123456', '', '". time() ."', '". time() ."', '". time() ."')");
-            mysqli_query($link,"INSERT INTO {$db['prefix']}membercommon (`member_id`) VALUES ('1')");
             mysqli_query($link,"INSERT INTO {$db['prefix']}store (`store_id`,`store_name`,`grade_id`,`member_id`,`member_name`,`seller_name`,`store_state`,`store_addtime`) VALUES ('1','{$store_name}','1','1','{$member_name}','{$seller_name}','1', '". time() ."')");
             mysqli_query($link,"INSERT INTO {$db['prefix']}storejoinin (`member_id`,`member_name`,`seller_name`,`store_name`,`joinin_state`) VALUES ('1', '{$member_name}', '{$seller_name}', '{$store_name}', '40')");
             mysqli_query($link,"INSERT INTO {$db['prefix']}seller (`seller_id`,`seller_name`,`member_id`,`sellergroup_id`,`store_id`,`is_admin`) VALUES ('1', '{$seller_name}', '1', '0', '1', '1')");
-            mysqli_query($link,"INSERT INTO {$db['prefix']}storebindclass (`bid`, `store_id`, `commis_rate`, `class_1`, `class_2`, `class_3`, `state`) VALUES ('1', '1', '0', '0', '0', '0', '1')");
+            mysqli_query($link,"INSERT INTO {$db['prefix']}storebindclass (`storebindclass_id`, `store_id`, `commis_rate`, `class_1`, `class_2`, `class_3`, `state`) VALUES ('1', '1', '0', '0', '0', '0', '1')");
 
             mysqli_query($link,"update {$db['prefix']}goods set is_platform_store = 1 where store_id = 1");
             mysqli_query($link,"update {$db['prefix']}goodscommon set is_platform_store = 1 where store_id = 1");
@@ -424,7 +426,7 @@ function tpl_install_license() {
 		<div class="panel panel-default">
 			<div class="panel-heading">阅读许可协议</div>
 			<div class="panel-body" style="overflow-y:scroll;max-height:400px;line-height:20px;">
-				<h3>版权所有 (c)2017，DSMall开源商城团队保留所有权利。 </h3>
+				<h3>版权所有 (c)2028，DSMall开源商城团队保留所有权利。 </h3>
 				<p>
 					感谢您选择DSMall开源商城（以下简称DSMall，DSMall基于 PHP + MySQL的技术开发，全部源码开放。 <br />
 					为了使你正确并合法的使用本软件，请你在使用前务必阅读清楚下面的协议条款：

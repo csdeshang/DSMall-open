@@ -700,7 +700,7 @@
                 <input id="transport_id" type="hidden" value="{$goods.transport_id}" name="transport_id">
                 <input id="transport_title" type="hidden" value="{$goods.transport_title}" name="transport_title">
                 <span id="postageName" class="transport-name" <?php if ($goods['transport_title'] != '' && intval($goods['transport_id'])) {?>style="display: inline-block;"<?php }?>>{$goods.transport_title}</span>
-                <a href="JavaScript:void(0);" onclick="window.open('{:url('Sellertransport/index',['type'=>'select'])}')" class="dsbtn" id="postageButton"><i class="iconfont">&#xe6f1;</i>{$Think.lang.store_goods_index_select_tpl}</a> 
+                <a href="JavaScript:void(0);" onclick="window.open('{:url('Sellertransport/index',['type'=>'choose_transport'])}')" class="dsbtn" id="postageButton"><i class="iconfont">&#xe6f1;</i>{$Think.lang.store_goods_index_select_tpl}</a> 
               </div>
             </li>
           </ul>

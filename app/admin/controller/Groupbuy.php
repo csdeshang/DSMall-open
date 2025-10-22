@@ -429,7 +429,6 @@ class Groupbuy extends AdminControl {
         if (request()->isPost()) {
             $update = array();
             $fprefix = 'home/groupbuy/slider';
-            $upload_file = BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fprefix;
             if (!empty($_FILES['live_pic1']['name'])) {
                 $res=ds_upload_pic($fprefix,'live_pic1');
                 if($res['code']){
@@ -490,19 +489,19 @@ class Groupbuy extends AdminControl {
             $result = $config_model->editConfig($update);
             if ($result) {
                 if ($list_setting['live_pic1'] != '' && isset($update['live_pic1'])) {
-                    @unlink($upload_file . DIRECTORY_SEPARATOR . $list_setting['live_pic1']);
+                    ds_del_pic($fprefix,$list_setting['live_pic1']);
                 }
 
                 if ($list_setting['live_pic2'] != '' && isset($update['live_pic2'])) {
-                    @unlink($upload_file . DIRECTORY_SEPARATOR . $list_setting['live_pic2']);
+                    ds_del_pic($fprefix,$list_setting['live_pic2']);
                 }
 
                 if ($list_setting['live_pic3'] != '' && isset($update['live_pic3'])) {
-                    @unlink($upload_file . DIRECTORY_SEPARATOR . $list_setting['live_pic3']);
+                    ds_del_pic($fprefix,$list_setting['live_pic3']);
                 }
 
                 if ($list_setting['live_pic4'] != '' && isset($update['live_pic4'])) {
-                    @unlink($upload_file . $list_setting['live_pic4']);
+                    ds_del_pic($fprefix,$list_setting['live_pic4']);
                 }
                 $this->log('修改抢购幻灯片设置', 1);
                 $this->success(lang('ds_common_op_succ'));

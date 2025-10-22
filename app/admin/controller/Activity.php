@@ -73,12 +73,11 @@ class Activity extends AdminControl {
                 'activity_type' => input('post.activity_type'),
                 'activity_banner' => $_FILES['activity_banner']['name'],
                 'activity_banner_mobile' => $_FILES['activity_banner_mobile']['name'],
-                'activity_sort' => intval(input('post.activity_sort'))
+                'activity_sort' => intval(input('post.activity_sort')),
+                'activity_desc'=>trim(input('post.activity_desc')),
+                'activity_state'=>intval(input('post.activity_state')),
             ];
-            $activity_validate = ds_validate('activity');
-            if (!$activity_validate->scene('add')->check($data)) {
-                $this->error($activity_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Activity.add');
 
             $file_name = '';
             if (!empty($_FILES['activity_banner']['name'])) {
@@ -103,8 +102,6 @@ class Activity extends AdminControl {
             }
             //保存
             $data['activity_banner_mobile'] = $file_name_mobile;
-            $data['activity_desc'] = trim(input('post.activity_desc'));
-            $data['activity_state'] = intval(input('post.activity_state'));
 
             $activity_model = model('activity');
             $result = $activity_model->addActivity($data);
@@ -113,8 +110,8 @@ class Activity extends AdminControl {
                 dsLayerOpenSuccess(lang('ds_common_op_succ'));
             } else {
                 //添加失败则删除刚刚上传的图片,节省空间资源
-                @unlink($upload_file . DIRECTORY_SEPARATOR . $file_name);
-                @unlink($upload_file . DIRECTORY_SEPARATOR . $file_name_mobile);
+                ds_del_pic(ATTACH_ACTIVITY,$file_name);
+                ds_del_pic(ATTACH_ACTIVITY,$file_name_mobile);
                 $this->error(lang('ds_common_op_fail'));
             }
         } else {
@@ -159,7 +156,7 @@ class Activity extends AdminControl {
             $update_array[input('param.column')] = trim(input('param.value'));
             if ($activity_model->editActivity($update_array, intval(input('param.id'))))
                 echo 'true';
-        }elseif (in_array(input('param.branch'), array('activitydetail_sort'))) {
+        } elseif (in_array(input('param.branch'), array('activitydetail_sort'))) {
             $activitydetail_model = model('activitydetail');
             $update_array = array();
             switch (input('param.branch')) {
@@ -174,7 +171,7 @@ class Activity extends AdminControl {
                     exit;
             }
             $update_array[input('param.column')] = trim(input('param.value'));
-            if ($activitydetail_model->editActivitydetail($update_array, array(array('activitydetail_id','=',intval(input('param.id'))))))
+            if ($activitydetail_model->editActivitydetail($update_array, array(array('activitydetail_id', '=', intval(input('param.id'))))))
                 echo 'true';
         }
     }
@@ -209,7 +206,7 @@ class Activity extends AdminControl {
             foreach ($id_arr as $v) {
                 $this->delBanner(intval($v));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             ds_json_encode(10001, $e->getMessage());
         }
         if ($activity_model->delActivity($condition)) {
@@ -239,51 +236,47 @@ class Activity extends AdminControl {
                 'activity_startdate' => strtotime(input('post.activity_startdate')),
                 'activity_enddate' => strtotime(input('post.activity_enddate')),
                 'activity_type' => input('post.activity_type'),
-                'activity_sort' => intval(input('post.activity_sort'))
+                'activity_sort' => intval(input('post.activity_sort')),
+                'activity_desc'=>trim(input('post.activity_desc')),
+                'activity_state'=>intval(input('post.activity_state')),
             ];
-            $activity_validate = ds_validate('activity');
-            if (!$activity_validate->scene('edit')->check($data)) {
-                $this->error($activity_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Activity.edit');
+            
             //构造更新内容
             $file_name = '';
             if ($_FILES['activity_banner']['name'] != '') {
                 $res=ds_upload_pic(ATTACH_ACTIVITY,'activity_banner');
                 if($res['code']){
                     $file_name=$res['data']['file_name'];
-					$data['activity_banner'] = $file_name;
+		    $data['activity_banner'] = $file_name;
                 }else{
                     $this->error($res['msg']);
                 }
-                
             }
             $file_name_mobile = '';
             if ($_FILES['activity_banner_mobile']['name'] != '') {
                 $res=ds_upload_pic(ATTACH_ACTIVITY,'activity_banner_mobile');
                 if($res['code']){
                     $file_name_mobile=$res['data']['file_name'];
-					$data['activity_banner_mobile'] = $file_name_mobile;
+		    $data['activity_banner_mobile'] = $file_name_mobile;
                 }else{
                     $this->error($res['msg']);
                 }
-                
             }
-            $data['activity_desc'] = trim(input('post.activity_desc'));
-            $data['activity_state'] = intval(input('post.activity_state'));
             
             $result = $activity_model->editActivity($data, $activity_id);
             if ($result) {
                 //删除图片
-                @unlink($upload_file . DIRECTORY_SEPARATOR .$activity['activity_banner']);
-                @unlink($upload_file . DIRECTORY_SEPARATOR .$activity['activity_banner_mobile']);
+                ds_del_pic(ATTACH_ACTIVITY,$activity['activity_banner']);
+                ds_del_pic(ATTACH_ACTIVITY,$activity['activity_banner_mobile']);
                 $this->log(lang('ds_edit') . lang('activity_index') . '[ID:' . $activity_id . ']', null);
                 dsLayerOpenSuccess(lang('ds_common_save_succ'));
             } else {
                 if ($_FILES['activity_banner']['name'] != '') {
-                    @unlink($upload_file . DIRECTORY_SEPARATOR .$file_name);
+                    ds_del_pic(ATTACH_ACTIVITY,$file_name);
                 }
                 if ($_FILES['activity_banner_mobile']['name'] != '') {
-                    @unlink($upload_file . DIRECTORY_SEPARATOR .$file_name_mobile);
+                    ds_del_pic(ATTACH_ACTIVITY,$file_name_mobile);
                 }
                 $this->error(lang('ds_common_save_fail'));
             }
@@ -388,7 +381,7 @@ class Activity extends AdminControl {
         $activity_model = model('activity');
         $row = $activity_model->getOneActivityById($id);
         //删除图片文件
-        @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_ACTIVITY . DIRECTORY_SEPARATOR . $row['activity_banner']);
+        ds_del_pic(ATTACH_ACTIVITY,$row['activity_banner']);
     }
 
     /**

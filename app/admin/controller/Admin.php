@@ -6,7 +6,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 管理员管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -71,15 +71,14 @@ class Admin extends AdminControl {
             if(empty(input('post.admin_password'))){
                 $this->error(lang('admin_add_password_null'));
             }
-            $admin_validate = ds_validate('admin');
-            if (!$admin_validate->scene('admin_add')->check($data)) {
-                $this->error($admin_validate->getError());
-            }
+            
             //判断是否重名
             $admin_info=$admin_model->getOneAdmin(array(array('admin_name','=',$data['admin_name'])));
             if($admin_info){
                 $this->error(lang('admin_add_admin_not_exists'));
             }
+            $this->validate($data, 'app\common\validate\Admin.add');
+            
             $rs = $admin_model->addAdmin($data);
             if ($rs) {
                 $this->log(lang('ds_add') . lang('limit_admin') . '[' . input('post.admin_name') . ']', 1);

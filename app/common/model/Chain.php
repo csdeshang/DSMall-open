@@ -36,6 +36,8 @@ class Chain extends BaseModel
      */
     public function addChain($data)
     {
+        $this->validate($data, 'app\common\validate\Chain.model_add');
+        
         return Db::name('chain')->insertGetId($data);
     }
 
@@ -153,9 +155,11 @@ class Chain extends BaseModel
      * @param array $condition 条件
      * @return bool
      */
-    public function editChain($update, $condition)
+    public function editChain($data, $condition)
     {
-        return Db::name('chain')->where($condition)->update($update);
+        $this->validate($data, 'app\common\validate\Chain.model_edit');
+        
+        return Db::name('chain')->where($condition)->update($data);
     }
     
     /**
@@ -178,5 +182,32 @@ class Chain extends BaseModel
     public function getChainState()
     {
         return $this->state;
+    }
+    
+    /**
+     * 登录生成token
+     */
+    public function getChainToken($chain_id, $chain_name) {
+
+        //生成新的token
+        $platformtoken_data = array();
+        $token = md5($chain_name . strval(TIMESTAMP) . strval(rand(0, 999999)));
+        
+        $platformtoken_data['platform_userid'] = $chain_id;
+        $platformtoken_data['platform_username'] = $chain_name;
+        $platformtoken_data['platform_token'] = $token;
+        $platformtoken_data['platform_type'] = 'chain';
+        $platformtoken_data['platform_logintime'] = TIMESTAMP;
+        $platformtoken_data['platform_operationtime'] = TIMESTAMP;
+        $platformtoken_data['platform_clienttype'] = get_clienttype();
+        $platformtoken_data['platform_devicetype'] = getOSFromUserAgent();
+
+        $result = model('platformtoken')->addPlatformtoken($platformtoken_data);
+
+        if ($result) {
+            return $token;
+        } else {
+            return null;
+        }
     }
 }

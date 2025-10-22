@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -112,10 +112,10 @@ class Evaluategoods extends BaseModel {
     }
 
     /**
-     * 根据抢购编号查询商品评价信息
+     * 根据编号查询商品评价信息
      * @access public
      * @author csdeshang
-     * @param int $goods_commonid 抢购编号
+     * @param int $goods_commonid 编号
      * @return array
      */
     public function getEvaluategoodsInfoByCommonidID($goods_commonid) {
@@ -140,11 +140,11 @@ class Evaluategoods extends BaseModel {
                 foreach ($goods_list as $value) {
                     $goodsid_array[] = $value['goods_id'];
                 }
-                $good = Db::name('evaluategoods')->where('geval_goodsid','in', $goodsid_array)->where('geval_scores','in', '4,5')->count();
+                $good = Db::name('evaluategoods')->where(array(array('geval_goodsid','in', $goodsid_array), array('geval_scores','in', '4,5')))->count();
                 $info['good'] = $good;
-                $normal = Db::name('evaluategoods')->where('geval_goodsid','in', $goodsid_array)->where('geval_scores','in', '2,3')->count();
+                $normal = Db::name('evaluategoods')->where(array(array('geval_goodsid','in', $goodsid_array), array('geval_scores','in', '2,3')))->count();
                 $info['normal'] = $normal;
-                $bad = Db::name('evaluategoods')->where('geval_goodsid','in', $goodsid_array)->where('geval_scores','in', '1')->count();
+                $bad = Db::name('evaluategoods')->where(array(array('geval_goodsid','in', $goodsid_array), array('geval_scores','in', '1')))->count();
                 $info['bad'] = $bad;
                 $info['all'] = $info['good'] + $info['normal'] + $info['bad'];
                 if (intval($info['all']) > 0) {

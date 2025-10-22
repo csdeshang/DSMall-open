@@ -202,24 +202,11 @@ class Memberorder extends BaseMember {
      *
      */
     public function get_express() {
-
         $result = model('express')->queryExpress(input('param.express_code'), input('param.shipping_code'), input('param.phone'));
-
-        if ($result['Success'] != true) {
-            exit(json_encode(false));
-        }
-        $content['Traces'] = array_reverse($result['Traces']);
         $output = array();
-        if (is_array($content['Traces'])) {
-            foreach ($content['Traces'] as $k => $v) {
-                if ($v['AcceptTime'] == '')
-                    continue;
-                $output[] = $v['AcceptTime'] . '&nbsp;&nbsp;' . $v['AcceptStation'];
-            }
+        foreach($result as $k => $v){
+            $output[] = $v['trace_time'] . '&nbsp;&nbsp;' . $v['trace_desc'];
         }
-        if (empty($output))
-            exit(json_encode(false));
-
         echo json_encode($output);
     }
 
@@ -395,14 +382,16 @@ class Memberorder extends BaseMember {
                 return ds_callback(false, lang('have_right_operate'));
             }
             $msg = $post['state_info1'] != '' ? $post['state_info1'] : $post['state_info'];
+            
+            Db::startTrans();
             try{
-                Db::startTrans();
                 $logic_order->changeOrderStateCancel($order_info, 'buyer', session('member_name'), $msg);
+                Db::commit();
             } catch (\Exception $e) {
                 Db::rollback();
                 return ds_callback(false, $e->getMessage());
             }
-            Db::commit();    
+            
             return ds_callback(true, lang('ds_common_op_succ'));
         }
     }

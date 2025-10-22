@@ -50,7 +50,7 @@
 		<td class="sep-row" colspan="19"></td>
 	  </tr>
       <tr>
-        <th colspan="20"><span class="ml10">{$Think.lang.store_order_sn}：{$order_info.order_sn}&nbsp;{if $order_info.order_from == '2'}<i class="iconfont">&#xe60e;</i>{/if}</span><span>{$Think.lang.store_order_add_time}：{:date('Y-m-d H:i',$order_info.add_time)}</span><span><a
+        <th colspan="20"><span class="ml10">{$Think.lang.store_order_sn}：{$order_info.order_sn}&nbsp;{if $order_info.order_from}({$order_info.order_from}){/if}</span><span>{$Think.lang.store_order_add_time}：{:date('Y-m-d H:i',$order_info.add_time)}</span><span><a
                 href="{:url('Store/index',['store_id'=>$order_info.store_id])}"
                 title="{$order_info.store_name}">{$order_info.store_name}</a></span>
 

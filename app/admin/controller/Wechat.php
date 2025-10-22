@@ -1,9 +1,5 @@
 <?php
 
-/**
- * 微信配置
- */
-
 namespace app\admin\controller;
 
 use think\facade\View;
@@ -13,7 +9,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 微信配置
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -68,53 +64,53 @@ class Wechat extends AdminControl {
     //公众号菜单
     public function menu() {
         $wechat_model = model('wechat');
-        $menu_list = $wechat_model->getWxmenuList(array(array('pid','=',0)));
-        $menu_json=array();
-        foreach($menu_list as $key => $val){
-            $menu_json[$key]=array();
-            $menu_json[$key][]=array('name'=>'name','value'=>$val['name']);
-            if($val['type']){
-                $menu_json[$key][]=array('name'=>'type','value'=>$val['type']);
+        $menu_list = $wechat_model->getWxmenuList(array(array('pid', '=', 0)));
+        $menu_json = array();
+        foreach ($menu_list as $key => $val) {
+            $menu_json[$key] = array();
+            $menu_json[$key][] = array('name' => 'name', 'value' => $val['name']);
+            if ($val['type']) {
+                $menu_json[$key][] = array('name' => 'type', 'value' => $val['type']);
             }
-            if($val['value']){
-                $val['value']= json_decode($val['value'], true);
-                foreach($val['value'] as $k => $v){
-                    if($k=='url'){
-                        if($val['type']=='view'){
-                            $menu_json[$key][]=array('name'=>'url1','value'=>$v);
-                        }else if($val['type']=='miniprogram'){
-                            $menu_json[$key][]=array('name'=>'url2','value'=>$v);
+            if ($val['value']) {
+                $val['value'] = json_decode($val['value'], true);
+                foreach ($val['value'] as $k => $v) {
+                    if ($k == 'url') {
+                        if ($val['type'] == 'view') {
+                            $menu_json[$key][] = array('name' => 'url1', 'value' => $v);
+                        } else if ($val['type'] == 'miniprogram') {
+                            $menu_json[$key][] = array('name' => 'url2', 'value' => $v);
                         }
-                    }else{
-                        $menu_json[$key][]=array('name'=>$k,'value'=>$v);
+                    } else {
+                        $menu_json[$key][] = array('name' => $k, 'value' => $v);
                     }
                 }
             }
-            $menu_json[$key][]=array('child'=>[]);
-            $menu_sub_list=$wechat_model->getWxmenuList(array(array('pid','=',$val['id'])));
-            $menu_list[$key]['child']=$menu_sub_list;
-            if(!empty($menu_sub_list)){
-                foreach($menu_sub_list as $key1 => $val1){
-                    $temp=array();
-                    $temp[]=array('name'=>'name','value'=>$val1['name']);
-                    if($val1['type']){
-                        $temp[]=array('name'=>'type','value'=>$val1['type']);
+            $menu_json[$key][] = array('child' => []);
+            $menu_sub_list = $wechat_model->getWxmenuList(array(array('pid', '=', $val['id'])));
+            $menu_list[$key]['child'] = $menu_sub_list;
+            if (!empty($menu_sub_list)) {
+                foreach ($menu_sub_list as $key1 => $val1) {
+                    $temp = array();
+                    $temp[] = array('name' => 'name', 'value' => $val1['name']);
+                    if ($val1['type']) {
+                        $temp[] = array('name' => 'type', 'value' => $val1['type']);
                     }
-                    if($val1['value']){
-                        $val1['value']= json_decode($val1['value'], true);
-                        foreach($val1['value'] as $k => $v){
-                            if($k=='url'){
-                                if($val1['type']=='view'){
-                                    $temp[]=array('name'=>'url1','value'=>$v);
-                                }else if($val1['type']=='miniprogram'){
-                                    $temp[]=array('name'=>'url2','value'=>$v);
+                    if ($val1['value']) {
+                        $val1['value'] = json_decode($val1['value'], true);
+                        foreach ($val1['value'] as $k => $v) {
+                            if ($k == 'url') {
+                                if ($val1['type'] == 'view') {
+                                    $temp[] = array('name' => 'url1', 'value' => $v);
+                                } else if ($val1['type'] == 'miniprogram') {
+                                    $temp[] = array('name' => 'url2', 'value' => $v);
                                 }
-                            }else{
-                                $temp[]=array('name'=>$k,'value'=>$v);
+                            } else {
+                                $temp[] = array('name' => $k, 'value' => $v);
                             }
                         }
                     }
-                    $menu_json[$key][count($menu_json[$key])-1]['child'][]=$temp;
+                    $menu_json[$key][count($menu_json[$key]) - 1]['child'][] = $temp;
                 }
             }
         }
@@ -123,104 +119,105 @@ class Wechat extends AdminControl {
         $this->setAdminCurItem('menu');
         return View::fetch();
     }
-    
-    public function add_menu(){
-        $menus=input('param.menus/a');
-        $result='';
-        $menu_list=array();
+
+    public function add_menu() {
+        $menus = input('param.menus/a');
+        $result = '';
+        $menu_list = array();
+
         Db::startTrans();
         try {
             $wechat_model = model('wechat');
-            $condition=array(array('id','>',0));
+            $condition = array(array('id', '>', 0));
             $wechat_model->delWxmenu($condition);
-            foreach($menus as $key => $val){
+            foreach ($menus as $key => $val) {
 
-                    $temp=array();
-                    foreach($val as $k => $v){
-                        if($k!=(count($val)-1)){
-                            $temp[$v['name']]=$v['value'];
+                $temp = array();
+                foreach ($val as $k => $v) {
+                    if ($k != (count($val) - 1)) {
+                        $temp[$v['name']] = $v['value'];
+                    }
+                }
+                $id = count($menu_list) + 1;
+                $menu_list[] = array('id' => $id, 'pid' => 0, 'child_count' => isset($val[count($val) - 1]['child']) ? count($val[count($val) - 1]['child']) : 0, 'value' => $temp, 'index1' => $key, 'index2' => -1);
+                if (isset($val[count($val) - 1]['child'])) {
+                    foreach ($val[count($val) - 1]['child'] as $k1 => $v1) {
+                        $temp = array();
+                        foreach ($v1 as $k => $v) {
+                            $temp[$v['name']] = $v['value'];
                         }
+                        $menu_list[] = array('id' => count($menu_list) + 1, 'pid' => $id, 'value' => $temp, 'index1' => $key, 'index2' => $k1);
                     }
-                    $id=count($menu_list)+1;
-                    $menu_list[]=array('id'=>$id,'pid'=>0,'child_count'=>isset($val[count($val)-1]['child'])?count($val[count($val)-1]['child']):0,'value'=>$temp,'index1'=>$key,'index2'=>-1);
-                    if(isset($val[count($val)-1]['child'])){
-                        foreach($val[count($val)-1]['child'] as $k1 => $v1){
-                        $temp=array();
-                        foreach($v1 as $k => $v){
-                            $temp[$v['name']]=$v['value'];
-                        }
-                        $menu_list[]=array('id'=>count($menu_list)+1,'pid'=>$id,'value'=>$temp,'index1'=>$key,'index2'=>$k1);
-                    }
-                    }
+                }
             }
-            $menu_array=array();
-            foreach($menu_list as $val){
-                if(trim($val['value']['name'])==''){
-                    $result=array('index1'=>$val['index1'],'index2'=>$val['index2'],'name'=>'name');
+            $menu_array = array();
+            foreach ($menu_list as $val) {
+                if (trim($val['value']['name']) == '') {
+                    $result = array('index1' => $val['index1'], 'index2' => $val['index2'], 'name' => 'name');
                     throw new \think\Exception('', 10006);
                 }
-                if(isset($val['child_count']) && $val['child_count']>0){
-                    $menu_array[]=array(
-                        'id'=>$val['id'],
-                        'pid'=>$val['pid'],
-                        'name'=>$val['value']['name'],
-                        'type'=>'',
-                        'value'=>''
+                if (isset($val['child_count']) && $val['child_count'] > 0) {
+                    $menu_array[] = array(
+                        'id' => $val['id'],
+                        'pid' => $val['pid'],
+                        'name' => $val['value']['name'],
+                        'type' => '',
+                        'value' => ''
                     );
-                }else{
-                    $temp=array(
-                        'id'=>$val['id'],
-                        'pid'=>$val['pid'],
-                        'name'=>$val['value']['name'],
-                        'type'=>$val['value']['type'],
+                } else {
+                    $temp = array(
+                        'id' => $val['id'],
+                        'pid' => $val['pid'],
+                        'name' => $val['value']['name'],
+                        'type' => $val['value']['type'],
                     );
-                    switch($val['value']['type']){
+                    switch ($val['value']['type']) {
                         case 'article_id':
-                            if(trim($val['value']['article_id'])==''){
-                                $result=array('index1'=>$val['index1'],'index2'=>$val['index2'],'name'=>'article_id');
+                            if (trim($val['value']['article_id']) == '') {
+                                $result = array('index1' => $val['index1'], 'index2' => $val['index2'], 'name' => 'article_id');
                                 throw new \think\Exception('', 10006);
                             }
-                            $temp['value']=json_encode(array('article_id'=>$val['value']['article_id']));
+                            $temp['value'] = json_encode(array('article_id' => $val['value']['article_id']));
                             break;
                         case 'click':
-                            if(trim($val['value']['key'])==''){
-                                $result=array('index1'=>$val['index1'],'index2'=>$val['index2'],'name'=>'key');
+                            if (trim($val['value']['key']) == '') {
+                                $result = array('index1' => $val['index1'], 'index2' => $val['index2'], 'name' => 'key');
                                 throw new \think\Exception('', 10006);
                             }
-                            $temp['value']=json_encode(array('key'=>$val['value']['key']));
+                            $temp['value'] = json_encode(array('key' => $val['value']['key']));
                             break;
                         case 'view':
-                            if(trim($val['value']['url1'])==''){
-                                $result=array('index1'=>$val['index1'],'index2'=>$val['index2'],'name'=>'url1');
+                            if (trim($val['value']['url1']) == '') {
+                                $result = array('index1' => $val['index1'], 'index2' => $val['index2'], 'name' => 'url1');
                                 throw new \think\Exception('', 10006);
                             }
-                            $temp['value']=json_encode(array('url'=>$val['value']['url1']));
+                            $temp['value'] = json_encode(array('url' => $val['value']['url1']));
                             break;
                         case 'miniprogram':
-                            if(trim($val['value']['url2'])=='' || trim($val['value']['appid'])=='' || trim($val['value']['pagepath'])==''){
-                                $result=array('index1'=>$val['index1'],'index2'=>$val['index2'],'name'=>((trim($val['value']['url2'])=='')?'url2':((trim($val['value']['appid'])=='')?'appid':'pagepath')));
+                            if (trim($val['value']['url2']) == '' || trim($val['value']['appid']) == '' || trim($val['value']['pagepath']) == '') {
+                                $result = array('index1' => $val['index1'], 'index2' => $val['index2'], 'name' => ((trim($val['value']['url2']) == '') ? 'url2' : ((trim($val['value']['appid']) == '') ? 'appid' : 'pagepath')));
                                 throw new \think\Exception('', 10006);
                             }
-                            $temp['value']=json_encode(array('url'=>$val['value']['url2'],'appid'=>$val['value']['appid'],'pagepath'=>$val['value']['pagepath']));
+                            $temp['value'] = json_encode(array('url' => $val['value']['url2'], 'appid' => $val['value']['appid'], 'pagepath' => $val['value']['pagepath']));
                             break;
                         default:
-                            $result=array('index1'=>$val['index1'],'index2'=>$val['index2'],'name'=>'type');
+                            $result = array('index1' => $val['index1'], 'index2' => $val['index2'], 'name' => 'type');
                             throw new \think\Exception('', 10006);
                     }
-                    $menu_array[]=$temp;
+                    $menu_array[] = $temp;
                 }
             }
-            if(!empty($menu_array)){
+            if (!empty($menu_array)) {
                 Db::name('wxmenu')->insertAll($menu_array);
             }
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
-            ds_json_encode(10001, $e->getMessage(),$result);
+            ds_json_encode(10001, $e->getMessage(), $result);
         }
-        Db::commit();
+
         ds_json_encode(10000, lang('ds_common_op_succ'));
     }
-
 
     //更新公众号菜单
     public function pub_menu() {
@@ -280,12 +277,12 @@ class Wechat extends AdminControl {
                     $add = array();
                     $add['name'] = $vv['name'];
                     $add['type'] = $vv['type'];
-                    $add=array_merge($add, json_decode($vv['value'],true));
+                    $add = array_merge($add, json_decode($vv['value'], true));
                     $new_arr[$count]['sub_button'][] = $add;
                 }
             } else {
                 $new_arr[$count]['type'] = $v['type'];
-                $new_arr[$count]=array_merge($new_arr[$count], json_decode($v['value'],true));
+                $new_arr[$count] = array_merge($new_arr[$count], json_decode($v['value'], true));
             }
             $count++;
         }
@@ -395,9 +392,6 @@ class Wechat extends AdminControl {
     public function member() {
         $wechat_model = model('wechat');
         $wxmember_list = $wechat_model->getWxmemberList();
-        foreach($wxmember_list as $key => $val){
-          @$wxmember_list[$key]['member_wxinfo']=unserialize($val['member_wxinfo']);
-        }
         View::assign('show_page', $wechat_model->page_info->render());
         View::assign('wxmember_list', $wxmember_list);
         return View::fetch('member');
@@ -435,7 +429,7 @@ class Wechat extends AdminControl {
                         $this->error($res['msg']);
                     }
 
-                    $picUrl = ds_get_pic( DIR_ADMIN . DIRECTORY_SEPARATOR . 'wechat' , $file_name);
+                    $picUrl = ds_get_pic(DIR_ADMIN . DIRECTORY_SEPARATOR . 'wechat', $file_name);
                 }
                 $content = array(
                     array(
@@ -500,7 +494,7 @@ class Wechat extends AdminControl {
             $m_info = model('wechat')->getWxmemberList();
             $openid = '';
             foreach ($m_info as $k => $val) {
-                $openid .= $val['member_wxopenid'] . ',';
+                $openid .= $val['member_h5_wxopenid'] . ',';
             }
             $openid = explode(',', $openid);
             $content = input('param.text');
@@ -521,212 +515,212 @@ class Wechat extends AdminControl {
             return View::fetch('sendgroup');
         }
     }
-    
-    public function material(){
+
+    public function material() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
         if (empty($wechat)) {
             $this->error(lang('please_set_wechat_config'), 'Wechat/setting');
         }
-        $template=array(
-            'offset'=>(input('param.page',1)-1)*10,
-            'count'=>10,
+        $template = array(
+            'offset' => (input('param.page', 1) - 1) * 10,
+            'count' => 10,
         );
-        $res=$wechat_model->getMaterialList($template);
-        if(!$res['code']){
+        $res = $wechat_model->getMaterialList($template);
+        if (!$res['code']) {
             $this->error($res['msg']);
         }
-        $paginate = Db::name('wxconfig')->paginate(10,$res['data']['total_count'],['query' => request()->param()]);
+        $paginate = Db::name('wxconfig')->paginate(10, $res['data']['total_count'], ['query' => request()->param()]);
         View::assign('show_page', $paginate->render());
         View::assign('list', $res['data']['item']);
         $this->setAdminCurItem('material');
         return View::fetch();
     }
-    
-    public function freepublish(){
+
+    public function freepublish() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
         if (empty($wechat)) {
             $this->error(lang('please_set_wechat_config'), 'Wechat/setting');
         }
-        $template=array(
-            'offset'=>(input('param.page',1)-1)*10,
-            'count'=>10,
+        $template = array(
+            'offset' => (input('param.page', 1) - 1) * 10,
+            'count' => 10,
         );
-        $res=$wechat_model->getFreepublishList($template);
-        if(!$res['code']){
+        $res = $wechat_model->getFreepublishList($template);
+        if (!$res['code']) {
             $this->error($res['msg']);
         }
-        $paginate = Db::name('wxconfig')->paginate(10,$res['data']['total_count'],['query' => request()->param()]);
+        $paginate = Db::name('wxconfig')->paginate(10, $res['data']['total_count'], ['query' => request()->param()]);
         View::assign('show_page', $paginate->render());
         View::assign('list', $res['data']['item']);
         $this->setAdminCurItem('freepublish');
         return View::fetch();
     }
-    
-    public function freepublish_del(){
+
+    public function freepublish_del() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
-        $res=$wechat_model->delFreepublish(input('param.article_id'));
-        if(!$res['code']){
+        $res = $wechat_model->delFreepublish(input('param.article_id'));
+        if (!$res['code']) {
             ds_json_encode(10001, $res['msg']);
         }
         ds_json_encode(10000, lang('ds_common_op_succ'));
     }
-    
-    public function material_select(){
+
+    public function material_select() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
         if (empty($wechat)) {
             $this->error(lang('please_set_wechat_config'), 'Wechat/setting');
         }
-        $template=array(
-            'type'=>'news',
-            'offset'=>(input('param.page',1)-1)*10,
-            'count'=>10,
+        $template = array(
+            'type' => 'news',
+            'offset' => (input('param.page', 1) - 1) * 10,
+            'count' => 10,
         );
-        $res=$wechat_model->getFreepublishList($template);
-        if(!$res['code']){
+        $res = $wechat_model->getFreepublishList($template);
+        if (!$res['code']) {
             $this->error($res['msg']);
         }
-        $paginate = Db::name('wxconfig')->paginate(10,$res['data']['total_count'],['query' => request()->param()]);
+        $paginate = Db::name('wxconfig')->paginate(10, $res['data']['total_count'], ['query' => request()->param()]);
         View::assign('show_page', $paginate->render());
         View::assign('list', $res['data']['item']);
         return View::fetch();
     }
-    
-    public function material_add(){
+
+    public function material_add() {
         if (request()->isPost()) {
             $wechat_model = model('wechat');
             $wechat = $wechat_model->getOneWxconfig();
-            $temp=input('param.articles/a');
-            $articles=array();
-            foreach($temp as $key => $val){
-                $a=array();
-                foreach($val as $v){
-                    if(in_array($v['name'],['thumb_media_id','title','author','content','content_source_url','need_open_comment','only_fans_can_comment'])){
-                        if(in_array($v['name'],['thumb_media_id','title','content','content_source_url']) && $v['value']==''){
-                            ds_json_encode(10001, '', array('index'=>$key,'name'=>$v['name']));
+            $temp = input('param.articles/a');
+            $articles = array();
+            foreach ($temp as $key => $val) {
+                $a = array();
+                foreach ($val as $v) {
+                    if (in_array($v['name'], ['thumb_media_id', 'title', 'author', 'content', 'content_source_url', 'need_open_comment', 'only_fans_can_comment'])) {
+                        if (in_array($v['name'], ['thumb_media_id', 'title', 'content', 'content_source_url']) && $v['value'] == '') {
+                            ds_json_encode(10001, '', array('index' => $key, 'name' => $v['name']));
                         }
-                        $a[$v['name']]=$v['value'];
+                        $a[$v['name']] = $v['value'];
                     }
                 }
-                $articles[]=$a;
+                $articles[] = $a;
             }
-            $template=array(
-                'articles'=>$articles
+            $template = array(
+                'articles' => $articles
             );
-            $res=$wechat_model->addMaterial($template);
-            if(!$res['code']){
+            $res = $wechat_model->addMaterial($template);
+            if (!$res['code']) {
                 ds_json_encode(10001, $res['msg']);
             }
             ds_json_encode(10000, lang('ds_common_op_succ'));
-        }else{
+        } else {
             $this->setAdminCurItem('material_add');
             return View::fetch('material_form');
         }
     }
-    
-    public function get_freepublish(){
+
+    public function get_freepublish() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
-        $article_id=input('param.article_id');
+        $article_id = input('param.article_id');
         return $wechat_model->getFreepublishInfo($article_id);
     }
 
-    public function material_edit(){
+    public function material_edit() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
-        $media_id=input('param.media_id');
-        $res=$wechat_model->getMaterialInfo($media_id);
+        $media_id = input('param.media_id');
+        $res = $wechat_model->getMaterialInfo($media_id);
         if (request()->isPost()) {
-            if(!$res['code']){
+            if (!$res['code']) {
                 ds_json_encode(10001, $res['msg']);
             }
-            $material_info=$res['data']['news_item'];
-            $temp=input('param.articles/a');
-            $index=0;
-            foreach($temp as $key => $val){
-                $a=array();
-                foreach($val as $v){
-                    if(in_array($v['name'],['thumb_media_id','title','author','content','content_source_url','need_open_comment','only_fans_can_comment'])){
-                        if(in_array($v['name'],['thumb_media_id','title','content','content_source_url']) && $v['value']==''){
-                            ds_json_encode(10001, '', array('index'=>$key,'name'=>$v['name']));
+            $material_info = $res['data']['news_item'];
+            $temp = input('param.articles/a');
+            $index = 0;
+            foreach ($temp as $key => $val) {
+                $a = array();
+                foreach ($val as $v) {
+                    if (in_array($v['name'], ['thumb_media_id', 'title', 'author', 'content', 'content_source_url', 'need_open_comment', 'only_fans_can_comment'])) {
+                        if (in_array($v['name'], ['thumb_media_id', 'title', 'content', 'content_source_url']) && $v['value'] == '') {
+                            ds_json_encode(10001, '', array('index' => $key, 'name' => $v['name']));
                         }
-                        $a[$v['name']]=$v['value'];
+                        $a[$v['name']] = $v['value'];
                     }
                 }
-                if(!isset($material_info[$index])){
-                    ds_json_encode(10001, '图文消息（'.$index.'）不存在');
+                if (!isset($material_info[$index])) {
+                    ds_json_encode(10001, '图文消息（' . $index . '）不存在');
                 }
                 ksort($a);
                 ksort($material_info[$index]);
-                if(json_encode($a)!=json_encode($material_info[$index])){
-                    $template=array(
-                        'media_id'=>$media_id,
-                        'index'=>$index,
-                        'articles'=>$a
+                if (json_encode($a) != json_encode($material_info[$index])) {
+                    $template = array(
+                        'media_id' => $media_id,
+                        'index' => $index,
+                        'articles' => $a
                     );
-                    $res=$wechat_model->editMaterial($template);
-                    if(!$res['code']){
+                    $res = $wechat_model->editMaterial($template);
+                    if (!$res['code']) {
                         ds_json_encode(10001, $res['msg']);
                     }
                 }
                 $index++;
             }
             ds_json_encode(10000, lang('ds_common_op_succ'));
-        }else{
-            if(!$res['code']){
+        } else {
+            if (!$res['code']) {
                 $this->error($res['msg']);
             }
-            foreach($res['data']['news_item'] as $key => $val){
-                $res['data']['news_item'][$key]['content']=str_replace('data-src','src',$val['content']);
+            foreach ($res['data']['news_item'] as $key => $val) {
+                $res['data']['news_item'][$key]['content'] = str_replace('data-src', 'src', $val['content']);
             }
             View::assign('material_info', $res['data']['news_item']);
             $this->setAdminCurItem('material_edit');
             return View::fetch('material_form');
         }
     }
-    
-    public function material_del(){
+
+    public function material_del() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
-        $res=$wechat_model->delMaterial(input('param.media_id'));
-        if(!$res['code']){
+        $res = $wechat_model->delMaterial(input('param.media_id'));
+        if (!$res['code']) {
             ds_json_encode(10001, $res['msg']);
         }
         ds_json_encode(10000, lang('ds_common_op_succ'));
     }
-    
-    public function freepublish_submit(){
+
+    public function freepublish_submit() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
-        $res=$wechat_model->submitFreepublish(input('param.media_id'));
-        if(!$res['code']){
+        $res = $wechat_model->submitFreepublish(input('param.media_id'));
+        if (!$res['code']) {
             ds_json_encode(10001, $res['msg']);
         }
         ds_json_encode(10000, lang('ds_common_op_succ'));
     }
-    
-    public function get_material_image(){
+
+    public function get_material_image() {
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
         return $wechat_model->getImage(input('param.media_id'));
     }
-    
-    public function upload_material_image(){
-        $type= intval(input('param.type'));
+
+    public function upload_material_image() {
+        $type = intval(input('param.type'));
         $wechat_model = model('wechat');
         $wechat = $wechat_model->getOneWxconfig();
-        $res=$wechat_model->uploadMaterialImage($_FILES['file'],$type);
-        if(!$res['code']){
+        $res = $wechat_model->uploadMaterialImage($_FILES['file'], $type);
+        if (!$res['code']) {
             ds_json_encode(10001, $res['msg']);
         }
-        ds_json_encode(10000, '',$res['data']);
+        ds_json_encode(10000, '', $res['data']);
     }
 
     protected function getAdminItemList() {
-        if(strpos(request()->action(),'material')!==false || strpos(request()->action(),'freepublish')!==false){
+        if (strpos(request()->action(), 'material') !== false || strpos(request()->action(), 'freepublish') !== false) {
             $menu_array = array(
                 array(
                     'name' => 'material',
@@ -739,20 +733,20 @@ class Wechat extends AdminControl {
                     'url' => (string) url('Wechat/freepublish')
                 ),
             );
-            if(request()->action()=='material_edit'){
-                $menu_array[]=array(
+            if (request()->action() == 'material_edit') {
+                $menu_array[] = array(
                     'name' => 'material_edit',
                     'text' => lang('ds_edit'),
                     'url' => 'javascript:void(0)'
                 );
-            }else{
-                $menu_array[]=array(
+            } else {
+                $menu_array[] = array(
                     'name' => 'material_add',
                     'text' => lang('ds_new'),
                     'url' => (string) url('Wechat/material_add')
                 );
             }
-        }else{
+        } else {
             $menu_array = array(
                 array(
                     'name' => 'menu',
@@ -763,5 +757,4 @@ class Wechat extends AdminControl {
         }
         return $menu_array;
     }
-
 }

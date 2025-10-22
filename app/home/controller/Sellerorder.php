@@ -348,14 +348,16 @@ class Sellerorder extends BaseSeller {
                 return ds_callback(false, lang('have_no_legalpower'));
             }
             $msg = $post['state_info1'] != '' ? $post['state_info1'] : $post['state_info'];
+            
+            Db::startTrans();
             try{
-                Db::startTrans();
                 $logic_order->changeOrderStateCancel($order_info, 'seller', session('member_name'), $msg);
+                Db::commit();
             } catch (\Exception $e) {
                 Db::rollback();
                 return ds_callback(false, $e->getMessage());
             }
-            Db::commit();    
+            
             return ds_callback(true, lang('ds_common_op_succ'));
         }
     }

@@ -286,7 +286,7 @@ class Sellerinfo extends BaseSeller {
     //上传付款凭证
     public function reopen_upload() {
         if (!empty($_FILES['storereopen_pay_cert']['tmp_name'])) {
-            $res = ds_upload_pic(ATTACH_PATH . DIRECTORY_SEPARATOR . 'store_joinin', 'storereopen_pay_cert');
+            $res = ds_upload_pic(ATTACH_STORE_JOININ, 'storereopen_pay_cert');
             if ($res['code']) {
                 $pic_name = $res['data']['file_name'];
             } else {

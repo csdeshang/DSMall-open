@@ -164,6 +164,7 @@ class Cart extends BaseMember {
             $goods_info['goods_name'] = $bl_info['bl_name'];
             $goods_info['goods_price'] = $bl_amount;
             $goods_info['goods_num'] = 1;
+            $goods_info['goods_storage'] = $goods_list[0]['goods_storage'];
             $goods_info['goods_image'] = $goods_list[0]['goods_image'];
             $goods_info['store_name'] = $bl_info['store_name'];
             $goods_info['bl_id'] = $bl_id;
@@ -211,12 +212,6 @@ class Cart extends BaseMember {
             $this->_check_goods($goods, 1);
         }
 
-        //抢购
-        $logic_buy_1->getGroupbuyCartList($goods_list);
-
-        //秒杀
-        $logic_buy_1->getXianshiCartList($goods_list);
-
         $cart_model = model('cart');
         foreach ($goods_list as $goods_info) {
             $cart_info = array();
@@ -225,6 +220,7 @@ class Cart extends BaseMember {
             $cart_info['goods_name'] = $goods_info['goods_name'];
             $cart_info['goods_price'] = $goods_info['goods_price'];
             $cart_info['goods_num'] = 1;
+            $cart_info['goods_storage'] = $goods_info['goods_storage'];
             $cart_info['goods_image'] = $goods_info['goods_image'];
             $cart_info['store_name'] = $goods_info['store_name'];
             $quantity = 1;

@@ -33,27 +33,27 @@ class Config extends AdminControl {
             $this->setAdminCurItem('base');
             return View::fetch();
         } else {
-			$update_array = array();
+            $update_array = array();
             //首页首次访问悬浮图片
             if (!empty($_FILES['fixed_suspension_img']['name'])) {
-                $res=ds_upload_pic(ATTACH_COMMON,'fixed_suspension_img', 'fixed_suspension_img.png');
-                if($res['code']){
-                    $file_name=$res['data']['file_name'];
+                $res = ds_upload_pic(ATTACH_COMMON, 'fixed_suspension_img', 'fixed_suspension_img.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
                     $upload['fixed_suspension_img'] = $file_name;
-                }else{
+                } else {
                     $this->error($res['msg']);
                 }
             }
             if (!empty($upload['fixed_suspension_img'])) {
                 $update_array['fixed_suspension_img'] = $upload['fixed_suspension_img'];
             }
-			$update_array['goods_verify'] = intval(input('post.goods_verify')) ;//店铺商品审核
-			$update_array['goods_all_verify'] = intval(input('post.goods_all_verify')) ;//店铺所有商品是否通过审核
+            $update_array['goods_verify'] = intval(input('post.goods_verify')); //店铺商品审核
+            $update_array['goods_all_verify'] = intval(input('post.goods_all_verify')); //店铺所有商品是否通过审核
             $update_array['baidu_ak'] = input('post.baidu_ak');
-			$update_array['baiduservice_ak'] = input('post.baiduservice_ak');
-			$update_array['mapak_type'] = input('post.mapak_type');
-			$update_array['gaode_ak'] = input('post.gaode_ak');
-			$update_array['gaode_jscode'] = input('post.gaode_jscode');
+            $update_array['baiduservice_ak'] = input('post.baiduservice_ak');
+            $update_array['mapak_type'] = input('post.mapak_type');
+            $update_array['gaode_ak'] = input('post.gaode_ak');
+            $update_array['gaode_jscode'] = input('post.gaode_jscode');
             $update_array['site_name'] = input('post.site_name');
             $update_array['icp_number'] = input('post.icp_number');
             $update_array['wab_number'] = input('post.wab_number');
@@ -71,18 +71,18 @@ class Config extends AdminControl {
             $update_array['h5_force_redirect'] = input('post.h5_force_redirect');
             $update_array['fixed_suspension_state'] = input('post.fixed_suspension_state'); //首页首次访问悬浮状态
             $update_array['fixed_suspension_url'] = input('post.fixed_suspension_url');
-			$update_array['member_auth'] = input('post.member_auth');//会员实名认证
+            $update_array['member_auth'] = input('post.member_auth'); //会员实名认证
             $result = $config_model->editConfig($update_array);
             if ($result) {
-				if($update_array['goods_verify']==0 && $update_array['goods_all_verify']==1){
-				    $goods_model = model('goods');
-				    $update = array();
-				    $update['goods_verify'] = 1;
-				
-				    $where = array();
-				    $where[]=array('goods_commonid','>', 0);
-				    $goods_model->editProduces($where, $update);
-				}
+                if ($update_array['goods_verify'] == 0 && $update_array['goods_all_verify'] == 1) {
+                    $goods_model = model('goods');
+                    $update = array();
+                    $update['goods_verify'] = 1;
+
+                    $where = array();
+                    $where[] = array('goods_commonid', '>', 0);
+                    $goods_model->editProduces($where, $update);
+                }
                 $this->log(lang('ds_edit') . lang('web_set'), 1);
                 $this->success(lang('ds_common_save_succ'), 'Config/base');
             } else {
@@ -91,152 +91,128 @@ class Config extends AdminControl {
         }
     }
 
-	public function logo() {
-		$config_model = model('config');
-		if (!request()->isPost()) {
-		    $list_config = rkcache('config', true);
-		    View::assign('list_config', $list_config);
-		    /* 设置卖家当前栏目 */
-		    $this->setAdminCurItem('logo');
-		    return View::fetch();
-		} else {
-			//上传文件保存路径
-			if (!empty($_FILES['site_logo']['name'])) {
-			    $res=ds_upload_pic(ATTACH_COMMON,'site_logo', 'site_logo.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['site_logo'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['site_logo'])) {
-			    $update_array['site_logo'] = $upload['site_logo'];
-			}
-			if (!empty($_FILES['member_logo']['name'])) {
-			    $res=ds_upload_pic(ATTACH_COMMON,'member_logo', 'member_logo.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['member_logo'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['member_logo'])) {
-			    $update_array['member_logo'] = $upload['member_logo'];
-			}
-			if (!empty($_FILES['seller_center_logo']['name'])) {
-			    $res=ds_upload_pic(ATTACH_COMMON,'seller_center_logo', 'seller_center_logo.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['seller_center_logo'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['seller_center_logo'])) {
-			    $update_array['seller_center_logo'] = $upload['seller_center_logo'];
-			}
-			if (!empty($_FILES['admin_backlogo']['name'])) {
-			    $res=ds_upload_pic('admin/common','admin_backlogo', 'backlogo.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['admin_backlogo'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['admin_backlogo'])) {
-			    $update_array['admin_backlogo'] = $upload['admin_backlogo'];
-			}
-			
-			if (!empty($_FILES['admin_logo']['name'])) {
-			    $res=ds_upload_pic('admin/common','admin_logo', 'logo.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['admin_logo'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['admin_logo'])) {
-			    $update_array['admin_logo'] = $upload['admin_logo'];
-			}
-			
-			
-			if (!empty($_FILES['site_mobile_logo']['name'])) {
-			    $res=ds_upload_pic(ATTACH_COMMON,'site_mobile_logo', 'site_mobile_logo.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['site_mobile_logo'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['site_mobile_logo'])) {
-			    $update_array['site_mobile_logo'] = $upload['site_mobile_logo'];
-			}
-			
-			if (!empty($_FILES['site_logowx']['name'])) {
-			    $res=ds_upload_pic(ATTACH_COMMON,'site_logowx', 'site_logowx.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['site_logowx'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['site_logowx'])) {
-			    $update_array['site_logowx'] = $upload['site_logowx'];
-			}
-			if (!empty($_FILES['business_licence']['name'])) {
-			    $res=ds_upload_pic(ATTACH_COMMON,'business_licence', 'business_licence.png');
-			    if($res['code']){
-			        $file_name=$res['data']['file_name'];
-			        $upload['business_licence'] = $file_name;
-			    }else{
-			        $this->error($res['msg']);
-			    }
-			}
-			if (!empty($upload['business_licence'])) {
-			    $update_array['business_licence'] = $upload['business_licence'];
-			}
-			$result = $config_model->editConfig($update_array);
-			if ($result) {
-			    $this->log(lang('ds_edit') . lang('web_set'), 1);
-			    $this->success(lang('ds_common_save_succ'), 'Config/logo');
-			} else {
-			    $this->log(lang('ds_edit') . lang('web_set'), 0);
-			}
-		}
-	}
-
-    /**
-     * 敏感词过滤设置
-     */
-    public function word_filter() {
+    public function logo() {
         $config_model = model('config');
         if (!request()->isPost()) {
             $list_config = rkcache('config', true);
             View::assign('list_config', $list_config);
             /* 设置卖家当前栏目 */
-            $this->setAdminCurItem('word_filter');
+            $this->setAdminCurItem('logo');
             return View::fetch();
         } else {
             $update_array = array();
-            $update_array['word_filter_open'] = intval(input('post.word_filter_open'));
-            $update_array['word_filter_appid'] = trim(input('post.word_filter_appid'));
-            $update_array['word_filter_secret'] = trim(input('post.word_filter_secret'));
+            //上传文件保存路径
+            if (!empty($_FILES['site_logo']['name'])) {
+                $res = ds_upload_pic(ATTACH_COMMON, 'site_logo', 'site_logo.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['site_logo'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['site_logo'])) {
+                $update_array['site_logo'] = $upload['site_logo'];
+            }
+            if (!empty($_FILES['member_logo']['name'])) {
+                $res = ds_upload_pic(ATTACH_COMMON, 'member_logo', 'member_logo.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['member_logo'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['member_logo'])) {
+                $update_array['member_logo'] = $upload['member_logo'];
+            }
+            if (!empty($_FILES['seller_center_logo']['name'])) {
+                $res = ds_upload_pic(ATTACH_COMMON, 'seller_center_logo', 'seller_center_logo.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['seller_center_logo'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['seller_center_logo'])) {
+                $update_array['seller_center_logo'] = $upload['seller_center_logo'];
+            }
+            if (!empty($_FILES['admin_backlogo']['name'])) {
+                $res = ds_upload_pic('admin/common', 'admin_backlogo', 'backlogo.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['admin_backlogo'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['admin_backlogo'])) {
+                $update_array['admin_backlogo'] = $upload['admin_backlogo'];
+            }
+
+            if (!empty($_FILES['admin_logo']['name'])) {
+                $res = ds_upload_pic('admin/common', 'admin_logo', 'logo.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['admin_logo'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['admin_logo'])) {
+                $update_array['admin_logo'] = $upload['admin_logo'];
+            }
+
+
+            if (!empty($_FILES['site_mobile_logo']['name'])) {
+                $res = ds_upload_pic(ATTACH_COMMON, 'site_mobile_logo', 'site_mobile_logo.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['site_mobile_logo'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['site_mobile_logo'])) {
+                $update_array['site_mobile_logo'] = $upload['site_mobile_logo'];
+            }
+
+            if (!empty($_FILES['site_logowx']['name'])) {
+                $res = ds_upload_pic(ATTACH_COMMON, 'site_logowx', 'site_logowx.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['site_logowx'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['site_logowx'])) {
+                $update_array['site_logowx'] = $upload['site_logowx'];
+            }
+            if (!empty($_FILES['business_licence']['name'])) {
+                $res = ds_upload_pic(ATTACH_COMMON, 'business_licence', 'business_licence.png');
+                if ($res['code']) {
+                    $file_name = $res['data']['file_name'];
+                    $upload['business_licence'] = $file_name;
+                } else {
+                    $this->error($res['msg']);
+                }
+            }
+            if (!empty($upload['business_licence'])) {
+                $update_array['business_licence'] = $upload['business_licence'];
+            }
             $result = $config_model->editConfig($update_array);
-            if ($result === true) {
-                $this->log(lang('ds_edit') . lang('word_filter_set'), 1);
-                $this->success(lang('ds_common_save_succ'));
+            if ($result) {
+                $this->log(lang('ds_edit') . lang('web_set'), 1);
+                $this->success(lang('ds_common_save_succ'), 'Config/logo');
             } else {
-                $this->log(lang('ds_edit') . lang('word_filter_set'), 0);
-                $this->error(lang('ds_common_save_fail'));
+                $this->log(lang('ds_edit') . lang('web_set'), 0);
+                $this->success(lang('ds_common_save_fail'), 'Config/logo');
             }
         }
     }
+
     /**
      * 防灌水设置
      */
@@ -266,8 +242,6 @@ class Config extends AdminControl {
             }
         }
     }
-
- 
 
     /*
      * 设置自动收货时间
@@ -318,20 +292,15 @@ class Config extends AdminControl {
                 'text' => lang('ds_base'),
                 'url' => (string) url('Config/base')
             ),
-			array(
-			    'name' => 'logo',
-			    'text' => lang('ds_logo'),
-			    'url' => (string) url('Config/logo')
-			),
+            array(
+                'name' => 'logo',
+                'text' => lang('ds_logo'),
+                'url' => (string) url('Config/logo')
+            ),
             array(
                 'name' => 'dump',
                 'text' => lang('dis_dump'),
                 'url' => (string) url('Config/dump')
-            ),
-            array(
-                'name' => 'word_filter',
-                'text' => lang('word_filter_set'),
-                'url' => (string) url('Config/word_filter')
             ),
             array(
                 'name' => 'auto',
@@ -341,5 +310,4 @@ class Config extends AdminControl {
         );
         return $menu_array;
     }
-
 }

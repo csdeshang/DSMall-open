@@ -1,9 +1,5 @@
 <?php
 
-/*
- * 类型管理
- */
-
 namespace app\admin\controller;
 use think\facade\View;
 use think\facade\Db;
@@ -11,7 +7,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 类型管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -63,10 +59,7 @@ class Type extends AdminControl {
                 'class_id' => input('post.class_id'),
                 'class_name' => input('post.class_name'),
             );
-            $type_validate = ds_validate('type');
-            if (!$type_validate->scene('type_add')->check($data)) {
-                $this->error($type_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Type.type_add');
 
             //添加类型
             $type_model = model('type');
@@ -172,10 +165,7 @@ class Type extends AdminControl {
                 'class_id' => input('post.class_id'),
                 'class_name' => input('post.class_name'),
             );
-            $type_validate = ds_validate('type');
-            if (!$type_validate->scene('type_edit')->check($data)) {
-                $this->error($type_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Type.type_edit');
 
             //更新前删除对应类型与品牌关联
             $type_model->delTypebrand(array('type_id' => $type_id));
@@ -298,10 +288,7 @@ class Type extends AdminControl {
                 'attr_show' => intval(input('post.attr_show')),
                 'attr_sort' => input('post.attr_sort'),
             );
-            $type_validate = ds_validate('type');
-            if (!$type_validate->scene('attr_edit')->check($data)) {
-                $this->error($type_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Type.attr_edit');
 
             //更新属性值表
             $attr_value = input('post.attr_value/a');

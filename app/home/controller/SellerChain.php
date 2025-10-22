@@ -90,17 +90,8 @@ class SellerChain extends BaseSeller {
             $data['store_id'] = session('store_id');
             $data['chain_name'] = input('post.chain_name');
             $data['chain_addtime'] = TIMESTAMP;
-            $chain_validate = ds_validate('chain');
-            if (!$chain_validate->scene('chain_add')->check($data)) {
-                ds_json_encode(10001, $chain_validate->getError());
-            }
-            $condition = array();
-            $condition[] = array('chain_name','=',$data['chain_name']);
-            $result = $chain_model->getChainInfo($condition);
-            if ($result) {
-                ds_json_encode(10001, lang('chain_name_remote'));
-            }
             $data['chain_passwd'] = md5($data['chain_passwd']);
+            
             $result = $chain_model->addChain($data);
             if ($result) {
                 $this->recordSellerlog(lang('ds_new') . lang('seller_chain') . '[' . $data['chain_name'] . ']', 1);
@@ -131,11 +122,6 @@ class SellerChain extends BaseSeller {
 
             $data = $this->post_data();
 
-
-            $chain_validate = ds_validate('chain');
-            if (!$chain_validate->scene('chain_edit')->check($data)) {
-                ds_json_encode(10001, $chain_validate->getError());
-            }
             if (isset($data['chain_passwd'])) {
                 $data['chain_passwd'] = md5($data['chain_passwd']);
             }

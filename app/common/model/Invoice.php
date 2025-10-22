@@ -1,12 +1,12 @@
 <?php
 
 namespace app\common\model;
-use think\facade\Db;
 
+use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -16,8 +16,8 @@ use think\facade\Db;
  * ============================================================================
  * 数据层模型
  */
-class Invoice extends BaseModel
-{
+class Invoice extends BaseModel {
+
     /**
      * 取得买家默认发票
      * @access public
@@ -25,8 +25,7 @@ class Invoice extends BaseModel
      * @param array $condition 条件数组
      * @return array
      */
-    public function getDefaultInvoiceInfo($condition = array())
-    {
+    public function getDefaultInvoiceInfo($condition = array()) {
         return Db::name('invoice')->where($condition)->order('invoice_state asc')->find();
     }
 
@@ -36,8 +35,7 @@ class Invoice extends BaseModel
      * @author csdeshang
      * @param array $condition 查询条件
      */
-    public function getInvoiceInfo($condition = array())
-    {
+    public function getInvoiceInfo($condition = array()) {
         return Db::name('invoice')->where($condition)->find();
     }
 
@@ -50,8 +48,7 @@ class Invoice extends BaseModel
      * @param type $field 字段
      * @return type
      */
-    public function getInvoiceList($condition, $limit = 0, $field = '*')
-    {
+    public function getInvoiceList($condition, $limit = 0, $field = '*') {
         return Db::name('invoice')->field($field)->where($condition)->limit($limit)->select()->toArray();
     }
 
@@ -62,8 +59,7 @@ class Invoice extends BaseModel
      * @param array $condition 条件
      * @return bool
      */
-    public function delInvoice($condition)
-    {
+    public function delInvoice($condition) {
         return Db::name('invoice')->where($condition)->delete();
     }
 
@@ -74,11 +70,9 @@ class Invoice extends BaseModel
      * @param array $data 参数内容
      * @return bool
      */
-    public function addInvoice($data)
-    {
+    public function addInvoice($data) {
         return Db::name('invoice')->insertGetId($data);
     }
-    
 
     /**
      * 编辑发票

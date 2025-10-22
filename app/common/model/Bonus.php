@@ -6,7 +6,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -134,10 +134,9 @@ class Bonus extends BaseModel {
      * @return bool 布尔类型的返回结果
      */
     public function editBonusreceive($bonusreceive_id,$data) {
-        if (empty($data)) {
-            return false;
-        }
-        return Db::name('bonusreceive')->where('bonusreceive_id',$bonusreceive_id)->update($data);
+        $condition = array();
+        $condition[] = array('bonusreceive_id','=',$bonusreceive_id);
+        return Db::name('bonusreceive')->where($condition)->update($data);
     }
     
     /**

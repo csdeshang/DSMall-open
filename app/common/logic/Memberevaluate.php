@@ -74,11 +74,6 @@ class Memberevaluate{
             $evaluate_comment = $goods_array[$value['goods_id']]['comment'];
             if (empty($evaluate_comment)) {
                 $evaluate_comment = '不错哦';
-            }else{
-                $res=word_filter($evaluate_comment);
-                if($res['code']){
-                    $evaluate_comment=$res['data']['text'];
-                }
             }
 
             $evaluate_goods_info = array();
@@ -149,8 +144,9 @@ class Memberevaluate{
             $data = array();
             $data['order_id'] = $order_info['order_id'];
             $data['log_role'] = 'buyer';
+            $data['log_user'] = '';
             $data['log_msg'] = lang('order_log_eval');
-            model('order')->addOrderlog($data);
+            model('orderlog')->addOrderlog($data);
             $res = true;
         } else {
             $res = false;

@@ -39,7 +39,8 @@
                         <input type="button" value="{$Think.lang.ds_edit}" class="edit_gcategory" />
                         {/if}
                         <select {if $type.class_id}style="display:none"{/if}>
-                            <option value="0">{$Think.lang.type_common_belong_class}</option>
+                            <option value="">{$Think.lang.type_common_belong_class}</option>
+                            <option value="0">全部分类</option>
                             {foreach name="gc_list" item="gc"}
                             <option value="{$gc.gc_id}">{$gc.gc_name}</option>
                             {/foreach}
@@ -148,7 +149,7 @@
             </tbody>
             <tbody>
                 <tr>
-                    <td>
+                    <td colspan="20">
                         <a id="add_type" class="btn-add-nofloat marginleft" href="JavaScript:void(0);"> <span>{$Think.lang.type_add_attr_add_one}</span> </a>
                     </td>
                 </tr>

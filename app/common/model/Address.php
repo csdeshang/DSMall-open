@@ -142,6 +142,9 @@ class Address extends BaseModel {
         if($data['address_is_default']==1){
             Db::name('address')->where('member_id',$data['member_id'])->update(array('address_is_default'=>0));
         }
+        
+        $this->validate($data, 'app\common\validate\Memberaddress.model_add');
+
         return Db::name('address')->insertGetId($data);
     }
 
@@ -152,23 +155,28 @@ class Address extends BaseModel {
      * @return array 数组类型的返回结果
      */
     public function getOneAddress($id) {
-        if (intval($id) > 0) {
-            $result = Db::name('address')->where('address_id',intval($id))->find();
-            return $result;
-        } else {
-            return false;
-        }
+        $condition = array();
+        $condition[] = array('address_id','=',$id);
+        $result = Db::name('address')->where($condition)->find();
+        return $result;
     }
 
     /**
      * 更新地址信息
      * @author csdeshang
-     * @param array $update 更新数据
+     * @param array $data 更新数据
      * @param array $condition 更新条件
      * @return bool 布尔类型的返回结果
      */
-    public function editAddress($update, $condition) {
-        return Db::name('address')->where($condition)->update($update);
+    public function editAddress($data, $condition) {
+        //当设置为默认地址，则此用户其他的地址设置为非默认地址
+        if($data['address_is_default']==1){
+            Db::name('address')->where('member_id',$data['member_id'])->update(array('address_is_default'=>0));
+        }
+        
+        $this->validate($data, 'app\common\validate\Memberaddress.model_edit');
+
+        return Db::name('address')->where($condition)->update($data);
     }
 
     /**

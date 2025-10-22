@@ -70,7 +70,7 @@ return [
     
     'wechat_avatar'=>'微信头像',
     'wechat_nickname'=>'微信昵称',
-    'wechat_openid'=>'微信OpenId',
+    'wechat_h5_openid'=>'微信公众号OpenId',
     'wechat_unionid'=>'微信UnionID',
     'wechat_member_name'=>'用户名',
     'wechat_bind_time'=>'绑定时间',

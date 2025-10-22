@@ -305,11 +305,6 @@ class Memberfavorites extends BaseMember {
                 'url' => (string)url('Memberfavorites/fslist')
             )
         );
-        if(config('ds_config.flea_isuse')){
-            $menu_array[]=array(
-                'name' => 'fav_flea', 'text' => lang('collection_idle'), 'url' => (string)url('Memberflea/favorites')
-            );
-        }
         return $menu_array;
     }
 

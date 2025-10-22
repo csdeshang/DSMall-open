@@ -338,6 +338,10 @@ class Sellerpromotionpintuan extends BaseSeller {
         }
         //获取当前价格
         $current_price = intval(config('ds_config.promotion_pintuan_price'));
+        
+        //记录店铺费用
+        $this->recordStorecost($current_price * $pintuan_quota_quantity, lang('buy_spell_group').' ['.$pintuan_quota_quantity.'个月 × 单价:'.$current_price.'元]');
+        
         //获取该用户已有套餐
         $pintuanquota_model = model('ppintuanquota');
         $current_pintuan_quota = $pintuanquota_model->getPintuanquotaCurrent(session('store_id'));
@@ -357,9 +361,6 @@ class Sellerpromotionpintuan extends BaseSeller {
             $param['pintuanquota_endtime'] = Db::raw('pintuanquota_endtime+' . $pintuan_add_time);
             $pintuanquota_model->editPintuanquota($param, array('pintuanquota_id' => $current_pintuan_quota['pintuanquota_id']));
         }
-
-        //记录店铺费用
-        $this->recordStorecost($current_price * $pintuan_quota_quantity, lang('buy_spell_group').' ['.$pintuan_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog(lang('buy') . $pintuan_quota_quantity . lang('combo_pack') . $current_price . lang('ds_yuan'));
 

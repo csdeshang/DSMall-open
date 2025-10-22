@@ -7,7 +7,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -118,10 +118,6 @@ class Member extends AdminControl {
                 'member_loginnum' => 0,
                 'inform_allow' => 1, //默认允许举报商品
             );
-            $member_validate = ds_validate('member');
-            if (!$member_validate->scene('add')->check($data)){
-                $this->error($member_validate->getError());
-            }
             $result = $member_model->addMember($data);
             if ($result) {
                 dsLayerOpenSuccess(lang('ds_common_op_succ'));
@@ -175,11 +171,9 @@ class Member extends AdminControl {
             if (input('post.member_paypwd')) {
                 $data['member_paypwd'] = md5(input('post.member_paypwd'));
             }
-
-            $member_validate = ds_validate('member');
-            if (!$member_validate->scene('edit')->check($data)){
-                $this->error($member_validate->getError());
-            }
+            
+            //用于验证器 的 unique 
+            $data['member_id'] = $member_id;
 
             $result = $member_model->editMember(array('member_id'=>$member_id),$data,$member_id);
             if ($result>=0) {

@@ -287,7 +287,7 @@ $lang['limited_quantity_intended_product_itself']			= '虚拟抢购活动的限�
 //groupbuy_quota_add
 $lang['purchase_unit_month']			= '购买单位为月(30天)，您可以在所购买的周期内发布抢购活动';
 $lang['need_pay_monthly']			= '每月(30天)您需要支付';
-$lang['deduction_settlement_payment_days']			= '相关费用会在店铺的账期结算中扣除';
+$lang['deduction_settlement_payment_days']			= '相关费用会在店铺的资金中扣除';
 $lang['need_pay_total']			= '确认购买？您总共需要支付';
 $lang['quantity_cannot_empty']			= '数量不能为空且必须为数字';
 
@@ -303,7 +303,7 @@ $lang['please_buy_package_first']			= '当前没有可用套餐，请先购买�
 $lang['package_instructions1']			= '1、点击购买套餐和套餐续费按钮可以购买或续费套餐';
 $lang['package_instructions2']			= '2、点击新增抢购按钮可以添加抢购活动';
 $lang['package_instructions3']			= '3、如发布虚拟商品的抢购活动，请点击新增虚拟抢购按钮';
-$lang['package_instructions4']			= '相关费用会在店铺的账期结算中扣除';
+$lang['package_instructions4']			= '相关费用会在店铺的资金中扣除';
 $lang['snap_type']			= '抢购类型';
 $lang['online_rob']			= '线上抢';
 $lang['virtual_rob']			= '虚拟抢';

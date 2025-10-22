@@ -69,7 +69,7 @@ class Order extends BaseModel {
         //追加返回订单日志
         if (in_array('orderlog', $extend)) {
             //取商品列表
-            $orderlog_list = $this->getOrderlogList(array('order_id' => $order_info['order_id']));
+            $orderlog_list = model('orderlog')->getOrderlogList(array('order_id' => $order_info['order_id'],'log_type' => 'order'));
             foreach ($orderlog_list as $orderlog_key => $orderlog) {
                 $orderlog_list[$orderlog_key]['log_time_desc'] = date('Y-m-d H:i:s',$orderlog['log_time']);
             }
@@ -517,18 +517,7 @@ class Order extends BaseModel {
         return Db::name('ordergoods')->insertAll($data);
     }
 
-    /**
-     * 添加订单日志
-     * @access public
-     * @author csdeshang
-     * @param type $data 数据信息
-     * @return type
-     */
-    public function addOrderlog($data) {
-        $data['log_role'] = str_replace(array('buyer', 'seller', 'system', 'admin'), array('买家', '商家', '系统', '管理员'), $data['log_role']);
-        $data['log_time'] = TIMESTAMP;
-        return Db::name('orderlog')->insertGetId($data);
-    }
+
 
     /**
      * 更改订单信息
@@ -584,28 +573,7 @@ class Order extends BaseModel {
         return Db::name('orderpay')->where($condition)->update($data);
     }
 
-    /**
-     * 订单操作历史列表
-     * @access public
-     * @author csdeshang
-     * @param type $condition 条件
-     * @return Ambigous <multitype:, unknown>
-     */
-    public function getOrderlogList($condition) {
-        return Db::name('orderlog')->where($condition)->select()->toArray();
-    }
 
-    /**
-     * 取得单条订单操作记录
-     * @access public
-     * @author csdeshang
-     * @param array $condition 条件     
-     * @param string $order 排序
-     * @return array
-     */
-    public function getOrderlogInfo($condition = array(), $order = '') {
-        return Db::name('orderlog')->where($condition)->order($order)->find();
-    }
 
     /**
      * 返回是否允许某些操作
@@ -625,8 +593,7 @@ class Order extends BaseModel {
             case 'buyer_cancel':
                 $state = ($order_info['order_state'] == ORDER_STATE_NEW) ||
                         ($order_info['order_state'] == ORDER_STATE_DEPOSIT) ||
-                        ($order_info['order_state'] == ORDER_STATE_REST) ||
-                        ($order_info['payment_code'] == 'offline' && $order_info['order_state'] == ORDER_STATE_PAY);
+                        ($order_info['order_state'] == ORDER_STATE_REST);
                 break;
 
             //申请退款
@@ -642,22 +609,19 @@ class Order extends BaseModel {
             case 'store_cancel':
                 $state = ($order_info['order_state'] == ORDER_STATE_NEW) ||
                         ($order_info['order_state'] == ORDER_STATE_DEPOSIT) ||
-                        ($order_info['order_state'] == ORDER_STATE_REST) ||
-                        ($order_info['payment_code'] == 'offline' &&
-                        in_array($order_info['order_state'], array(ORDER_STATE_PAY, ORDER_STATE_SEND)));
+                        ($order_info['order_state'] == ORDER_STATE_REST);
                 break;
 
             //平台取消订单
             case 'system_cancel':
                 $state = ($order_info['order_state'] == ORDER_STATE_NEW) ||
                         ($order_info['order_state'] == ORDER_STATE_DEPOSIT) ||
-                        ($order_info['order_state'] == ORDER_STATE_REST) ||
-                        ($order_info['payment_code'] == 'offline' && $order_info['order_state'] == ORDER_STATE_PAY);
+                        ($order_info['order_state'] == ORDER_STATE_REST);
                 break;
 
             //平台收款
             case 'system_receive_pay':
-                $state = ($order_info['order_state'] == ORDER_STATE_NEW || $order_info['order_state'] == ORDER_STATE_DEPOSIT || $order_info['order_state'] == ORDER_STATE_REST) && $order_info['payment_code'] != 'offline';
+                $state = ($order_info['order_state'] == ORDER_STATE_NEW || $order_info['order_state'] == ORDER_STATE_DEPOSIT || $order_info['order_state'] == ORDER_STATE_REST);
                 break;
 
             //买家投诉
@@ -672,13 +636,12 @@ class Order extends BaseModel {
 
             //调整运费
             case 'modify_price':
-                $state = ($order_info['order_state'] == ORDER_STATE_NEW) || ($order_info['payment_code'] == 'offline' && $order_info['order_state'] == ORDER_STATE_PAY);
+                $state = ($order_info['order_state'] == ORDER_STATE_NEW);
                 $state = floatval($order_info['shipping_fee']) > 0 && $state;
                 break;
             //调整商品价格
             case 'spay_price':
-                $state = ($order_info['order_state'] == ORDER_STATE_NEW) ||
-                        ($order_info['payment_code'] == 'offline' && $order_info['order_state'] == ORDER_STATE_PAY);
+                $state = ($order_info['order_state'] == ORDER_STATE_NEW);
                 $state = floatval($order_info['goods_amount']) > 0 && $state;
                 break;
 

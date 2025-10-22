@@ -73,6 +73,7 @@
           <th class="align-center">{$Think.lang.ds_member_points}</th>
           <th class="align-center">{$Think.lang.ds_predeposit}</th>
           <th class="align-center">{$Think.lang.member_exppoints}</th>
+          <th class="align-center">推荐人ID</th>
           <th class="align-center">{$Think.lang.member_grade}</th>
           <th class="align-center">{$Think.lang.member_index_login}</th>
           <th class="align-center">{$Think.lang.ds_handle}</th>
@@ -118,6 +119,7 @@
             <p>{$Think.lang.member_index_frozen}:&nbsp;<strong class="red">{$v.freeze_predeposit}</strong>&nbsp;{$Think.lang.ds_yuan}</p>
           </td>
           <td class="align-center">{$v.member_exppoints}</td>
+          <td class="align-center">{$v.inviter_id}</td>
           <td class="align-center">{$v.member_grade}</td>
           <td class="align-center">{if $v.member_state == 1}{$Think.lang.member_edit_allow}{else/}{$Think.lang.member_edit_deny}{/if}</td>
           <td class="align-center">

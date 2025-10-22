@@ -1,17 +1,12 @@
 <?php
 
-/**
- * 满即送活动规则模型 
- *
- */
-
 namespace app\common\model;
 
-
 use think\facade\Db;
+
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -23,7 +18,6 @@ use think\facade\Db;
  */
 class Pmansongrule extends BaseModel {
 
-    
     /**
      * 读取满即送规则列表
      * @access public
@@ -32,7 +26,9 @@ class Pmansongrule extends BaseModel {
      * @return type
      */
     public function getMansongruleListByID($mansong_id) {
-        $mansong_rule_list = Db::name('pmansongrule')->where('mansong_id',$mansong_id)->order('mansongrule_price desc')->select()->toArray();
+        $condition = array();
+        $condition[] = array('mansong_id','=',$mansong_id);
+        $mansong_rule_list = Db::name('pmansongrule')->where($condition)->order('mansongrule_price desc')->select()->toArray();
         if (!empty($mansong_rule_list)) {
             $goods_model = model('goods');
 
@@ -48,8 +44,8 @@ class Pmansongrule extends BaseModel {
                         $mansong_rule_list[$i]['goods_image_url'] = goods_cthumb($goods_info['goods_image'], $goods_info['store_id']);
                         $mansong_rule_list[$i]['goods_storage'] = $goods_info['goods_storage'];
                         $mansong_rule_list[$i]['goods_id'] = $goods_id;
-                        $mansong_rule_list[$i]['goods_url'] = (string)url('Goods/index', array('goods_id' => $goods_id));
-                    }else{
+                        $mansong_rule_list[$i]['goods_url'] = (string) url('Goods/index', array('goods_id' => $goods_id));
+                    } else {
                         $mansong_rule_list[$i]['goods_id'] = 0;
                     }
                 }
@@ -90,5 +86,4 @@ class Pmansongrule extends BaseModel {
     public function delMansongrule($condition) {
         return Db::name('pmansongrule')->where($condition)->delete();
     }
-
 }

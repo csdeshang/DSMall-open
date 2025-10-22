@@ -29,10 +29,11 @@ class Vrorder
     public function changeOrderStateCancel($order_info, $role, $msg, $if_queue = true)
     {
 
+        Db::startTrans();
         try {
 
             $vrorder_model = model('vrorder');
-            Db::startTrans();
+            
             
             $ppintuanorder_model=model('ppintuanorder');
             if($order_info['order_promotion_type']==2){
@@ -77,10 +78,10 @@ class Vrorder
             }
             if ($order_info['order_state'] == ORDER_STATE_PAY) {
                 $refundreturn_model=model('refundreturn');
-                $refundreturn_model->refundAmount($order_info, $order_info['order_amount']);
+                $refundreturn_model->refundAmount($order_info, $order_info['order_amount'],'vrorder');
 
                 if($order_info['order_promotion_type']==2){//如果是拼团
-                    $ppintuangroup_info=Db::name('ppintuangroup')->where('pintuangroup_id', $order_info['promotions_id'])->lock(true)->find();
+                    $ppintuangroup_info=Db::name('ppintuangroup')->where('pintuangroup_id', $order_info['promotions_id'])->find();
                     if ($ppintuangroup_info && $ppintuangroup_info['pintuangroup_state'] == 1) {
                         if ($ppintuangroup_info['pintuangroup_joined'] > 0) {
                             Db::name('ppintuangroup')->where('pintuangroup_id', $order_info['promotions_id'])->dec('pintuangroup_joined')->update();
@@ -107,10 +108,21 @@ class Vrorder
             $orderinviter_model = model('orderinviter');
             $orderinviter_model->cancelOrderinviterMoney($order_info['order_id'],1);
 
+            //添加订单日志
+            $data = array();
+            $data['order_id'] = $order_info['order_id'];
+            $data['log_role'] = $role;
+            $data['log_msg'] = '取消了订单';
+            $data['log_user'] = '';
+            if ($msg) {
+                $data['log_msg'] .= ' ( ' . $msg . ' )';
+            }
+            model('orderlog')->addVrOrderlog($data);
+            
             Db::commit();
             return ds_callback(true, '更新成功');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Db::rollback();
             return ds_callback(false, $e->getMessage());
         }
@@ -125,10 +137,10 @@ class Vrorder
      */
     public function changeOrderStatePay($order_info, $role, $post)
     {
+        Db::startTrans();
         try {
 
             $vrorder_model = model('vrorder');
-            Db::startTrans();
 
             $predeposit_model = model('predeposit');
             //下单，支付被冻结的充值卡
@@ -163,10 +175,19 @@ class Vrorder
             if (!$update) {
                 throw new \think\Exception(lang('ds_common_save_fail'), 10006);
             }
+            
+            //添加订单日志
+            $data = array();
+            $data['order_id'] = $order_info['order_id'];
+            $data['log_role'] = $role;
+            $data['log_user'] = '';
+            $data['log_msg'] = '收到了货款 ' . (isset($post['trade_no']) ? ('( 支付平台交易号 : ' . $post['trade_no'] . ' )') : '');
+            model('orderlog')->addVrOrderlog($data);
+            
                 //如果是拼团
                 if ($order_info['order_promotion_type']==2) {
                     $ppintuangroup_model=model('ppintuangroup');
-                    $ppintuangroup_info=Db::name('ppintuangroup')->where('pintuangroup_id', $order_info['promotions_id'])->lock(true)->find();
+                    $ppintuangroup_info=Db::name('ppintuangroup')->where('pintuangroup_id', $order_info['promotions_id'])->find();
                     if($ppintuangroup_info && $ppintuangroup_info['pintuangroup_state']==1){
                         if($ppintuangroup_info['pintuangroup_joined']==0){
                             //拼团统计开团数量
@@ -195,11 +216,11 @@ class Vrorder
                         return $result;
                     }
                 }
-
+                
             Db::commit();
             return ds_callback(true, '更新成功');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Db::rollback();
             return ds_callback(false, $e->getMessage());
         }
@@ -302,51 +323,50 @@ class Vrorder
     {
         Db::startTrans();
         try {
-        $vrorder_model = model('vrorder');
-        $condition = array();
-        $condition[] = array('vr_state','=',0);
-        $condition[] = array('refund_lock','in', array(0, 1));
-        $condition[] = array('order_id','=',$order_id);
-        $condition[] = array('vr_indate','>',TIMESTAMP);
-        $order_code_info = $vrorder_model->getVrordercodeInfo($condition, '*');
-        if (empty($order_code_info)) {
-            $update = $vrorder_model->editVrorder(array(
-                                                     'order_state' => ORDER_STATE_SUCCESS, 'finnshed_time' => TIMESTAMP
-                                                 ), array('order_id' => $order_id));
-            if (!$update) {
-                throw new \think\Exception('更新失败', 10006);
+            $vrorder_model = model('vrorder');
+            $condition = array();
+            $condition[] = array('vr_state', '=', 0);
+            $condition[] = array('refund_lock', 'in', array(0, 1));
+            $condition[] = array('order_id', '=', $order_id);
+            $condition[] = array('vr_indate', '>', TIMESTAMP);
+            $order_code_info = $vrorder_model->getVrordercodeInfo($condition, '*');
+            if (empty($order_code_info)) {
+                $update = $vrorder_model->editVrorder(array(
+                    'order_state' => ORDER_STATE_SUCCESS, 'finnshed_time' => TIMESTAMP
+                        ), array('order_id' => $order_id));
+                if (!$update) {
+                    throw new \think\Exception('更新失败', 10006);
+                }
             }
-        }
-        
-            
-        $order_info = $vrorder_model->getVrorderInfo(array('order_id' => $order_id));
-        
-        //虚拟订单结算
-        $this->balanceVrOrderStateReceive($order_info);
-        
-        //添加会员积分
-        if (config('ds_config.points_isuse') == 1) {
-            model('points')->savePointslog('order', array(
-                'pl_memberid' => $order_info['buyer_id'], 'pl_membername' => $order_info['buyer_name'],
+
+
+            $order_info = $vrorder_model->getVrorderInfo(array('order_id' => $order_id));
+
+            //虚拟订单结算
+            $this->balanceVrOrderStateReceive($order_info);
+
+            //添加会员积分
+            if (config('ds_config.points_isuse') == 1) {
+                model('points')->savePointslog('order', array(
+                    'pl_memberid' => $order_info['buyer_id'], 'pl_membername' => $order_info['buyer_name'],
+                    'orderprice' => $order_info['order_amount'], 'order_sn' => $order_info['order_sn'],
+                    'order_id' => $order_info['order_id']
+                        ), true);
+            }
+
+            //添加会员经验值
+            model('exppoints')->saveExppointslog('order', array(
+                'explog_memberid' => $order_info['buyer_id'], 'explog_membername' => $order_info['buyer_name'],
                 'orderprice' => $order_info['order_amount'], 'order_sn' => $order_info['order_sn'],
                 'order_id' => $order_info['order_id']
-            ), true);
-        }
+                    ), true);
 
-        //添加会员经验值
-        model('exppoints')->saveExppointslog('order', array(
-            'explog_memberid' => $order_info['buyer_id'], 'explog_membername' => $order_info['buyer_name'],
-            'orderprice' => $order_info['order_amount'], 'order_sn' => $order_info['order_sn'],
-            'order_id' => $order_info['order_id']
-        ), true);
-        
-        Db::commit();
+            Db::commit();
             return ds_callback(true, '操作成功');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Db::rollback();
             return ds_callback(false, $e->getMessage());
         }
-        
     }
     
     
@@ -388,7 +408,7 @@ class Vrorder
             'storemoneylog_type' => Storemoneylog::TYPE_ORDER_SUCCESS,
             'storemoneylog_state' => Storemoneylog::STATE_VALID,
             'storemoneylog_add_time' => TIMESTAMP,
-            'store_avaliable_money' => $store_avaliable_money,
+            'storemoneylog_avaliable_money' => $store_avaliable_money,
             'storemoneylog_desc' => $storemoneylog_desc,
         );
         $storemoneylog_model->changeStoremoney($data);
@@ -396,6 +416,15 @@ class Vrorder
         //付款给推荐人分销佣金[虚拟订单]
         $orderinviter_model = model('orderinviter');
         $orderinviter_model->giveMoney($order_info['order_id'], 1);
+        
+        //记录订单日志
+        $data = array();
+        $data['order_id'] = $order_info['order_id'];
+        $data['log_role'] = 'system';
+        $data['log_user'] = '';
+        $data['log_msg'] = '确认收货,店铺收款'.$store_avaliable_money.'元。'. $storemoneylog_desc;
+        model('orderlog')->addVrOrderlog($data);
+        
     }
     
     
@@ -418,7 +447,7 @@ class Vrorder
             'storemoneylog_type' => Storemoneylog::TYPE_ORDER_REFUND,
             'storemoneylog_state' => Storemoneylog::STATE_VALID,
             'storemoneylog_add_time' => TIMESTAMP,
-            'store_avaliable_money' => -$store_avaliable_money,
+            'storemoneylog_avaliable_money' => -$store_avaliable_money,
             'storemoneylog_desc' => $storemoneylog_desc,
         );
         $storemoneylog_model->changeStoremoney($data);
@@ -426,6 +455,14 @@ class Vrorder
         //产生退款,修改推荐人分销佣金[虚拟订单]
         $orderinviter_model = model('orderinviter');
         $orderinviter_model->refundVrorderinviterMoney($order_info, $refund);
+        
+        //记录订单日志
+        $data = array();
+        $data['order_id'] = $order_info['order_id'];
+        $data['log_role'] = 'system';
+        $data['log_user'] = '';
+        $data['log_msg'] = '用户退款,店铺扣除'.$store_avaliable_money.'元';
+        model('orderlog')->addVrOrderlog($data);
         
     }
     

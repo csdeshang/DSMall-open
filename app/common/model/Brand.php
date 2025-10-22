@@ -38,8 +38,8 @@ public $page_info;
      * @param array $update 更新数据
      * @return boolean
      */
-    public function editBrand($condition, $update) {
-        return Db::name('brand')->where($condition)->update($update);
+    public function editBrand($condition, $data) {
+        return Db::name('brand')->where($condition)->update($data);
     }
     
     /**
@@ -54,9 +54,9 @@ public $page_info;
         $brandid_array = array();
         foreach ($brand_array as $value) {
             $brandid_array[] = $value['brand_id'];
-            @unlink(BASE_UPLOAD_PATH. DIRECTORY_SEPARATOR .ATTACH_BRAND. DIRECTORY_SEPARATOR .$value['brand_pic']);
+            ds_del_pic(ATTACH_BRAND,$value['brand_pic']);
         }
-        return Db::name('brand')->where('brand_id','in',$brandid_array)->delete();
+        return Db::name('brand')->where(array(array('brand_id','in', $brandid_array)))->delete();
     }
     
     /**

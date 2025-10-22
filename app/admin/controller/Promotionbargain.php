@@ -121,7 +121,6 @@ class Promotionbargain extends AdminControl {
             if($bargain_info['bargain_state']){
                 //取消用户发起的活动
                 $pbargainorder_model = model('pbargainorder');
-                $pbargainorder_model->lock=true;
                 $pbargainorder_list=$pbargainorder_model->getPbargainorderList(array('bargainorder_state'=>1,'bargain_id'=>$bargain_id));
                 if(!empty($pbargainorder_list) && !$pbargainorder_model->editPbargainorder(array('bargainorder_state'=>1,'bargain_id'=>$bargain_id), array('bargainorder_state'=>0))){
                     throw new \think\Exception(lang('user_bargain_edit_fail'), 10006);

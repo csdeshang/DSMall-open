@@ -1,16 +1,12 @@
 <?php
 
-/**
- * 积分管理
- */
-
 namespace app\admin\controller;
 use think\facade\View;
 use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 积分管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -73,7 +69,7 @@ class Points extends AdminControl {
     }
 
     //积分规则设置
-    function setting(){
+    public function setting(){
         $config_model = model('config');
         if (request()->isPost()) {
             $update_array = array();
@@ -99,8 +95,8 @@ class Points extends AdminControl {
         }
     }
     
-    //积分明细查询
-    function pointslog() {
+    //修改积分
+    public function pointslog() {
         if (!request()->isPost()) {
             return View::fetch();
         } else {
@@ -110,10 +106,8 @@ class Points extends AdminControl {
                 'points_num' => intval(input('post.points_num')),
                 'points_desc' => input('post.points_desc'),
             ];
-            $point_validate = ds_validate('point');
-            if (!$point_validate->scene('pointslog')->check($data)) {
-                $this->error($point_validate->getError());
-            }
+            
+            $this->validate($data, 'app\common\validate\Point.edit_points');
 
             $member_name = $data['member_name'];
             $member_info = model('member')->getMemberInfo(array('member_name' => $member_name));

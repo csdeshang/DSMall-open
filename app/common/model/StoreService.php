@@ -51,6 +51,8 @@ class StoreService extends BaseModel {
      * @return bool 布尔类型的返回结果
      */
     public function addStoreService($data) {
+        $this->validate($data, 'app\common\validate\StoreService.model_add');
+
         $result = Db::name('store_service')->insertGetId($data);
         return $result;
     }
@@ -64,6 +66,8 @@ class StoreService extends BaseModel {
      * @return bool
      */
     public function editStoreService($data, $condition) {
+        $this->validate($data, 'app\common\validate\StoreService.model_edit');
+
         $result = Db::name('store_service')->where($condition)->update($data);
         return $result;
     }

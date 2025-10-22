@@ -16,19 +16,6 @@
     <form method="post" name="settingForm" id="settingForm">
         <table class="ds-default-table">
             <tbody>
-            <!-- 开启闲置市场 -->
-            <tr class="noborder">
-                <td colspan="2" class="required"><label>{$Think.lang.flea_isuse}:</label></td>
-            </tr>
-            <tr class="noborder">
-                <td class="vatop rowform onoff">
-                    <label for="flea_isuse_1" class="cb-enable {eq name='list_setting.flea_isuse' value='1'}selected{/eq}" title="{$Think.lang.ds_open}"><span>{$Think.lang.ds_open}</span></label>
-                    <label for="flea_isuse_0" class="cb-disable {eq name='list_setting.flea_isuse' value='0'}selected{/eq}" title="{$Think.lang.ds_close}"><span>{$Think.lang.ds_close}</span></label>
-                    <input type="radio" id="flea_isuse_1" name="flea_isuse" value="1"  {if $list_setting.flea_isuse=='1'}checked=checked{/if}>
-                    <input type="radio" id="flea_isuse_0" name="flea_isuse" value="0" {if $list_setting.flea_isuse=='0'}checked=checked{/if}>
-                </td>
-                <td class="vatop tips">{$Think.lang.flea_isuse_notice}</td>
-            </tr>
             <!-- 促销开启 -->
             <tr class="noborder">
                 <td colspan="2" class="required"><label>{$Think.lang.promotion_allow}:</label></td>

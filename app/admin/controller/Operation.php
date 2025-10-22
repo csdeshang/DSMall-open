@@ -38,7 +38,6 @@ class Operation extends AdminControl
         $config_model = model('config');
         if (request()->isPost()) {
             $update_array = array();
-            $update_array['flea_isuse'] = intval(input('post.flea_isuse'));
             $update_array['promotion_allow'] = intval(input('post.promotion_allow'));
             $update_array['groupbuy_allow'] = intval(input('post.groupbuy_allow'));
             $update_array['points_isuse'] = intval(input('post.points_isuse'));

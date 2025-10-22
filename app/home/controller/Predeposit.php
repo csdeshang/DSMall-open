@@ -74,14 +74,11 @@ class Predeposit extends BaseMember {
                 exit;
             }
 
-            try {
                 $res=model('predeposit')->addRechargecard($sn, $this->member_info);
-                if($res['message']){
-                    $this->error($res['message']);
+                if(!$res['code']){
+                    $this->error($res['msg']);
                 }
-            } catch (Exception $e) {
-                $this->error($e->getMessage());
-            }
+                
             $this->success(lang('platform_recharge_card_successfully_used'), (string)url('Predeposit/rcb_log_list'));
         }
     }
@@ -213,12 +210,11 @@ class Predeposit extends BaseMember {
             $pdc_bank_no = $memberbank['memberbank_no'];
             $pdc_bank_user = $memberbank['memberbank_truename'];
             }elseif($memberbank_id==-1){//使用微信
-                $member_wxinfo= unserialize($this->member_info['member_wxinfo']);
-                if(!empty($member_wxinfo) && is_array($member_wxinfo) && isset($member_wxinfo['member_wxopenid']) && $member_wxinfo['member_wxopenid']){
+                if(!empty($this->member_info['member_h5_wxopenid'])){
                     $pdc_bank_type = 'weixin';
                     $pdc_bank_name = lang('pay_method_wechat');
-                    $pdc_bank_no = $member_wxinfo['member_wxopenid'];
-                    $pdc_bank_user = $member_wxinfo['nickname'];
+                    $pdc_bank_no = $this->member_info['member_h5_wxopenid'];
+                    $pdc_bank_user = $this->member_info['member_wxnickname'];
                 }else{
                     ds_json_encode(10001,lang('param_error'));
                 }
@@ -233,10 +229,7 @@ class Predeposit extends BaseMember {
                 'pdc_bank_user'  =>$pdc_bank_user,
                 'password'      =>input('post.password')
             ];
-            $predeposit_validate = ds_validate('predeposit');
-            if (!$predeposit_validate->scene('pd_cash_add')->check($data)) {
-                ds_json_encode(10001,$predeposit_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Predeposit.pd_cash_add');
 
             $predeposit_model = model('predeposit');
             $member_model = model('member');
@@ -262,8 +255,9 @@ class Predeposit extends BaseMember {
             if ($pdc_amount > floatval(config('ds_config.member_withdraw_max'))) {
                 ds_json_encode(10001, lang('predeposit_withdraw_max') . config('ds_config.store_withdraw_max') . lang('ds_yuan'));
             }
+            
+            Db::startTrans();
             try {
-                Db::startTrans();
                 $pdc_sn = makePaySn(session('member_id'));
                 $data = array();
                 $data['pdc_sn'] = $pdc_sn;
@@ -278,7 +272,7 @@ class Predeposit extends BaseMember {
                 $data['pdc_payment_state'] = 0;
                 $insert = $predeposit_model->addPdcash($data);
                 if (!$insert) {
-                    ds_json_encode(10001,lang('predeposit_cash_add_fail'));
+                    throw new \think\Exception(lang('predeposit_cash_add_fail'), 10001);
                 }
                 //冻结可用预存款
                 $data = array();
@@ -289,18 +283,17 @@ class Predeposit extends BaseMember {
                 $predeposit_model->changePd('cash_apply', $data);
                 Db::commit();
                 ds_json_encode(10000,lang('predeposit_cash_add_success'));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 Db::rollback();
                 ds_json_encode(10001,$e->getMessage());
             }
         }else{
             $memberbank_list = model('memberbank')->getMemberbankList(array('member_id' => session('member_id')));
-            $member_wxinfo = unserialize($this->member_info['member_wxinfo']);
-            if (!empty($member_wxinfo) && is_array($member_wxinfo) && isset($member_wxinfo['member_wxopenid']) && $member_wxinfo['member_wxopenid']) {
+            if (!empty($this->member_info['member_h5_wxopenid'])) {
                 if (empty($memberbank_list)) {
                     $memberbank_list = array();
                 }
-                $memberbank_list[] = array('memberbank_id' => -1, 'memberbank_type' => 'weixin', 'memberbank_no' => $member_wxinfo['nickname'], 'member_wxinfo' => $member_wxinfo);
+                $memberbank_list[] = array('memberbank_id' => -1, 'memberbank_type' => 'weixin', 'memberbank_no' => $this->member_info['member_wxnickname']);
             }
             View::assign('memberbank_list', $memberbank_list);
             /* 设置买家当前菜单 */

@@ -26,8 +26,8 @@ class  ExpresscfKdnConfig extends Validate {
         'expresscf_kdn_config_pay_type.require' => '运费支付方式必填',
     ];
     protected $scene = [
-        'expresscf_kdn_config_add' => ['express_code','expresscf_kdn_config_pay_type'],
-        'expresscf_kdn_config_edit' => ['expresscf_kdn_config_pay_type'],
+        'add' => ['express_code','expresscf_kdn_config_pay_type'],
+        'edit' => ['expresscf_kdn_config_pay_type'],
     ];
 
 }

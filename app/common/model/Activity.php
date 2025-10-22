@@ -57,7 +57,9 @@ class Activity extends BaseModel
      */
     public function editActivity($data, $id)
     {
-        return Db::name('activity')->where("activity_id='$id' ")->update($data);
+        $condition = array();
+        $condition[] = array('activity_id','=',$id);
+        return Db::name('activity')->where($condition)->update($data);
     }
 
     /**
@@ -79,6 +81,8 @@ class Activity extends BaseModel
      */
     public function getOneActivityById($id)
     {
-        return Db::name('activity')->where('activity_id',$id)->find();
+        $condition = array();
+        $condition[] = array('activity_id','=',$id);
+        return Db::name('activity')->where($condition)->find();
     }
 }

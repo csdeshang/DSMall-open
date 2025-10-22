@@ -1,12 +1,12 @@
 <?php
 
 namespace app\common\model;
-use think\facade\Db;
 
+use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -19,15 +19,14 @@ use think\facade\Db;
 class Inviterclass extends BaseModel {
 
     //获取分销员所对应的等级
-    public function getInviterclass($inviterclass_amount){
-        $inviterclass_name='';
-        $inviterclass_list=Db::name('inviterclass')->order('inviterclass_amount asc')->select()->toArray();
-        foreach($inviterclass_list as $inviterclass){
-            if($inviterclass_amount>=$inviterclass['inviterclass_amount']){
-                $inviterclass_name=$inviterclass['inviterclass_name'];
+    public function getInviterclass($inviterclass_amount) {
+        $inviterclass_name = '';
+        $inviterclass_list = Db::name('inviterclass')->order('inviterclass_amount asc')->select()->toArray();
+        foreach ($inviterclass_list as $inviterclass) {
+            if ($inviterclass_amount >= $inviterclass['inviterclass_amount']) {
+                $inviterclass_name = $inviterclass['inviterclass_name'];
             }
         }
         return $inviterclass_name;
     }
-
 }

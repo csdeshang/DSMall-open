@@ -7,7 +7,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -133,7 +133,9 @@ class Goodsclasstag extends BaseModel {
      * @return bool
      */
     public function editGoodsclasstag($param,$gctag_id) {
-        return Db::name('goodsclasstag')->where("gctag_id = '" . $gctag_id . "'")->update($param);
+        $condition = array();
+        $condition[] = array('gctag_id','=',$gctag_id);
+        return Db::name('goodsclasstag')->where($condition)->update($param);
     }
 
     /**
@@ -144,7 +146,9 @@ class Goodsclasstag extends BaseModel {
      * @return bool
      */
     public function delGoodsclasstagByIds($id) {
-        return Db::name('goodsclasstag')->where('gctag_id','in',$id)->delete();
+        $condition = array();
+        $condition[] = array('gctag_id','in',$id);
+        return Db::name('goodsclasstag')->where($condition)->delete();
     }
 
 

@@ -41,15 +41,6 @@ class Vrgroupbuy extends AdminControl {
 
     public function class_add() {
         if (request()->isPost()) { //添加虚拟抢购分类
-            // 数据验证
-            $data = [
-                'vrgclass_name' => input('post.vrgclass_name'),
-                'vrgclass_sort' => input('post.vrgclass_sort'),
-            ];
-            $vrgroupbuy_validate = ds_validate('vrgroupbuy');
-            if (!$vrgroupbuy_validate->scene('class_add')->check($data)) {
-                $this->error($vrgroupbuy_validate->getError());
-            }
 
             $params = array();
             $params['vrgclass_name'] = trim(input('post.vrgclass_name'));
@@ -59,6 +50,8 @@ class Vrgroupbuy extends AdminControl {
             } else {
                 $params['vrgclass_parent_id'] = 0;
             }
+            
+            $this->validate($params, 'app\common\validate\Vrgroupbuy.class_add');
 
             $vrgroupbuyclass_model = model('vrgroupbuyclass');
             $res = $vrgroupbuyclass_model->addVrgroupbuyclass($params); //添加分类
@@ -90,15 +83,6 @@ class Vrgroupbuy extends AdminControl {
 
     public function class_edit() {
         if (request()->isPost()) {
-            // 数据验证
-            $data = [
-                'vrgclass_name' => input('post.vrgclass_name'),
-                'vrgclass_sort' => input('post.vrgclass_sort'),
-            ];
-            $vrgroupbuy_validate = ds_validate('vrgroupbuy');
-            if (!$vrgroupbuy_validate->scene('class_edit')->check($data)) {
-                $this->error($vrgroupbuy_validate->getError());
-            }
 
             $params = array();
             $params['vrgclass_name'] = trim(input('post.vrgclass_name'));
@@ -108,6 +92,8 @@ class Vrgroupbuy extends AdminControl {
             } else {
                 $params['vrgclass_parent_id'] = 0;
             }
+            
+            $this->validate($params, 'app\common\validate\Vrgroupbuy.class_edit');
 
             $condition = array(); //条件
             $condition[] = array('vrgclass_id','=',intval(input('param.vrgclass_id')));

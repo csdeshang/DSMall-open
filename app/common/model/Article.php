@@ -5,7 +5,7 @@ use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -96,7 +96,7 @@ class Article extends BaseModel
      * @param int $id 记录ID
      * @return bool 布尔类型的返回结果
      */
-    public function delArticle($id){
-        return Db::name('article')->where(array('article_id'=>$id))->delete();
+    public function delArticle($article_id){
+        return Db::name('article')->where(array('article_id'=>$article_id))->delete();
     }
 }

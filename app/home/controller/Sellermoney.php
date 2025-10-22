@@ -88,7 +88,7 @@ class Sellermoney extends BaseSeller {
                 'storemoneylog_type'=>Storemoneylog::TYPE_MEMBER_IN,
                 'storemoneylog_state'=>Storemoneylog::STATE_VALID,
                 'storemoneylog_add_time'=>TIMESTAMP,
-                'store_avaliable_money'=>$amount,
+                'storemoneylog_avaliable_money'=>$amount,
                 'storemoneylog_desc' => lang('sellermoney_member_money').lang('sellermoney_rechargew').'，'.lang('sellermoney_money').'：'. $amount,
             );
             
@@ -100,8 +100,8 @@ class Sellermoney extends BaseSeller {
                 'order_sn' => $order_sn,
             );
             
+            Db::startTrans();
             try {
-                Db::startTrans();
                 $storemoneylog_model->changeStoremoney($storedata);
                 $predeposit_model->changePd('store_rechargew_pay', $memberdata);
                 Db::commit();
@@ -138,7 +138,7 @@ class Sellermoney extends BaseSeller {
                 'storemoneylog_type'=>Storemoneylog::TYPE_MEMBER_OUT,
                 'storemoneylog_state'=>Storemoneylog::STATE_VALID,
                 'storemoneylog_add_time'=>TIMESTAMP,
-                'store_avaliable_money'=>-$amount,
+                'storemoneylog_avaliable_money'=>-$amount,
                 'storemoneylog_desc' => lang('sellermoney_withdraw_member').'，'.lang('sellermoney_money').'：'. $amount,
             );
             
@@ -150,8 +150,8 @@ class Sellermoney extends BaseSeller {
                 'order_sn' => $order_sn,
             );
             
+            Db::startTrans();
             try {
-                Db::startTrans();
                 $storemoneylog_model->changeStoremoney($storedata);
                 $predeposit_model->changePd('store_withdraw', $memberdata);
                 Db::commit();
@@ -173,15 +173,11 @@ class Sellermoney extends BaseSeller {
     public function withdraw_add() {
         $store_info = Db::name('store')->where(array('store_id' => session('store_id')))->field('store_avaliable_money,store_freeze_money')->find();
         if (request()->isPost()) {
-            $data = [
-                'pdc_amount' => floatval(input('post.pdc_amount')),
-            ];
-            $sellermoney_validate = ds_validate('sellermoney');
-            if (!$sellermoney_validate->scene('withdraw_add')->check($data)) {
-                ds_json_encode(10001, $sellermoney_validate->getError());
-            }
 
-            $pdc_amount = $data['pdc_amount'];
+            $pdc_amount = floatval(input('post.pdc_amount'));
+            
+            $this->validate(array('pdc_amount'=>$pdc_amount), 'app\common\validate\Singlefield.pdc_amount');
+            
             $storemoneylog_model = model('storemoneylog');
             //是否超过提现周期
             $last_withdraw = $storemoneylog_model->getStoremoneylogInfo(array(array('store_id', '=', $this->store_info['store_id']), array('storemoneylog_state', 'in', [Storemoneylog::STATE_WAIT, Storemoneylog::STATE_AGREE]), array('storemoneylog_type', '=', Storemoneylog::TYPE_WITHDRAW), array('storemoneylog_add_time', '>', TIMESTAMP - intval(config('ds_config.store_withdraw_cycle')) * 86400)), 'storemoneylog_add_time');
@@ -203,8 +199,8 @@ class Sellermoney extends BaseSeller {
                 'storemoneylog_state' => Storemoneylog::STATE_WAIT,
                 'storemoneylog_add_time' => TIMESTAMP,
             );
-            $data['store_avaliable_money'] = -$pdc_amount;
-            $data['store_freeze_money'] = $pdc_amount;
+            $data['storemoneylog_avaliable_money'] = -$pdc_amount;
+            $data['storemoneylog_freeze_money'] = $pdc_amount;
 
             $storejoinin_info = Db::name('storejoinin')->where(array('member_id' => $this->store_info['member_id']))->field('settlement_bank_account_name,settlement_bank_account_number,settlement_bank_name,settlement_bank_address')->find();
 
@@ -216,8 +212,9 @@ class Sellermoney extends BaseSeller {
             }
 
             $data['storemoneylog_desc'] = $sml_desc;
+            
+            Db::startTrans();
             try {
-                Db::startTrans();
                 $storemoneylog_model->changeStoremoney($data);
                 Db::commit();
                 $this->recordSellerlog(lang('sellermoney_apply_withdraw'));

@@ -53,18 +53,14 @@ class Payment extends BaseMall {
         }
 
 
+        Db::startTrans();
         try {
-            Db::startTrans();
-
-
             if (!empty($post['rcb_pay'])) {
                 $order_info = $logic_buy->rcbPay($order_info, $post, $buyer_info);
             }
-
             if (!empty($post['pd_pay'])) {
                 $order_info = $logic_buy->pdPay($order_info, $post, $buyer_info);
             }
-
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
@@ -475,6 +471,8 @@ class Payment extends BaseMall {
         } elseif ($order_type == 'vr_order') {
             $pay_ok_url = HOME_SITE_URL . '/buyvirtual/pay_ok?order_sn=' . $out_trade_no . '&order_amount=' . ds_price_format($order_amount);
         } elseif ($order_type == 'pd_order') {
+            $pay_ok_url = HOME_SITE_URL . '/predeposit/index';
+        } elseif ($order_type == 'sj_order') {
             $pay_ok_url = HOME_SITE_URL . '/predeposit/index';
         }
         header("Location:$pay_ok_url");

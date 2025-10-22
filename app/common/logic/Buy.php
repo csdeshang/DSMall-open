@@ -211,18 +211,6 @@ class Buy
         //输出用户默认收货地址
         $result['address_info'] = model('address')->getDefaultAddressInfo(array('member_id' => $member_id));
 
-        //输出有货到付款时，在线支付和货到付款及每种支付下商品数量和详细列表
-        $pay_goods_list = $this->_logic_buy_1->getOfflineGoodsPay($goods_list);
-        if (!empty($pay_goods_list['offline'])) {
-            $result['pay_goods_list'] = $pay_goods_list;
-            $result['ifshow_offpay'] = true;
-        }
-        else {
-            //如果所购商品只支持线上支付，支付方式不允许修改
-            $result['deny_edit_payment'] = true;
-            $result['pay_goods_list'] = $pay_goods_list;
-            $result['ifshow_offpay'] = FALSE;
-        }
 
         //是否是预售订单
         $if_presell=0;
@@ -232,8 +220,6 @@ class Buy
                 if(!empty($current_goods['presell_info']) && $current_goods['presell_info']['presell_type']==2){
                     $if_presell=1;
                     $presell_deposit_amount=$current_goods['presell_info']['presell_deposit_amount'];
-                    $result['deny_edit_payment'] = true;
-                    $result['ifshow_offpay'] = FALSE;
                 }
             }
         $result['if_presell'] = $if_presell;
@@ -297,10 +283,11 @@ class Buy
         $this->_member_info['member_email'] = $member_email;
         $this->_post_data = $post;
 
+        Db::startTrans();
         try {
 
             $order_model = model('order');
-            Db::startTrans();
+            
             $this->_logic_buy_1->lock=true;
             //第1步 表单验证
             $this->_createOrderStep1();
@@ -341,10 +328,6 @@ class Buy
         $inviter_ratio_3=config('ds_config.inviter_ratio_3');
         $orderinviter_model = model('orderinviter');
         foreach ($order_list as $order_id => $order) {
-            //如果是线下支付因为不会生成结算单所以不生成推广记录
-            if($order['payment_code']=='offline'){
-                continue;
-            }
             foreach($order['order_goods'] as $goods){
                 //查询商品的分销信息
                 $goods_common_info=Db::name('goodscommon')->alias('gc')->join('goods g','g.goods_commonid=gc.goods_commonid')->where('g.goods_id='.$goods['goods_id'])->field('gc.goods_commonid,gc.inviter_open,gc.inviter_ratio')->find();
@@ -581,24 +564,8 @@ class Buy
 
         if (!empty($freight_list['nocalced']) && is_array($freight_list['nocalced']))
             foreach (array_keys($freight_list['nocalced']) as $k)
-                //if (in_array($k, $offline_store_id_array))
                 $order_platform_store_ids[$k] = null;
 
-        //if ($order_platform_store_ids) {
-        $allow_offpay_batch = model('offpayarea')->checkSupportOffpayBatch($area_id, array_keys($order_platform_store_ids));
-        /*
-                //JS验证使用
-                $data['allow_offpay'] = array_filter($allow_offpay_batch) ? '1' : '0';
-                $data['allow_offpay_batch'] = $allow_offpay_batch;
-            } else {*/
-        //JS验证使用
-        $data['allow_offpay'] = array_filter($allow_offpay_batch) ? '1' : '0';
-        $data['allow_offpay_batch'] = $allow_offpay_batch;
-        //}
-
-        //PHP验证使用
-        $data['offpay_hash'] = $this->buyEncrypt($data['allow_offpay'] ? 'allow_offpay' : 'deny_offpay', $member_id);
-        $data['offpay_hash_batch'] = $this->buyEncrypt($data['allow_offpay_batch'], $member_id);
         $data['limitidarray']  = $limitidarray;
 
         return $data;
@@ -723,18 +690,6 @@ class Buy
         }
         $input_if_vat = ($input_if_vat == 'allow_vat') ? true : false;
 
-        //是否支持货到付款
-        $input_if_offpay = $this->buyDecrypt($post['offpay_hash'], $this->_member_info['member_id']);
-        if (!in_array($input_if_offpay, array('allow_offpay', 'deny_offpay'))) {
-            throw new \think\Exception('订单保存出现异常[货到付款验证错误]，请重试', 10006);
-        }
-        $input_if_offpay = ($input_if_offpay == 'allow_offpay') ? true : false;
-
-        // 是否支持货到付款 具体到各个店铺
-        $input_if_offpay_batch = $this->buyDecrypt($post['offpay_hash_batch'], $this->_member_info['member_id']);
-        if (!is_array($input_if_offpay_batch)) {
-            throw new \think\Exception('订单保存出现异常[部分店铺付款方式出现异常]，请重试', 10006);
-        }
 
         //付款方式:在线支付/货到付款(online/offline)
         if (!in_array($post['pay_name'], array('online', 'offline'))) {
@@ -769,7 +724,7 @@ class Buy
         
         //验证平台代金券
         $input_mallvoucher_list = array();
-        if(isset($post['mallvoucher'])){
+        if(!empty($post['mallvoucher']) && isset($post['mallvoucher'])){
             $mallvoucher = explode('|',$post['mallvoucher']);
             if(!empty($mallvoucher[0])){
                 $input_mallvoucher_list['mallvoucher_price'] = substr($post['mallvoucher'],strripos($post['mallvoucher'],"|")+1);
@@ -789,15 +744,13 @@ class Buy
         $this->_order_data['input_buy_items'] = $input_buy_items;
         $this->_order_data['input_city_id'] = $input_city_id;
         $this->_order_data['input_pay_name'] = $input_pay_name;
-        $this->_order_data['input_if_offpay'] = $input_if_offpay;
-        $this->_order_data['input_if_offpay_batch'] = $input_if_offpay_batch;
         $this->_order_data['input_pay_message'] = $post['pay_message'];
         $this->_order_data['input_address_info'] = $input_address_info;
         $this->_order_data['input_invoice_info'] = $input_invoice_info;
         $this->_order_data['input_voucher_list'] = $input_voucher_list;
         $this->_order_data['input_chain_list'] = $input_chain_list;
         $this->_order_data['input_mallvoucher_list'] = $input_mallvoucher_list;
-        $this->_order_data['order_from'] = $post['order_from'] == 2 ? 2 : 1;
+        $this->_order_data['order_from'] = isset($post['order_from']) ? $post['order_from'] : '未知来源';
 
     }
 
@@ -981,12 +934,8 @@ class Buy
         $notice_list = array();
 
         //每个店铺订单是货到付款还是线上支付,店铺ID=>付款方式[在线支付/货到付款]
-        $store_pay_type_list = $this->_logic_buy_1->getStorePayTypeList(array_keys($store_cart_list), $input_if_offpay, $input_pay_name);
+        $store_pay_type_list = $this->_logic_buy_1->getStorePayTypeList(array_keys($store_cart_list), $input_pay_name);
 
-        foreach ($store_pay_type_list as $k => & $v) {
-            if (empty($input_if_offpay_batch[$k]))
-                $v = 'online';
-        }
 
         $pay_sn = makePaySn($member_id);
         $order_pay = array();
@@ -1053,13 +1002,7 @@ class Buy
             }
             $order['goods_amount'] = $order['order_amount'] - $order['shipping_fee'];
             $order['order_from'] = $order_from;
-            //如果支持方式为空时，默认为货到付款 
-            if ($order['payment_code'] == "") {
-                $order['payment_code'] = "offline";
-            }
-            if($order['payment_code'] == "offline" && $input_address_info['chain_id']){
-                throw new \think\Exception('代收点不可以使用货到付款[未生成订单数据]', 10006);
-            }
+            
             $order_id = $order_model->addOrder($order);
             if (!$order_id) {
                 throw new \think\Exception('订单保存失败[未生成订单数据]', 10006);
@@ -1121,6 +1064,7 @@ class Buy
                     $order_goods[$i]['store_id'] = $store_id;
                     $order_goods[$i]['goods_name'] = $goods_info['goods_name'];
                     $order_goods[$i]['goods_price'] = $goods_info['goods_price'];
+                    $order_goods[$i]['goods_original_price'] = $goods_info['goods_original_price'];
                     $order_goods[$i]['goods_num'] = $goods_info['goods_num'];
                     $order_goods[$i]['goods_image'] = $goods_info['goods_image'];
                     $order_goods[$i]['buyer_id'] = $member_id;
@@ -1221,6 +1165,7 @@ class Buy
                         $order_goods[$i]['store_id'] = $store_id;
                         $order_goods[$i]['goods_name'] = $bl_goods_info['goods_name'];
                         $order_goods[$i]['goods_price'] = $bl_goods_info['blgoods_price'];
+                        $order_goods[$i]['goods_original_price'] = $bl_goods_info['goods_original_price'];
                         $order_goods[$i]['goods_num'] = $goods_info['goods_num'];
                         $order_goods[$i]['goods_image'] = $bl_goods_info['goods_image'];
                         $order_goods[$i]['buyer_id'] = $member_id;
@@ -1454,7 +1399,7 @@ class Buy
      */
     public function buyEncrypt($string, $member_id)
     {
-        $buy_key = sha1(md5($member_id . '&' . md5(config('ds_config.setup_date'))));
+        $buy_key = sha1(md5($member_id . '&' . md5(config('ds_config.site_uniqid'))));
         if (is_array($string)) {
             $string = serialize($string);
         }
@@ -1472,7 +1417,7 @@ class Buy
      */
     public function buyDecrypt($string, $member_id, $ttl = 0)
     {
-        $buy_key = sha1(md5($member_id . '&' . md5(config('ds_config.setup_date'))));
+        $buy_key = sha1(md5($member_id . '&' . md5(config('ds_config.site_uniqid'))));
         if (empty($string))
             return;
         $string = base64_decode(ds_decrypt(strval($string), $buy_key, $ttl));

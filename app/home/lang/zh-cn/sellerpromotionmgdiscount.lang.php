@@ -47,7 +47,7 @@ $lang['implement_flat_membership_discount'] = '该商品的所有规格SKU都将
 $lang['setting_indicates_no_discount'] = '数值为0.1至10之间,设置为10表示不享受折扣';
 
 //mgdiscount_quota_add
-$lang['deduction_settlement_payment_days'] = '相关费用会在店铺的账期结算中扣除';
+$lang['deduction_settlement_payment_days'] = '相关费用会在店铺的资金中扣除';
 
 //mgdiscount_store
 $lang['set_renewal'] = '套餐续费';

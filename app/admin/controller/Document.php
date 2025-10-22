@@ -11,7 +11,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 文章管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -44,47 +44,41 @@ class Document extends AdminControl {
      */
     public function edit() {
         if (request()->isPost()) {
-            /**
-             * 验证
-             */
-            $data = [
-                'document_title' => input('post.document_title'),
-                'document_content' => input('post.document_content'),
-            ];
-            $document_validate = ds_validate('document');
-            if (!$document_validate->scene('edit')->check($data)) {
-                $this->error($document_validate->getError());
-            } else {
-                $param = array();
-                $param['document_id'] = intval(input('document_id'));
-                $param['document_title'] = trim(input('document_title'));
-                $param['document_content'] = trim(input('document_content'));
-                $param['document_time'] = TIMESTAMP;
-                $document_model = model('document');
 
-                $result = $document_model->editDocument($param);
+            $document_id = intval(input('document_id'));
+            $data = array();
+            $data['document_title'] = trim(input('document_title'));
+            $data['document_content'] = trim(input('document_content'));
+            $data['document_time'] = TIMESTAMP;
 
-                if ($result) {
-                    /**
-                     * 更新图片信息ID
-                     */
-                    $upload_model = model('upload');
-                    $file_id_array = input('post.file_id/a');
-                    if (is_array($file_id_array) && !empty($file_id_array)) {
-                        foreach ($file_id_array as $k => $v) {
-                            $v = intval($v);
-                            $update_array = array();
-                            $update_array['item_id'] = intval(input('document_id'));
-                            $upload_model->editUpload($update_array,array(array('upload_id','=',intval($v))));
-                            unset($update_array);
-                        }
+            $this->validate($data, 'app\common\validate\Document.edit');
+            
+            $condition = array();
+            $condition[] = array('document_id', '=', $document_id);
+            
+            $document_model = model('document');
+            $result = $document_model->editDocument($data, $condition);
+
+            if ($result) {
+                /**
+                 * 更新图片信息ID
+                 */
+                $upload_model = model('upload');
+                $file_id_array = input('post.file_id/a');
+                if (is_array($file_id_array) && !empty($file_id_array)) {
+                    foreach ($file_id_array as $k => $v) {
+                        $v = intval($v);
+                        $update_array = array();
+                        $update_array['item_id'] = intval(input('document_id'));
+                        $upload_model->editUpload($update_array, array(array('upload_id', '=', intval($v))));
+                        unset($update_array);
                     }
-
-                    $this->log(lang('ds_edit') . lang('document_index_document') . '[ID:' . input('document_id') . ']', 1);
-                    $this->success(lang('ds_common_save_succ'), 'document/index');
-                } else {
-                    $this->error(lang('ds_common_save_fail'));
                 }
+
+                $this->log(lang('ds_edit') . lang('document_index_document') . '[ID:' . input('document_id') . ']', 1);
+                $this->success(lang('ds_common_save_succ'), 'document/index');
+            } else {
+                $this->error(lang('ds_common_save_fail'));
             }
         } else {
             if (empty(input('param.document_id'))) {
@@ -125,13 +119,13 @@ class Document extends AdminControl {
         $file_name = '';
         $file_object = request()->file('fileupload');
         if ($file_object) {
-                $res=ds_upload_pic(ATTACH_ARTICLE,'fileupload');
-                if($res['code']){
-                    $file_name=$res['data']['file_name'];
-                }else{
-                    echo $res['msg'];
-                    exit;
-                }
+            $res = ds_upload_pic(ATTACH_ARTICLE, 'fileupload');
+            if ($res['code']) {
+                $file_name = $res['data']['file_name'];
+            } else {
+                echo $res['msg'];
+                exit;
+            }
         } else {
             echo 'error';
             exit;
@@ -155,7 +149,7 @@ class Document extends AdminControl {
             $data = array();
             $data['file_id'] = $result;
             $data['file_name'] = $file_name;
-            $data['file_path'] = ds_get_pic(ATTACH_ARTICLE , $file_name);
+            $data['file_path'] = ds_get_pic(ATTACH_ARTICLE, $file_name);
             /**
              * 整理为json格式
              */
@@ -179,7 +173,7 @@ class Document extends AdminControl {
                      * 删除图片
                      */
                     $file_array = $upload_model->getOneUpload(intval(input('param.file_id')));
-                    @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_ARTICLE . DIRECTORY_SEPARATOR . $file_array['file_name']);
+                    ds_del_pic(ATTACH_ARTICLE,$file_array['file_name']);
                     /**
                      * 删除信息
                      */
@@ -212,5 +206,4 @@ class Document extends AdminControl {
         }
         return $menu_array;
     }
-
 }

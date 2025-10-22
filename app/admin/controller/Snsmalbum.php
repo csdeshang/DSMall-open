@@ -7,7 +7,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 相册管理
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -128,9 +128,8 @@ class Snsmalbum extends AdminControl
                 ds_json_encode(10001, lang('snsalbum_choose_need_del_img'));
             }
             foreach ($ap_list as $val) {
-                @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_MALBUM . DIRECTORY_SEPARATOR . $val['member_id'] . DIRECTORY_SEPARATOR . $val['ap_cover']);
-                @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_MALBUM . DIRECTORY_SEPARATOR . $val['member_id'] . DIRECTORY_SEPARATOR . str_ireplace('.', '_240.', $val['ap_cover']));
-                @unlink(BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_MALBUM . DIRECTORY_SEPARATOR . $val['member_id'] . DIRECTORY_SEPARATOR . str_ireplace('.', '_1280.', $val['ap_cover']));
+                //删除图片
+                ds_del_pic(ATTACH_MALBUM.'/'.$val['member_id'], $val['ap_cover']);
             }
             $result = $snsmalbum_model->delSnsalbumpic($condition);
             if($result){

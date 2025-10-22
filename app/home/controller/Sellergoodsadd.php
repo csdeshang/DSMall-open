@@ -242,9 +242,9 @@ class Sellergoodsadd extends BaseSeller {
                 $common_array['transport_title'] = input('post.transport_title');
                 $common_array['goods_freight'] = floatval(input('post.g_freight'));
 
-                $goods_validate = ds_validate('sellergoodsadd');
-                if (!$goods_validate->scene('save_goods')->check($common_array)) {
-                    throw new \think\Exception($goods_validate->getError(), 10006);
+                $goodscommon_validate = ds_validate('goodscommon');
+                if (!$goodscommon_validate->scene('add')->check($common_array)) {
+                    throw new \think\Exception($goodscommon_validate->getError(), 10006);
                 }
 
                 //查询店铺商品分类
@@ -449,11 +449,12 @@ class Sellergoodsadd extends BaseSeller {
                 } else {
                     throw new \think\Exception(lang('store_goods_index_goods_add_fail'), 10006);
                 }
+                Db::commit();
             } catch (\Exception $e) {
                 Db::rollback();
                 $this->error($e->getMessage(), get_referer());
             }
-            Db::commit();
+            
             $this->redirect((string) url('Sellergoodsadd/add_step_three', ['commonid' => $common_id]));
         }
     }
@@ -628,13 +629,12 @@ class Sellergoodsadd extends BaseSeller {
         $file_name = input('post.name');
 
         $result = upload_albumpic($upload_path, $file_name, $save_name);
-        if ($result['code'] == '10000') {
-            $img_path = $result['result'];
-            list($width, $height, $type, $attr) = getimagesize($img_path);
-            $img_path = substr(strrchr($img_path, "/"), 1);
+        if ($result['code']) {
+            $img_path = $result['data']['file_name'];
+            list($width, $height, $type, $attr) = getimagesize($_FILES[$file_name]['tmp_name']);
         } else {
             //未上传图片或出错不做后面处理
-            exit(json_encode(array('error' => '上传失败,请检查上传内容')));
+            exit(json_encode(array('error' => $result['msg'])));
         }
 
         // 存入相册
@@ -807,8 +807,12 @@ class Sellergoodsadd extends BaseSeller {
             die();
         }
         $insert = array(
-            'spvalue_name' => $name, 'sp_id' => $sp_id, 'gc_id' => $gc_id, 'store_id' => session('store_id'),
-            'spvalue_color' => null, 'spvalue_sort' => 0,
+            'spvalue_name' => $name,
+            'sp_id' => $sp_id,
+            'gc_id' => $gc_id,
+            'store_id' => session('store_id'),
+            'spvalue_color' => null,
+            'spvalue_sort' => 0,
         );
         $value_id = model('spec')->addSpecvalue($insert);
         if ($value_id) {

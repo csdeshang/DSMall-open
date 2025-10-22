@@ -66,7 +66,7 @@ $lang['click_add_activity_button'] = '1、点击添加活动按钮可以添加�
 $lang['click_delete_button'] = '2、点击删除按钮可以删除预售活动';
 $lang['overdue_package'] = '套餐过期时间';
 $lang['please_package_first'] = '当前没有可用套餐，请先购买套餐';
-$lang['period_settlement_deduct'] = '相关费用会在店铺的账期结算中扣除';
+$lang['period_settlement_deduct'] = '相关费用会在店铺的资金中扣除';
 
 //presell_add
 $lang['start_time_group_not_modified'] = '预售开始时间不可修改';

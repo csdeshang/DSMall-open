@@ -136,10 +136,8 @@ class Sellerpromotionbargain extends BaseSeller {
             'bargain_begintime' => input('post.start_time'),
             'bargain_endtime' => input('post.end_time'),
         );
-        $pbargain_validate = ds_validate('pbargain');
-        if (!$pbargain_validate->scene('pbargin_save')->check($data)) {
-            ds_json_encode(10001, $pbargain_validate->getError());
-        }
+        $this->validate($data, 'app\common\validate\Pbargain.pbargin_save');
+        
         //获取提交的数据
         $goods_id = intval(input('post.bargain_goods_id'));
         if (empty($goods_id)) {
@@ -321,6 +319,10 @@ class Sellerpromotionbargain extends BaseSeller {
         }
         //获取当前价格
         $current_price = intval(config('ds_config.promotion_bargain_price'));
+        
+        //先记录店铺记录店铺费用以免扣费不成功
+        $this->recordStorecost($current_price * $bargain_quota_quantity, lang('buy_spell_group').' ['.$bargain_quota_quantity.'个月 × 单价:'.$current_price.'元]');
+        
         //获取该用户已有套餐
         $bargainquota_model = model('pbargainquota');
         $current_bargain_quota = $bargainquota_model->getBargainquotaCurrent($this->store_info['store_id']);
@@ -340,9 +342,6 @@ class Sellerpromotionbargain extends BaseSeller {
             $param['bargainquota_endtime'] = Db::raw('bargainquota_endtime+' . $bargain_add_time);
             $bargainquota_model->editBargainquota($param, array('bargainquota_id' => $current_bargain_quota['bargainquota_id']));
         }
-
-        //记录店铺费用
-        $this->recordStorecost($current_price * $bargain_quota_quantity, lang('buy_spell_group').' ['.$bargain_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog(lang('buy') . $bargain_quota_quantity . lang('combo_pack') . $current_price . lang('ds_yuan'));
 

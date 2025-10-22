@@ -6,7 +6,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 导航
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -55,11 +55,9 @@ class Navigation extends AdminControl {
             $data['nav_url'] = input('post.nav_url');
             $data['nav_new_open'] = intval(input('post.nav_new_open'));
             $data['nav_sort'] = intval(input('post.nav_sort'));
-            $navigation_validate = ds_validate('navigation');
-            if (!$navigation_validate->scene('add')->check($data)) {
-                $this->error($navigation_validate->getError());
-            }
-
+            
+            $this->validate($data, 'app\common\validate\Navigation.add');
+            
             $navigation_model= model('navigation');
             $result=$navigation_model->addNavigation($data);
             if ($result) {
@@ -88,10 +86,9 @@ class Navigation extends AdminControl {
             $data['nav_url'] = input('post.nav_url');
             $data['nav_new_open'] = intval(input('post.nav_new_open'));
             $data['nav_sort'] = intval(input('post.nav_sort'));
-            $navigation_validate = ds_validate('navigation');
-            if (!$navigation_validate->scene('edit')->check($data)) {
-                $this->error($navigation_validate->getError());
-            }
+            
+            $this->validate($data, 'app\common\validate\Navigation.edit');
+
             $condition = array();
             $condition[] = array('nav_id','=',$nav_id);
             $result = $navigation_model->eidtNavigation($data,$condition);

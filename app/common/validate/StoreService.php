@@ -26,7 +26,7 @@ class  StoreService extends Validate
         'store_service_title.require'=>'标题名称不能为空',
     ];
     protected $scene = [
-        'add' => ['store_service_sort', 'store_service_title'],
-        'edit' => ['store_service_sort', 'store_service_title'],
+        'model_add' => ['store_service_sort', 'store_service_title'],
+        'model_edit' => ['store_service_sort', 'store_service_title'],
     ];
 }

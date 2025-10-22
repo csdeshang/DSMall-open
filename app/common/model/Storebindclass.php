@@ -7,8 +7,8 @@
 
 namespace app\common\model;
 
-
 use think\facade\Db;
+
 /**
  * ============================================================================
  * DSMall多用户商城
@@ -23,7 +23,6 @@ use think\facade\Db;
  */
 class Storebindclass extends BaseModel {
 
-    
     /**
      * 读取列表
      * @access public
@@ -35,11 +34,11 @@ class Storebindclass extends BaseModel {
      * @return array
      */
     public function getStorebindclassList($condition, $pagesize = '', $order = '', $field = '*') {
-        if($pagesize){
-            $result = Db::name('storebindclass')->field($field)->where($condition)->order($order)->paginate(['list_rows'=>$pagesize,'query' => request()->param()],false);
+        if ($pagesize) {
+            $result = Db::name('storebindclass')->field($field)->where($condition)->order($order)->paginate(['list_rows' => $pagesize, 'query' => request()->param()], false);
             $this->page_info = $result;
             return $result->items();
-        }else{
+        } else {
             $result = Db::name('storebindclass')->field($field)->where($condition)->order($order)->select()->toArray();
             return $result;
         }
@@ -90,7 +89,6 @@ class Storebindclass extends BaseModel {
     public function editStorebindclass($update, $condition) {
         return Db::name('storebindclass')->where($condition)->update($update);
     }
-
 
     /**
      * 删除
@@ -143,20 +141,20 @@ class Storebindclass extends BaseModel {
         if (empty($store_gc_id_list))
             return $store_gc_id_commis_rate;
 
-        $store_bind_class_list=array();
+        $store_bind_class_list = array();
         foreach ($store_gc_id_list as $store_id => $gc_id_list) {
             foreach ($gc_id_list as $gc_id) {
-                $key=$gc_id['gc_id_1'].'|'.$gc_id['gc_id_2'].'|'.$gc_id['gc_id_3'];
-                if(!isset($store_bind_class_list[$key])){
+                $key = $gc_id['gc_id_1'] . '|' . $gc_id['gc_id_2'] . '|' . $gc_id['gc_id_3'];
+                if (!isset($store_bind_class_list[$key])) {
                     //如果class_1,2,3有一个字段值匹配，就有效
                     $condition = array();
-                    $condition[]=array('store_id','=',$store_id);
+                    $condition[] = array('store_id', '=', $store_id);
                     $condition[] = Db::raw('(class_1=0 AND class_2=0 AND class_3=0) OR (class_1=' . $gc_id['gc_id_1'] . ' AND class_2=0 AND class_3=0) OR (class_1=' . $gc_id['gc_id_1'] . ' AND class_2=' . $gc_id['gc_id_2'] . ' AND class_3=0) OR (class_1=' . $gc_id['gc_id_1'] . ' AND class_2=' . $gc_id['gc_id_2'] . ' AND class_3=' . $gc_id['gc_id_3'] . ')');
                     $bind_list = $this->getStorebindclassList($condition, 1, 'class_3 desc,class_2 desc,class_1 desc');
                     if (!empty($bind_list) && is_array($bind_list)) {
-                        $store_bind_class_list[$key]=$bind_list[0];
-                    }else{
-                        $store_bind_class_list[$key]=false;
+                        $store_bind_class_list[$key] = $bind_list[0];
+                    } else {
+                        $store_bind_class_list[$key] = false;
                     }
                 }
                 if ($store_bind_class_list[$key]) {
@@ -166,5 +164,4 @@ class Storebindclass extends BaseModel {
         }
         return $store_gc_id_commis_rate;
     }
-
 }

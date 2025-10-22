@@ -64,6 +64,9 @@ class Sellergroupbuy extends BaseSeller {
         //获取当前价格
         $current_price = intval(config('ds_config.groupbuy_price'));
 
+        //先记录店铺记录店铺费用以免扣费不成功
+        $this->recordStorecost($current_price * $groupbuy_quota_quantity, lang('buy_to_snap_up').' ['.$groupbuy_quota_quantity.'个月 × 单价:'.$current_price.'元]');
+        
         //获取该用户已有套餐
         $current_groupbuy_quota = $groupbuyquota_model->getGroupbuyquotaCurrent(session('store_id'));
         $add_time = 86400 * 30 * $groupbuy_quota_quantity;
@@ -83,8 +86,6 @@ class Sellergroupbuy extends BaseSeller {
             $groupbuyquota_model->editGroupbuyquota($param, array('groupbuyquota_id' => $current_groupbuy_quota['groupbuyquota_id']));
         }
 
-        //记录店铺费用
-        $this->recordStorecost($current_price * $groupbuy_quota_quantity, lang('buy_to_snap_up').' ['.$groupbuy_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog(lang('buy') . $groupbuy_quota_quantity . lang('snap_up_package') . $current_price . lang('ds_yuan'));
 
@@ -317,7 +318,6 @@ class Sellergroupbuy extends BaseSeller {
                 $data['file_name'] = $pic;
                 $data['origin_file_name'] = $_FILES[$file]['name'];
                 $data['file_url'] = ds_get_pic(ATTACH_GROUPBUY . DIRECTORY_SEPARATOR . session('store_id') , $pic);
-                ds_create_thumb($upload_path, $file_name, '120,420', '120,420', '_small,_normal');
             } else {
                 $data['result'] = false;
                 $data['message'] = $res['msg'];
@@ -343,9 +343,8 @@ class Sellergroupbuy extends BaseSeller {
         if (strpos($image_name, '..') !== false) {
             return;
         }
-
-        $upload_path = BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_GROUPBUY . DIRECTORY_SEPARATOR . $store_id . DIRECTORY_SEPARATOR;
-        ds_unlink($upload_path, $image_name);
+        
+        ds_del_pic(ATTACH_GROUPBUY.'/'.$store_id,$image_name);
     }
 
     /**

@@ -41,8 +41,8 @@ class  Presell extends Validate
         'presell_shipping_time.requireIf' => '请选择发货时间',
     ];
     protected $scene = [
-        'presell_add' => ['presell_type', 'goods_id', 'presell_deposit_amount', 'presell_price', 'presell_start_time', 'presell_end_time', 'presell_shipping_time'],
-        'presell_edit' => ['presell_deposit_amount', 'presell_price', 'presell_shipping_time'],
+        'controller_add' => ['presell_type', 'goods_id', 'presell_deposit_amount', 'presell_price', 'presell_start_time', 'presell_end_time', 'presell_shipping_time'],
+        'controller_edit' => ['presell_deposit_amount', 'presell_price', 'presell_shipping_time'],
     ];
 
 }

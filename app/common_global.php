@@ -80,7 +80,6 @@ define('ATTACH_VOUCHER',ATTACH_PATH.'/voucher');
 define('ATTACH_STORE_JOININ',ATTACH_PATH.'/store_joinin');
 define('ATTACH_MOBILE','mobile');
 define('ATTACH_MALBUM',ATTACH_PATH.'/member');
-define('ATTACH_MFLEA',ATTACH_PATH.'/member/flea');
 define('ATTACH_LIVE_APPLY',ATTACH_PATH.'/live_apply');
 define('ATTACH_MINIPRO_LIVE',ATTACH_PATH.'/minipro_live');
 define('TPL_SHOP_NAME','default');

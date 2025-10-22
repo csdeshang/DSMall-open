@@ -10,9 +10,8 @@
     <table class="ds-default-table">
         <thead>
             <tr class="thead">
-                <th class="align-center"> {$Think.lang.wechat_avatar}</th>
                 <th class="align-center"> {$Think.lang.wechat_nickname}</th>
-                <th class="align-center"> {$Think.lang.wechat_openid}</th>
+                <th class="align-center"> {$Think.lang.wechat_h5_openid}</th>
                 <th class="align-center"> {$Think.lang.wechat_unionid}</th>
                 <th class="align-center"> {$Think.lang.wechat_member_name}</th>
                 <th class="align-center"> {$Think.lang.wechat_bind_time}</th>
@@ -23,15 +22,14 @@
             {notempty name="wxmember_list"}
             {foreach name="wxmember_list" item="val"}
             <tr class="member">
-                <td class="align-center"><img src="{$val.member_wxinfo.headimgurl|default=''}" width=100 /></td>
-                <td class="align-center">{$val.member_wxinfo.nickname|default=''}</td>
-                <td class="align-center">{$val.member_wxopenid}</td>
+                <td class="align-center">{$val.member_wxnickname|default=''}</td>
+                <td class="align-center">{$val.member_h5_wxopenid}</td>
                 <td class="align-center">{$val.member_wxunionid}</td>
                 <td class="align-center">{$val.member_name}</td>
                 <td class="align-center">{:date('Y_m_d H:i:s',$val.member_addtime)}</td>
                 <td class="align-center">
                     <a href="javascript:dsLayerOpen('{:url('Member/edit',['member_id'=>$val.member_id])}','{$val.member_name}-{$Think.lang.ds_edit}')" class="dsui-btn-view"><i class="iconfont"></i>{$Think.lang.ds_edit}</a>
-                    <a href="javascript:dsLayerOpen('{:url('Wechat/msend',['member_id'=>$val.member_id,'openid'=>$val.member_wxopenid])}','{$Think.lang.wechat_message_send}')" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.wechat_message_send}</a>
+                    <a href="javascript:dsLayerOpen('{:url('Wechat/msend',['member_id'=>$val.member_id,'openid'=>$val.member_h5_wxopenid])}','{$Think.lang.wechat_message_send}')" class="dsui-btn-edit"><i class="iconfont"></i>{$Think.lang.wechat_message_send}</a>
                 </td>
             </tr>
             {/foreach}

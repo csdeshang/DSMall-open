@@ -5,12 +5,12 @@
  */
 
 namespace app\common\model;
-use think\facade\Db;
 
+use think\facade\Db;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -21,8 +21,8 @@ use think\facade\Db;
  * 数据层模型
  */
 class Storejoinin extends BaseModel {
-    public $page_info;
 
+    public $page_info;
 
     /**
      * 读取列表
@@ -35,11 +35,11 @@ class Storejoinin extends BaseModel {
      * @return array
      */
     public function getStorejoininList($condition, $pagesize = '', $order = '', $field = '*') {
-        if($pagesize){
-            $result = Db::name('storejoinin')->field($field)->where($condition)->order($order)->paginate(['list_rows'=>$pagesize,'query' => request()->param()],false);
+        if ($pagesize) {
+            $result = Db::name('storejoinin')->field($field)->where($condition)->order($order)->paginate(['list_rows' => $pagesize, 'query' => request()->param()], false);
             $this->page_info = $result;
             return $result->items();
-        }else{
+        } else {
             $result = Db::name('storejoinin')->field($field)->where($condition)->order($order)->select()->toArray();
             return $result;
         }
@@ -95,7 +95,6 @@ class Storejoinin extends BaseModel {
         return Db::name('storejoinin')->insert($data);
     }
 
-
     /**
      * 更新
      * @access public
@@ -118,8 +117,6 @@ class Storejoinin extends BaseModel {
     public function delStorejoinin($condition) {
         return Db::name('storejoinin')->where($condition)->delete();
     }
-
-
 
     /**
      * 充值卡支付
@@ -154,11 +151,11 @@ class Storejoinin extends BaseModel {
                 $data_pd['order_sn'] = $order_info['pay_sn'];
                 $predeposit_model->changeRcb('storejoinin_comb_pay', $data_pd);
             }
-            $store_model=model('store');
-            $store_model->setStoreOpen($order_info,array('joinin_state'=>STORE_JOIN_STATE_FINAL,'payment_code'=>'predeposit'));
-			
-			// 订单状态 置为已支付
-			$order_info['rcb_amount'] = round($order_info['rcb_amount'] + $order_amount, 2);
+            $store_model = model('store');
+            $store_model->setStoreOpen($order_info, array('joinin_state' => STORE_JOIN_STATE_FINAL, 'payment_code' => 'predeposit'));
+
+            // 订单状态 置为已支付
+            $order_info['rcb_amount'] = round($order_info['rcb_amount'] + $order_amount, 2);
         } else {
 
             //暂冻结预存款,后面还需要 API彻底完成支付
@@ -222,11 +219,11 @@ class Storejoinin extends BaseModel {
                 $data_pd['order_sn'] = $order_info['pay_sn'];
                 $predeposit_model->changePd('storejoinin_comb_pay', $data_pd);
             }
-            $store_model=model('store');
-            $store_model->setStoreOpen($order_info,array('joinin_state'=>STORE_JOIN_STATE_FINAL,'payment_code'=>'predeposit'));
-           
-		    // 订单状态 置为已支付
-		    $order_info['pd_amount'] = round($order_info['pd_amount'] + $order_amount, 2);
+            $store_model = model('store');
+            $store_model->setStoreOpen($order_info, array('joinin_state' => STORE_JOIN_STATE_FINAL, 'payment_code' => 'predeposit'));
+
+            // 订单状态 置为已支付
+            $order_info['pd_amount'] = round($order_info['pd_amount'] + $order_amount, 2);
         } else {
 
             //暂冻结预存款,后面还需要 API彻底完成支付
@@ -242,5 +239,4 @@ class Storejoinin extends BaseModel {
         }
         return $order_info;
     }
-
 }

@@ -24,7 +24,7 @@ class Goodsbrowse extends BaseModel {
      * 浏览过的商品
      * @access public
      * @author csdeshang
-     * @param int $member_id 会员ID（一般传递session('member_id')）
+     * @param int $member_id 会员ID
      * @param int $shownum 查询的条数，默认0则为返回全部
      * @return array
      */
@@ -340,7 +340,7 @@ class Goodsbrowse extends BaseModel {
      * @access public
      * @author csdeshang
      * @param type $goods_id 商品ID
-     * @param type $member_id 会员ID（一般传递session('member_id')）
+     * @param type $member_id 会员ID
      * @param type $store_id 店铺ID
      * @return array
      */
@@ -365,8 +365,8 @@ class Goodsbrowse extends BaseModel {
      * @access public
      * @author csdeshang
      * @param mixed $goods_id 商品ID或者商品ID数组
-     * @param int $member_id 会员ID（一般传递session('member_id')）
-     * @param int $store_id 店铺ID（一般传递session('store_id')）
+     * @param int $member_id 会员ID
+     * @param int $store_id 店铺ID
      * @param array $goods_info 如果已经获取了商品信息则可传递至函数，避免重复查询
      * @return array
      */
@@ -445,8 +445,8 @@ class Goodsbrowse extends BaseModel {
      * @access public
      * @author csdeshang
      * @param mixed $goods_id 商品ID或者商品ID数组
-     * @param int $member_id 会员ID（一般传递session('member_id')）
-     * @param int $store_id 店铺ID（一般传递session('store_id')）
+     * @param int $member_id 会员ID
+     * @param int $store_id 店铺ID
      * @param array $goods_info 如果已经获取了商品信息则可传递至函数，避免重复查询
      * @return array
      */

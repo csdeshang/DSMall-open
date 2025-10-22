@@ -2,11 +2,11 @@
 
 namespace app\common\model;
 
-
 use think\facade\Db;
+
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -17,7 +17,6 @@ use think\facade\Db;
  * 数据层模型
  */
 class Seller extends BaseModel {
-    
 
     /**
      * 登录时创建会话SESSION
@@ -28,13 +27,13 @@ class Seller extends BaseModel {
      * @param type $seller_info 卖家信息
      * @param type $seller_group_info 分组信息
      */
-    public function createSellerSession($member_info,$store_info,$seller_info,$seller_group_info) {
+    public function createSellerSession($member_info, $store_info, $seller_info, $seller_group_info) {
         if (empty($member_info) || !is_array($member_info)) {
             return;
         }
         $member_gradeinfo = model('member')->getOneMemberGrade(intval($member_info['member_exppoints']));
         $member_info = array_merge($member_info, $member_gradeinfo);
-        
+
         /* 此处卖家登录需要和买家登录 session 一致 createSession方法  BEGIN */
         session('is_login', '1');
         session('member_id', $member_info['member_id']);
@@ -69,7 +68,7 @@ class Seller extends BaseModel {
         }
         session('seller_last_logintime', date('Y-m-d H:i', $seller_info['last_logintime']));
     }
- 
+
     /**
      * 读取列表
      * @access public
@@ -145,4 +144,30 @@ class Seller extends BaseModel {
         return Db::name('seller')->where($condition)->delete();
     }
 
+    /**
+     * 登录生成token
+     */
+    public function getSellerToken($seller_id, $seller_name) {
+
+        //生成新的token
+        $platformtoken_data = array();
+        $token = md5($seller_name . strval(TIMESTAMP) . strval(rand(0, 999999)));
+
+        $platformtoken_data['platform_userid'] = $seller_id;
+        $platformtoken_data['platform_username'] = $seller_name;
+        $platformtoken_data['platform_token'] = $token;
+        $platformtoken_data['platform_type'] = 'seller';
+        $platformtoken_data['platform_logintime'] = TIMESTAMP;
+        $platformtoken_data['platform_operationtime'] = TIMESTAMP;
+        $platformtoken_data['platform_clienttype'] = get_clienttype();
+        $platformtoken_data['platform_devicetype'] = getOSFromUserAgent();
+
+        $result = model('platformtoken')->addPlatformtoken($platformtoken_data);
+
+        if ($result) {
+            return $token;
+        } else {
+            return null;
+        }
+    }
 }

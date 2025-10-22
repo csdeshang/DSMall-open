@@ -144,11 +144,12 @@ class Sellerpromotionwholesale extends BaseSeller {
                 $wholesalegoods_data['wholesale_end_time'] = $end_time;
                 $wholesalegoods_model->addWholesalegoods($wholesalegoods_data);
             }
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             ds_json_encode(10001, $e->getMessage());
         }
-        Db::commit();
+        
         // 添加计划任务
         $this->addcron(array('cron_exetime' => $end_time, 'cron_value' => serialize(intval($wholesale_id)), 'cron_type' => 'editExpireWholesale'), true);
         $this->recordSellerlog(lang('add_limited_time_discount_activity') . $goodscommon_info['goods_name'] . lang('activity_number') . $wholesale_id);
@@ -333,11 +334,12 @@ class Sellerpromotionwholesale extends BaseSeller {
             if (!empty($wholesalegoods_ids)) {
                 $wholesalegoods_model->delWholesalegoods(array(array('wholesalegoods_id', 'in', $wholesalegoods_ids)));
             }
+            Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             ds_json_encode(10001, $e->getMessage());
         }
-        Db::commit();
+        
 
         $this->recordSellerlog(lang('edit_limited_time_discount_activity') . $wholesale_info['goods_name'] . lang('activity_number') . $wholesale_id);
         ds_json_encode(10000, lang('ds_common_op_succ'));
@@ -394,6 +396,9 @@ class Sellerpromotionwholesale extends BaseSeller {
 
         //获取当前价格
         $current_price = intval(config('ds_config.promotion_wholesale_price'));
+        
+        //先记录店铺记录店铺费用以免扣费不成功
+        $this->recordStorecost($current_price * $wholesale_quota_quantity, lang('buy_limited_time_discount').' ['.$wholesale_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         //获取该用户已有套餐
         $wholesalequota_model = model('wholesalequota');
@@ -414,9 +419,6 @@ class Sellerpromotionwholesale extends BaseSeller {
             $param['wholesalequota_endtime'] = Db::raw('wholesalequota_endtime+' . $wholesale_add_time);
             $wholesalequota_model->editWholesalequota($param, array('wholesalequota_id' => $current_wholesale_quota['wholesalequota_id']));
         }
-
-        //记录店铺费用
-        $this->recordStorecost($current_price * $wholesale_quota_quantity, lang('buy_limited_time_discount').' ['.$wholesale_quota_quantity.'个月 × 单价:'.$current_price.'元]');
 
         $this->recordSellerlog(lang('buy') . $wholesale_quota_quantity . lang('limited_time_discount_package') . $current_price . lang('ds_yuan'));
 

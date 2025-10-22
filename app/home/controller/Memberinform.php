@@ -145,23 +145,8 @@ class Memberinform extends BaseMember {
         $input['inform_handle_message'] = '';
         $input['inform_handle_member_id'] = 0;
         $input['inform_handle_datetime'] = 1;
-
-        //验证输入的数据
-        $data = [
-            'inform_content' => $input["inform_content"],
-            'informsubject_content' => $input["informsubject_content"]
-        ];
-
-        $res=word_filter($input['inform_content']);
-        if(!$res['code']){
-            $this->error($res['msg']);
-        }
-        $input['inform_content']=$res['data']['text'];
         
-        $inform_validate = ds_validate('inform');
-        if (!$inform_validate->scene('inform_save')->check($data)) {
-            $this->error($inform_validate->getError());
-        }
+        $this->validate($input, 'app\common\validate\Inform.add');
 
         //保存
         if ($inform_model->addInform($input)) {
@@ -253,7 +238,7 @@ class Memberinform extends BaseMember {
         //删除图片
         if (!empty($inform_pics)) {
             foreach ($inform_pics as $pic) {
-                $this->inform_delete_pic($pic);
+                ds_del_pic(ATTACH_PATH . '/inform', $pic);
             }
         }
         $inform_model->delInform(array('inform_id' => $inform_id));
@@ -304,7 +289,7 @@ class Memberinform extends BaseMember {
         foreach ($inform_pic as $pic) {
             if (!empty($_FILES[$pic]['name'])) {
                 $file_name = session('member_id') . '_' . date('YmdHis') . rand(10000, 99999).'.png';
-                $res = ds_upload_pic('home'.DIRECTORY_SEPARATOR.'inform', $pic, $file_name);
+                $res = ds_upload_pic(ATTACH_PATH.'/inform', $pic, $file_name);
                 if ($res['code']) {
                     $pic_name[$count] = $res['data']['file_name'];
                 } else {
@@ -317,20 +302,6 @@ class Memberinform extends BaseMember {
         }
         return $pic_name;
     }
-
-    /*
-     * 上传用户提供的举报图片
-     */
-
-    private function inform_delete_pic($pic_name) {
-
-        //上传路径
-        $pic = BASE_UPLOAD_PATH . DIRECTORY_SEPARATOR . ATTACH_PATH . DIRECTORY_SEPARATOR . 'inform' . DIRECTORY_SEPARATOR . $pic_name;
-        if (file_exists($pic)) {
-            @unlink($pic);
-        }
-    }
-
 
     /*
      * 根据举报类型id获取，举报具体列表

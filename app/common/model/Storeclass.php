@@ -1,13 +1,12 @@
 <?php
 
-
 namespace app\common\model;
 
-
 use think\facade\Db;
+
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用文件
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -18,9 +17,9 @@ use think\facade\Db;
  * 数据层模型
  */
 class Storeclass extends BaseModel {
-    
+
     public $page_info;
-  
+
     /**
      * 取店铺类别列表
      * @access public
@@ -32,15 +31,14 @@ class Storeclass extends BaseModel {
      * @return type
      */
     public function getStoreclassList($condition = array(), $pagesize = '', $limit = 0, $order = 'storeclass_sort asc,storeclass_id asc') {
-        
-        if($pagesize){
-            $list = Db::name('storeclass')->where($condition)->order($order)->paginate(['list_rows'=>$pagesize,'query' => request()->param()],false);
+
+        if ($pagesize) {
+            $list = Db::name('storeclass')->where($condition)->order($order)->paginate(['list_rows' => $pagesize, 'query' => request()->param()], false);
             $this->page_info = $list;
             return $list->items();
-        }else{
+        } else {
             return Db::name('storeclass')->where($condition)->order($order)->limit($limit)->select()->toArray();
         }
-        
     }
 
     /**
@@ -84,9 +82,9 @@ class Storeclass extends BaseModel {
      * @param array $condition 条件
      * @return bool
      */
-    public function editStoreclass($data = array(),$condition = array()) {
+    public function editStoreclass($data, $condition) {
         return Db::name('storeclass')->where($condition)->update($data);
     }
-    
 }
+
 ?>

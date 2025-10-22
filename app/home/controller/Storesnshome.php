@@ -192,18 +192,14 @@ class Storesnshome extends BaseStoreSns {
         $validate_arr = array(
             'commentcontent' => input('post.commentcontent'),
         );
-        $storesnshome_validate = ds_validate('storesnshome');
-        if (!$storesnshome_validate->scene('addcomment')->check($validate_arr)) {
-            ds_json_encode(10001, $storesnshome_validate->getError());
-        }
+        $this->validate($validate_arr, 'app\common\validate\Storesnshome.addcomment');
+        
         //发帖数超过最大次数出现验证码
         if (intval(cookie('commentnum')) >= self::MAX_RECORDNUM) {
             if (!captcha_check(input('post.captcha'))) {
                 ds_json_encode(10001, lang('wrong_checkcode'));
             }
         }
-
-
 
         //查询会员信息
         $member_info = Db::name('member')->where(array('member_state' => 1, 'member_id' => session('member_id')))->find();
@@ -247,11 +243,7 @@ class Storesnshome extends BaseStoreSns {
         $validate_arr = array(
             'forwardcontent' => input('post.forwardcontent'),
         );
-
-        $storesnshome_validate = ds_validate('storesnshome');
-        if (!$storesnshome_validate->scene('addforward')->check($validate_arr)) {
-            ds_json_encode(10001, $storesnshome_validate->getError());
-        }
+        $this->validate($validate_arr, 'app\common\validate\Storesnshome.addforward');
         //发帖数超过最大次数出现验证码
         if (intval(cookie('forwardnum')) >= self::MAX_RECORDNUM) {
             if (!captcha_check(input('post.captcha'))) {

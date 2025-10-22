@@ -10,7 +10,7 @@ use think\facade\Lang;
 
 /**
  * ============================================================================
- * DSMall多用户商城
+ * 通用功能 规格
  * ============================================================================
  * 版权所有 2014-2028 长沙德尚网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.csdeshang.com
@@ -63,14 +63,12 @@ class Spec extends AdminControl {
         } else {
             $data = array(
                 'sp_name' => input('post.sp_name'),
-                'sp_sort' => input('post.sp_sort'),
-                'gc_id' => input('post.gc_id'),
+                'sp_sort' => intval(input('post.sp_sort')),
+                'gc_id' => intval(input('post.gc_id')),
                 'gc_name' => input('post.gc_name'),
             );
-            $spec_validate = ds_validate('spec');
-            if (!$spec_validate->scene('spec_add')->check($data)) {
-                $this->error($spec_validate->getError());
-            }
+            
+            $this->validate($data, 'app\common\validate\Spec.spec_add');
 
             $spec_model= model('spec');
             $result=$spec_model->addSpec($data);
@@ -84,7 +82,7 @@ class Spec extends AdminControl {
 
     public function spec_edit() {
         //注：pathinfo地址参数不能通过get方法获取，查看“获取PARAM变量”
-        $sp_id = input('param.sp_id');
+        $sp_id = intval(input('param.sp_id'));
         if (empty($sp_id)) {
             $this->error(lang('param_error'));
         }
@@ -98,14 +96,11 @@ class Spec extends AdminControl {
         } else {
             $data = array(
                 'sp_name' => input('post.sp_name'),
-                'sp_sort' => input('post.sp_sort'),
-                'gc_id' => input('post.gc_id'),
+                'sp_sort' => intval(input('post.sp_sort')),
+                'gc_id' => intval(input('post.gc_id')),
                 'gc_name' => input('post.gc_name'),
             );
-            $spec_validate = ds_validate('spec');
-            if (!$spec_validate->scene('spec_edit')->check($data)) {
-                $this->error($spec_validate->getError());
-            }
+            $this->validate($data, 'app\common\validate\Spec.spec_edit');
 
             $spec_model= model('spec');
             $condition=array();

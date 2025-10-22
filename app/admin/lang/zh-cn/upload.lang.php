@@ -16,6 +16,4 @@ $lang['config_document'] ='配置文档';
 
 $lang['suggest_picture_pixel'] ='建议上传图片像素为';
 
-$lang['upload_set'] ='上传设置';
-
 return $lang;

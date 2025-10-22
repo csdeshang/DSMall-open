@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <th colspan="20">
-                {if $Request.param.type == 'select'}
+                {if $Request.param.type == 'choose_transport'}
                 <a class="ml5 dssc-btn-mini dssc-btn-orange" data-param="{name:'{$v.transport_title}',id:'{$v.transport_id}',price:'{$v.transport_id.price}'}" href="javascript:void(0)"><i class="iconfont">&#xe6f1;</i>{$Think.lang.transport_applay}</span></a>
                 {/if}
     <h3>{$v.transport_title}</h3>
